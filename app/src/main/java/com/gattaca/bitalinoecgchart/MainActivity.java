@@ -1,44 +1,29 @@
 package com.gattaca.bitalinoecgchart;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
-
-    RealTimeChart chart;
-    BitalinoUniversal bitalino = null;
-    Thread startBitalinoThread = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        chart = new RealTimeChart(this);
-        chart.init();
-
-        bitalino = new BitalinoUniversal(this, 2);
-        startBitalinoThread = bitalino.start();
-
-        Thread realTimeThread = new Thread(new Runnable() {
-            SimpleECG currentECG = null;
-
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                try {
-                    startBitalinoThread.join();
-                } catch (InterruptedException e) {}
-                while(true) {
-                    currentECG = bitalino.get();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            chart.addData((float) currentECG.get());
-                        }
-                    });
-                }
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MonitorActivity.class);
+                startActivity(intent);
             }
         });
-        realTimeThread.start();
     }
 }

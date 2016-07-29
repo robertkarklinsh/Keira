@@ -1,11 +1,6 @@
 package com.gattaca.bitalinoecgchart;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -14,24 +9,16 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Timer;
 
 public class RealTimeChart {
 
     private LineChart mChart;
-    MainActivity mActivity;
+    MonitorActivity mActivity;
 
     private static final int VISIBLE_NUM = 100;
 
-    public RealTimeChart(MainActivity mainActivity) {
-        mActivity = mainActivity;
+    public RealTimeChart(MonitorActivity monitorActivity) {
+        mActivity = monitorActivity;
     }
 
     public void init() {

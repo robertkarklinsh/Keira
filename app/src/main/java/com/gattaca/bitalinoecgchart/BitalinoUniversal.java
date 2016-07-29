@@ -3,23 +3,15 @@ package com.gattaca.bitalinoecgchart;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bitalino.comm.BITalinoDevice;
 import com.bitalino.comm.BITalinoException;
 import com.bitalino.comm.BITalinoFrame;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.io.IOException;
 import java.util.UUID;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BitalinoUniversal {
@@ -30,15 +22,17 @@ public class BitalinoUniversal {
     private static final UUID MY_UUID = UUID
             .fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-    private MainActivity mActivity;
+    private MonitorActivity mActivity;
     private BITalinoDevice bitalino;
     private BluetoothSocket sock = null;
     private static final int SAMPLE_RATE = 100;
     private final int channel;
+    public AtomicBoolean isConnected;
 
-    BitalinoUniversal (MainActivity mainActivity, int Channel) {
+    BitalinoUniversal (MonitorActivity mainActivity, int Channel) {
         mActivity = mainActivity;
         channel = Channel;
+        isConnected = new AtomicBoolean(false);
     }
 
     SimpleECG get() {
@@ -70,6 +64,7 @@ public class BitalinoUniversal {
                 btAdapter.cancelDiscovery();
                 sock = dev.createRfcommSocketToServiceRecord(MY_UUID);
                 sock.connect();
+                isConnected.set(true);
                 bitalino = new BITalinoDevice(SAMPLE_RATE, new int[]{0, 1, 2, 3, 4, 5});
                 publishProgress("Connecting to BITalino [" + remoteDevice + "]..");
                 bitalino.open(sock.getInputStream(), sock.getOutputStream());
@@ -77,8 +72,11 @@ public class BitalinoUniversal {
                 publishProgress("Version: " + bitalino.version());
                 bitalino.start();
 //                setStart();
-            } catch (Exception e) {
-                Log.e(TAG, "There was an error.", e);
+            } catch (IOException e) {
+                Log.e(TAG, "Socket can't connect!!!", e);
+                isConnected.set(false);
+            } catch (BITalinoException bit) {
+                Log.e(TAG, "BITalino exception!!!", bit);
             }
         }
 
