@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.gattaca.bitalinoecgchart.MainActivity;
+import com.gattaca.bitalinoecgchart.MonitorActivity;
 import com.gattaca.bitalinoecgchart.R;
 
 public class NaviagableActivity extends AppCompatActivity
@@ -26,7 +27,7 @@ public class NaviagableActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_naviagable_actibity);
+        setContentView(R.layout.activity_naviagable_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -84,7 +85,11 @@ public class NaviagableActivity extends AppCompatActivity
             // Handle the camera action
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_monitor) {
+            Intent intent = new Intent(this, MonitorActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_tracker) {
+
 
         } else if (id == R.id.nav_share) {
 
