@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import com.gattaca.bitalinoecgchart.MainActivity;
 import com.gattaca.bitalinoecgchart.MonitorActivity;
 import com.gattaca.bitalinoecgchart.R;
+import com.gattaca.bitalinoecgchart.tracker.TestTabsActivity;
 
 public class NaviagableActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -89,7 +90,8 @@ public class NaviagableActivity extends AppCompatActivity
             Intent intent = new Intent(this, MonitorActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_tracker) {
-
+            Intent intent = new Intent(this, TestTabsActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_share) {
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:orientation="horizontal">
+    <TextView
+        android:layout_weight="4.5"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="Лекарства"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"/>
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="23dp"
+        android:gravity="center_vertical"
+        android:src="@drawable/three_points_1"
+        android:layout_gravity="center_vertical" />
+</LinearLayout>
