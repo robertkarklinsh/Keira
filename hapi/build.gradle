@@ -1,0 +1,20 @@
+apply plugin: 'java'
+
+
+repositories {
+
+    maven {
+        url 'https://github.com/jamesagnew/hapi-fhir/tree/master/hapi-fhir-android'
+    }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+
+dependencies {
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+   // compile project (':app')
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-base:1.6'
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:1.6'
+}
