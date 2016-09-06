@@ -57,12 +57,12 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        ActivityCompat.requestPermissions(
+        /*ActivityCompat.requestPermissions(
                 this,
                 new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE},
                 INTEGRATION_TEST_PERMISSIONS
         );
-
+*/
 
         return true;
     }

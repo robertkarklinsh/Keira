@@ -1,12 +1,8 @@
-package com.gattaca.team.keira.presenter.databank;
+package com.gattaca.team.keira.ui.presenter.databank;
 
 import com.gattaca.team.keira.data.model.Model;
-import com.gattaca.team.keira.domain.interactor.SearchDataBank;
 import com.gattaca.team.keira.domain.interactor.UseCase;
-import com.gattaca.team.keira.presenter.Presenter;
-
-import rx.*;
-import rx.Subscriber;
+import com.gattaca.team.keira.ui.presenter.Presenter;
 
 /**
  * Created by Robert on 18.08.2016.
