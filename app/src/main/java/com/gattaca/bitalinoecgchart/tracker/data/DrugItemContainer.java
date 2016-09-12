@@ -14,8 +14,8 @@ public class DrugItemContainer extends TrackerItemContainer {
     }
 
     @Override
-    public int getType() {
-        return 1;
+    public ItemType getType() {
+        return ItemType.DRUG;
     }
 
     public void addReception(Reception reception) {

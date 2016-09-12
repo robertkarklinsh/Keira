@@ -15,8 +15,8 @@ public class TaskItemContainer extends TrackerItemContainer {
     }
 
     @Override
-    public int getType() {
-        return 3;
+    public ItemType getType() {
+        return ItemType.TASK;
     }
 
     List<Boolean> tasks = new ArrayList<>();

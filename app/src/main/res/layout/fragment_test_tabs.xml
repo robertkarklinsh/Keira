@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.gattaca.bitalinoecgchart.tracker.TestTabsActivity$PlaceholderFragment">
+    tools:context=".tracker.TrackerActivity$PlaceholderFragment">
 
     <TextView
         android:id="@+id/section_label"

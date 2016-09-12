@@ -9,7 +9,7 @@ public abstract class TrackerItemContainer {
     String grayText;
     boolean visible = false;
 
-    public abstract int getType();
+    public abstract ItemType getType();
 
     public TrackerItemContainer(){
 

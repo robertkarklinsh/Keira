@@ -13,8 +13,8 @@ public abstract class MeasurementItemContainer extends TrackerItemContainer {
 
 
     @Override
-    public int getType() {
-        return 2;
+    public ItemType getType() {
+        return ItemType.MEASUREMENT;
     }
 
 }

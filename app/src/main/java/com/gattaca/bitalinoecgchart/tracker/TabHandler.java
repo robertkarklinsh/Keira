@@ -34,7 +34,7 @@ public class TabHandler {
             "сб",
             "вс"};
 
-    public void initialize(TabLayout tabLayout, ViewPager mViewPager) {
+    public void initialize(TabLayout tabLayout, final ViewPager mViewPager) {
 
         tabLayout.setupWithViewPager(mViewPager);
         int k = tabLayout.getSelectedTabPosition();
@@ -54,24 +54,23 @@ public class TabHandler {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 //               tab.setIcon(R.drawable.dial_ex);
+
                 ImageView img = (ImageView) tab.getCustomView().findViewById(R.id.custom_tab_img);
                 img.setImageResource(R.drawable.dial_ex);
+                mViewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-//                tab.setIcon(R.drawable.dial);
                 ImageView img = (ImageView) tab.getCustomView().findViewById(R.id.custom_tab_img);
                 img.setImageResource(R.drawable.dial);
-
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-//                tab.setIcon(R.drawable.dial_ex);
+
                 ImageView img = (ImageView) tab.getCustomView().findViewById(R.id.custom_tab_img);
                 img.setImageResource(R.drawable.dial_ex);
-
             }
         });
 
@@ -127,7 +126,6 @@ public class TabHandler {
         private RecyclerView mRecyclerView;
         private RecyclerView.Adapter mAdapter;
         private RecyclerView.LayoutManager mLayoutManager;
-        String[] myDataset = new String[]{"aa", "bb", "cc", "cc", "cc", "aa", "bb", "cc"};
         private int position = -1;
 
         public PlaceholderFragment() {
@@ -149,8 +147,8 @@ public class TabHandler {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            if (savedInstanceState != null) {
-                position = (int) savedInstanceState.get(ARG_SECTION_NUMBER);
+            if (this.getArguments() != null) {
+                position = (int) this.getArguments().get(ARG_SECTION_NUMBER);
             }
 //            View rootView = inflater.inflate(R.layout.fragment_test_tabs, container, false);
 //            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
@@ -173,7 +171,7 @@ public class TabHandler {
             mRecyclerView.setLayoutManager(mLayoutManager);
 
             // specify an adapter (see also next example)
-            mAdapter = new MyAdapter(myDataset, mRecyclerView, position);
+            mAdapter = new MyAdapter(mRecyclerView, position);
             mRecyclerView.setAdapter(mAdapter);
             return rootView;
         }

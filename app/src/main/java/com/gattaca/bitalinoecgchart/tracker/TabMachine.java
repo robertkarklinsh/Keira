@@ -4,6 +4,7 @@ import com.gattaca.bitalinoecgchart.tracker.data.DrugItemContainer;
 import com.gattaca.bitalinoecgchart.tracker.data.ProgressBarItemContainer;
 import com.gattaca.bitalinoecgchart.tracker.data.TaskItemContainer;
 import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
+import com.gattaca.bitalinoecgchart.tracker.data.ViewType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class TabMachine {
     }
 
     static public int getViewType(int pos, Boolean[] expanded) {
-        return expandHelper.getViewType(expanded, pos);
+        return expandHelper.getViewType(expanded, pos).number;
     }
 
     static public int getExpandPosition(int positionInList, Boolean[] expanded) {
@@ -53,10 +54,7 @@ public class TabMachine {
     }
 
     static class ExpandHelper {
-        private List<Integer> list = new ArrayList<>();
-        int drugCount = 4;
-        int measCount = 3;
-        int taskCount = 2;
+        private List<ViewType> list = new ArrayList<>();
         int counts[] = {4, 3, 2};
         int collapseCount = 2;
 
@@ -68,14 +66,14 @@ public class TabMachine {
           populateList(expanded);
             for(int i = position ; i > 0; i --)
             {
-                if (list.get(i) == 0) {
+                if (list.get(i) == ViewType.HEADER) {
                     return i;
                 }
             }
             return 0;
         }
 
-        public  int getViewType(Boolean[] expanded, int position) {
+        public  ViewType getViewType(Boolean[] expanded, int position) {
             populateList(expanded);
             return list.get(position);
         }
@@ -88,13 +86,13 @@ public class TabMachine {
         private void populateList(Boolean[] expanded) {
             list.clear();
             for (int i = 0; i < 3; i++) {
-                list.add(0);
+                list.add(ViewType.HEADER);
                 int amt = expanded[i] ? counts[i] : collapseCount;
 
                 for (int j = 0; j < amt; j++) {
-                    list.add(2);
+                    list.add(ViewType.ITEM);
                 }
-                list.add(1);
+                list.add(ViewType.FOOTER);
 
             }
         }
@@ -104,7 +102,7 @@ public class TabMachine {
             int lastZero = 0;
             int res = 0;
             for (int i = 0; i < position; i++) {
-                if (list.get(i) == 0) {
+                if (list.get(i) == ViewType.HEADER) {
                     lastZero = i;
                     res++;
                 }
@@ -117,7 +115,7 @@ public class TabMachine {
             populateList(expanded);
             int lastZero = 0;
             for (int i = 0; i < position; i++) {
-                if (list.get(i) == 0) {
+                if (list.get(i) == ViewType.HEADER) {
                     lastZero = i;
                 }
             }
@@ -129,7 +127,7 @@ public class TabMachine {
             populateList(expanded);
             int res = 0;
             for (int i = 0; i < position; i++) {
-                if (list.get(i) == 0) {
+                if (list.get(i) == ViewType.HEADER) {
                     res++;
                 }
             }
@@ -147,7 +145,7 @@ public class TabMachine {
             populateList(expanded);
             int res = 0;
             for (int i = 0; i <= position; i++) {
-                if (list.get(i) == 0) {
+                if (list.get(i) == ViewType.HEADER) {
                     res++;
                 }
             }
@@ -164,7 +162,7 @@ public class TabMachine {
             populateList(expanded);
             int res = 0;
             for (int i = 0; i < position; i++) {
-                if (list.get(i) == 0) {
+                if (list.get(i) == ViewType.HEADER) {
                     res++;
                 }
             }

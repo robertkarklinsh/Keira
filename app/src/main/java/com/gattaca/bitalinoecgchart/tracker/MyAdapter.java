@@ -18,9 +18,8 @@ import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private String[] mDataset;
     private RecyclerView recyclerView;
-
+    private int weekDay = 0; //day of the
     private int tabPostion = -1;
 
     Boolean[] expanded = {false, false, false}; //0 -drug 1-measurements 2- tasks
@@ -32,9 +31,8 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(String[] myDataset, RecyclerView recyclerView, int position) {
-        position = position;
-        mDataset = myDataset;
+    public MyAdapter(RecyclerView recyclerView, int position) {
+        weekDay = position;
         this.recyclerView = recyclerView;
 
     }
@@ -81,13 +79,14 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 
         int type = TabMachine.getViewType(position, expanded);
+
         switch (type) {
-            case 0:
+            case 0: // ViewType.HEADER
                 String headerName = TabMachine.getHeaderName(position, expanded);
                 TextView textView = (TextView) ((ViewHoldersCollection.HeaderViewHolder) holder).mView.findViewById(R.id.tracker_header_text);
                 textView.setText(headerName);
                 break;
-            case 1: {
+            case 1: { // ViewType.FOOTER
                 int pos = TabMachine.getExpandPosition(position, expanded);
                 int count = TabMachine.expandCount(expanded, position);
                 int startFromPos = TabMachine.getStartFromPos(expanded, position);
@@ -97,10 +96,10 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         .setOnClickListener(new ExpandListener(pos, startFromPos, count, headerPosition));
                 break;
             }
-            case 2: {
+            case 2: { // ViewType.ITEM
                 TrackerItemContainer container = TabMachine.getItemContainer(position, expanded);
                 switch (container.getType()) {
-                    case 1: {
+                    case DRUG: {
                         DrugItemContainer drugItemContainer = (DrugItemContainer) container;
                         ViewGroup viewGroup = (ViewGroup) ((ViewHoldersCollection.DrugItemViewHolder) holder).mView.getParent();
                         Context context = ((ViewHoldersCollection.DrugItemViewHolder) holder).mView.getContext();
@@ -138,7 +137,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                         break;
                     }
-                    case 2: {
+                    case MEASUREMENT: {
                         ProgressBarItemContainer measurementItemContainer = (ProgressBarItemContainer) container;
                         ViewGroup viewGroup = (ViewGroup) ((ViewHoldersCollection.DrugItemViewHolder) holder).mView.getParent();
                         Context context = ((ViewHoldersCollection.DrugItemViewHolder) holder).mView.getContext();
@@ -152,7 +151,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         itemImages.addView(progress);
                         break;
                     }
-                    case 3: {
+                    case TASK: {
                         TaskItemContainer taskItemContainer = (TaskItemContainer) container;
                         ViewGroup viewGroup = (ViewGroup) ((ViewHoldersCollection.DrugItemViewHolder) holder).mView.getParent();
                         Context context = ((ViewHoldersCollection.DrugItemViewHolder) holder).mView.getContext();
@@ -166,12 +165,12 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             LinearLayout drugCircle = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.drug_circle, viewGroup);
                             ((TextView) drugCircle.findViewById(R.id.custom_drug_button_text)).setText("");
                             ((ImageView) drugCircle.findViewById(R.id.custom_drug_button_img)).setImageResource(
-                                    task ? R.drawable.circle : R.drawable.circle_grey
+                                    task ? R.drawable.circle_with_arrow : R.drawable.circle_grey
                             );
                             ImageView a = new ImageView(context);
                             RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(40, 1);
                             a.setLayoutParams(params);
-                            drugCircle.setOnClickListener(new DrugButtonListener());
+                            drugCircle.setOnClickListener(new TaskButtonListener());
                             itemImages.addView(drugCircle);
                             itemImages.addView(a);
                         }
@@ -229,6 +228,25 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 img.setImageResource(R.drawable.circle_grey);
             } else {
                 img.setImageResource(R.drawable.circle);
+            }
+
+        }
+
+    }
+
+    class TaskButtonListener implements View.OnClickListener {
+        int flag = 1;
+
+        @Override
+        public void onClick(View v) {
+            flag *= -1;
+
+            LinearLayout k = (LinearLayout) v;
+            ImageView img = (ImageView) k.findViewById(R.id.custom_drug_button_img);
+            if (flag == -1) {
+                img.setImageResource(R.drawable.circle_grey);
+            } else {
+                img.setImageResource(R.drawable.circle_with_arrow);
             }
 
         }
