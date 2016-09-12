@@ -84,6 +84,7 @@ dependencies {
     }
     apt 'com.google.dagger:dagger-compiler:2.6'
 
+    testCompile 'junit:junit:4.12'
 }
 
 
