@@ -1,4 +1,4 @@
-package com.gattaca.team.keira.ui.model;
+package com.gattaca.team.ui.model;
 
 /**
  * Created by Robert on 06.09.2016.

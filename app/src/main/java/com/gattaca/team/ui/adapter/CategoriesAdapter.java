@@ -1,16 +1,15 @@
 
 
-package com.gattaca.team.keira.ui.adapter;
+package com.gattaca.team.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.gattaca.team.keira.R;
-import com.gattaca.team.keira.ui.model.Category;
+import com.gattaca.team.R;
+import com.gattaca.team.ui.model.Category;
 
 import java.util.ArrayList;
 
@@ -27,20 +26,6 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         this.context = context;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView nameCategory;
-        public TextView itemCounter;
-
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            nameCategory = ((TextView) itemView.findViewById(R.id.category_name));
-            itemCounter = ((TextView) itemView.findViewById(R.id.item_counter));
-        }
-    }
-
-
     @Override
     public CategoriesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -56,6 +41,19 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     public int getItemCount() {
 
         return 0;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView nameCategory;
+        public TextView itemCounter;
+
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            nameCategory = ((TextView) itemView.findViewById(R.id.category_name));
+            itemCounter = ((TextView) itemView.findViewById(R.id.item_counter));
+        }
     }
 }
 

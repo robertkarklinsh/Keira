@@ -1,13 +1,10 @@
 package com.example;
 
-import ca.uhn.fhir.parser.IParser;
-
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.StringType;
 
-import java.util.List;
-
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 
 
 public class Foo {
@@ -26,14 +23,14 @@ public class Foo {
     }
 
     public static void testResourceExtension(){
-
+/*
         ExtObservation ob = new ExtObservation();
         ob.setStatus(ExtObservation.ObservationStatus.REGISTERED);
         ob.setMyEcgData(new StringType("place for some ECG data"));
         IParser p = FhirContext.forDstu3().newXmlParser().setPrettyPrint(true);
         String messageString = p.encodeResourceToString(ob);
 
-        System.out.println(messageString);
+        System.out.println(messageString);*/
 
     }
 

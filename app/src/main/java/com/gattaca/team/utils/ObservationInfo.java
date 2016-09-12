@@ -1,4 +1,4 @@
-package com.gattaca.team.keira.utils;
+package com.gattaca.team.utils;
 
 import android.support.annotation.IntDef;
 
@@ -10,6 +10,8 @@ import java.lang.annotation.RetentionPolicy;
  */
 public abstract class ObservationInfo {
 
+    public static final int TYPE_ECG_OBSERVATION = 1;
+
     @IntDef({
             TYPE_ECG_OBSERVATION
 
@@ -17,8 +19,6 @@ public abstract class ObservationInfo {
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface ObservationType {}
-
-    public static final int TYPE_ECG_OBSERVATION = 1;
 
 
 }

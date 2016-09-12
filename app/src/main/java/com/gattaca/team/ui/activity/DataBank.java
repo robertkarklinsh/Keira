@@ -1,4 +1,4 @@
-package com.gattaca.team.keira.ui.activity;
+package com.gattaca.team.ui.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
