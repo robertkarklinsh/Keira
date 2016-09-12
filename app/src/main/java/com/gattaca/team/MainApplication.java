@@ -7,11 +7,13 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.gattaca.team.prefs.SharedPrefHelper;
+import com.gattaca.team.service.IServiceConnection;
 import com.gattaca.team.service.bitalino.BitalinoConnection;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
 public class MainApplication extends Application {
+    private static IServiceConnection serviceConnectionImpl;
     private static Context context;
     private static Bus bus = new Bus(ThreadEnforcer.ANY);
     private ActivityLifecycleCallbacks activityCallback = new ActivityLifecycleCallbacks() {
@@ -49,13 +51,15 @@ public class MainApplication extends Application {
     public static void busRegister(Object obj) {
         bus.register(obj);
     }
-
     public static void busUnregister(Object obj) {
         bus.unregister(obj);
     }
-
     public static void busPost(Object obj) {
         bus.post(obj);
+    }
+
+    public static IServiceConnection getServiceConnectionImpl() {
+        return serviceConnectionImpl;
     }
 
     public static Context getContext() {
@@ -66,11 +70,8 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         context = this.getApplicationContext();
+        serviceConnectionImpl = new BitalinoConnection();
         SharedPrefHelper.getInstance(context, "app");
         registerActivityLifecycleCallbacks(activityCallback);
-        BitalinoConnection.init();
-        BitalinoConnection.startConnection();
     }
-
-
 }
