@@ -65,7 +65,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile(
             'com.android.support:appcompat-v7:24.1.1',
             'com.android.support:design:24.1.1',
@@ -78,13 +78,13 @@ dependencies {
             'com.squareup:otto:1.3.8',
             'com.bitalino:bitalino-java-sdk:1.0'
     )
-    compile(group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-android', version: '1.6', classifier: 'dstu3') {
+    compile('ca.uhn.hapi.fhir:hapi-fhir-android:1.6') {
         exclude module: 'javax.servlet-api'
         exclude module: 'hapi-fhir-base'
     }
     apt 'com.google.dagger:dagger-compiler:2.6'
-
     testCompile 'junit:junit:4.12'
+    compile files('C:/Users/Robert/.AndroidStudio2.1/projects/Keira/libs/plotview.jar')
 }
 
 
