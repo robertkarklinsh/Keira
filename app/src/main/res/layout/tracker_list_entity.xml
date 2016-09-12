@@ -5,11 +5,13 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/tracker_item_text_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/tracker_item_text_icon"
             android:layout_width="54dp"
             android:layout_height="60dp"
             android:layout_gravity="center_vertical"
@@ -21,6 +23,7 @@
             android:src="@drawable/pills_icon" />
 
         <TextView
+            android:id="@+id/tracker_item_text_black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -30,6 +33,7 @@
             android:textColor="#000000" />
 
         <TextView
+            android:id="@+id/tracker_item_text_gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -39,7 +43,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/drug_image_holder"
+        android:id="@+id/tracker_item_image_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/activity_horizontal_margin"

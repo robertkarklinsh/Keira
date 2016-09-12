@@ -29,7 +29,7 @@ public class test_expand_tabs extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new MyAdapter(myDataset, mRecyclerView);
+//        mAdapter = new MyAdapter(myDataset, mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
     }
 

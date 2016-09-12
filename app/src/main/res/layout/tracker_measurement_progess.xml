@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="left"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/custom_drug_button_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_gravity="center_vertical|left"
+            android:text="Обнаружено 1 отклонение"/>
+        <ProgressBar
+            android:id="@+id/status_progress"
+            android:layout_width="match_parent"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:layout_height="20dp"
+            android:progressDrawable="@android:drawable/progress_horizontal"
+            android:indeterminate="false"
+            android:indeterminateOnly="false" />
+        <TextView
+            android:id="@+id/custom_drug_button_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_gravity="center_vertical|right"
+            android:text="в 2873 ударов"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="33dp"
+            android:layout_height="22dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:src="@drawable/monitor_icon"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:gravity="bottom"
+            android:layout_height="wrap_content"
+            android:text = "ПЕРЕЙТИ В МОНИТОР"
+            android:textColor="#f77a20"
+            android:layout_gravity="bottom" />
+    </LinearLayout>
+
+
+</LinearLayout>
