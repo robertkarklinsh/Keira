@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Keira</string>
+    <string name="action_settings">Settings</string>
+    <string-array name="data_bank_categories">
+        <item>Аллергии</item>
+        <item>Анализы</item>
+        <item>Генетика</item>
+        <item>Демография</item>
+        <item>Заболевания</item>
+        <item>Иммунизации</item>
+        <item>Лекарства</item>
+        <item>Мониторинг</item>
+        <item>Приемы у врачей</item>
+        <item>Процедуры</item>
+    </string-array>
+</resources>

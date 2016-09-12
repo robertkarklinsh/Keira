@@ -1,0 +1,91 @@
+apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "24.0.1"
+    lintOptions {
+        abortOnError false
+    }
+
+    defaultConfig {
+        applicationId "com.gattaca.team.keira"
+        minSdkVersion 19
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    maven {
+        url 'https://github.com/eikaramba/stetho-realm/raw/master/maven-repo'
+    }
+    maven {
+        url 'https://github.com/jamesagnew/hapi-fhir/tree/master/hapi-fhir-android'
+    }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile(
+            'com.android.support:appcompat-v7:24.1.1',
+            'com.android.support:design:24.1.1',
+            'io.reactivex:rxandroid:1.2.1',
+            'io.reactivex:rxjava:1.1.9',
+            'com.facebook.stetho:stetho:1.3.1',
+            'com.uphyca:stetho_realm:0.9.0'
+
+    )
+    compile(group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-android', version: '1.6', classifier: 'dstu3') {
+        exclude module: 'javax.servlet-api'
+        exclude module: 'hapi-fhir-base'
+    }
+
+    androidTestCompile(
+            'junit:junit:4.12',
+            'com.android.support:support-annotations:24.1.1',
+            'org.hamcrest:hamcrest-library:1.3',
+            'com.android.support.test.uiautomator:uiautomator-v18:2.1.1',
+            'com.android.support.test:runner:0.4',
+            'com.android.support.test:rules:0.4',
+            'com.android.support.test.espresso:espresso-core:2.2.1',
+            'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    )
+    androidTestCompile(group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-android', version: '1.6', classifier: 'dstu3') {
+        exclude module: 'javax.servlet-api'
+        exclude module: 'hapi-fhir-base'
+    }
+    androidTestCompile(
+            'com.facebook.stetho:stetho:1.3.1',
+            'com.uphyca:stetho_realm:0.9.0'
+    )
+
+/*    testCompile(group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-android', version: '1.6', classifier: 'dstu2') {
+        exclude module: 'javax.servlet-api'
+        exclude module: 'hapi-fhir-base'
+    }
+
+    testCompile(
+            'junit:junit:4.12',
+            'com.android.support:support-annotations:24.1.1',
+            'com.android.support.test:runner:0.4',
+            'com.android.support.test:rules:0.4',
+    )*/
+
+}
+
+
