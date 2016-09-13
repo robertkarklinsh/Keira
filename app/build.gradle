@@ -1,17 +1,50 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply plugin: 'realm-android'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+        classpath 'io.fabric.tools:gradle:1.21.7'
+    }
+}
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.0"
+    buildToolsVersion "24.0.1"
+    lintOptions {
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+
+    }
 
     defaultConfig {
-        applicationId "com.gattaca.bitalinoecgchart"
-        minSdkVersion 23
+        applicationId "com.gattaca.team"
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "0.1"
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+
     buildTypes {
+        debug {
+            versionNameSuffix ".dev"
+            minifyEnabled false
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -19,13 +52,43 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://github.com/eikaramba/stetho-realm/raw/master/maven-repo'
+    }
+    maven {
+        url 'https://github.com/jamesagnew/hapi-fhir/tree/master/hapi-fhir-android'
+    }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
+    compile(
+            'com.android.support:appcompat-v7:24.2.0',
+            'com.android.support:design:24.2.0',
+            'com.squareup:otto:1.3.8',
+            'com.bitalino:bitalino-java-sdk:1.0'
+    )
+    compile('com.mikepenz:materialdrawer:5.6.0@aar') {
+        transitive = true
+    }
+    compile('com.mikepenz:fastadapter:1.6.0@aar') {
+        transitive = true
+    }
+    compile(group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-android', version: '1.6', classifier: 'dstu3') {
+        exclude module: 'javax.servlet-api'
+        exclude module: 'hapi-fhir-base'
+    }
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
+        transitive = true;
+    }
     compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
-    compile 'com.bitalino:bitalino-java-sdk:1.0'
-    compile 'org.roboguice:roboguice:3.0b-experimental'
-    compile 'com.squareup.retrofit:retrofit:1.5.0'
     compile 'com.android.support:design:23.4.0'
 }
+
+
