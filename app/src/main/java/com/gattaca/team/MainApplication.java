@@ -6,10 +6,13 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.crashlytics.android.Crashlytics;
 import com.gattaca.team.prefs.SharedPrefHelper;
 import com.gattaca.team.service.IServiceConnection;
 import com.gattaca.team.service.bitalino.BitalinoConnection;
 import com.squareup.otto.Bus;
+
+import io.fabric.sdk.android.Fabric;
 
 public class MainApplication extends Application {
     private static IServiceConnection serviceConnectionImpl;
@@ -62,6 +65,7 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         context = this.getApplicationContext();
         serviceConnectionImpl = new BitalinoConnection();
         SharedPrefHelper.getInstance(context, "app");
