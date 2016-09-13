@@ -1,4 +1,4 @@
-package com.gattaca.team;
+package com.gattaca.team.root;
 
 
 import android.app.Activity;

@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements Drawer.OnDrawerIt
 
     @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-        return false;
+
+        return true;
     }
 }
