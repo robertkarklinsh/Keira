@@ -8,14 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.gattaca.team.R;
 import com.gattaca.team.ui.model.Category;
 
 import java.util.ArrayList;
 
-/**
- * Created by Robert on 28.08.2016.
- */
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> {
 
     ArrayList<Category> categories;
@@ -51,8 +47,6 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
         public ViewHolder(View itemView) {
             super(itemView);
-            nameCategory = ((TextView) itemView.findViewById(R.id.category_name));
-            itemCounter = ((TextView) itemView.findViewById(R.id.item_counter));
         }
     }
 }

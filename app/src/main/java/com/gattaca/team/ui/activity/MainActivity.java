@@ -6,33 +6,45 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
-import com.gattaca.team.MainApplication;
 import com.gattaca.team.R;
 import com.gattaca.team.service.SensorData;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.squareup.otto.Subscribe;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Drawer.OnDrawerItemClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        findViewById(R.id.startSearch).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainApplication.getServiceConnectionImpl().startConnection();
-            }
-        });
-        findViewById(R.id.stopSearch).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainApplication.getServiceConnectionImpl().stopConnection();
-            }
-        });
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withActionBarDrawerToggle(true)
+                .addDrawerItems(
+                        new PrimaryDrawerItem()
+                                .withName(R.string.navigation_item_1)
+                                .withIcon(R.mipmap.ic_launcher)
+                                .withIdentifier(R.id.navigation_action_1),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.navigation_item_2)
+                                .withIcon(R.mipmap.ic_launcher)
+                                .withIdentifier(R.id.navigation_action_2),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.navigation_item_3)
+                                .withIcon(R.mipmap.ic_launcher)
+                                .withIdentifier(R.id.navigation_action_3),
+                        new PrimaryDrawerItem()
+                                .withName(R.string.navigation_item_4)
+                                .withIcon(R.mipmap.ic_launcher)
+                                .withIdentifier(R.id.navigation_action_4)
+                )
+                .withOnDrawerItemClickListener(this)
+                .build();
     }
 
     @Subscribe
@@ -52,5 +64,10 @@ public class MainActivity extends AppCompatActivity {
                 text.setText(builder.toString());
             }
         });*/
+    }
+
+    @Override
+    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+        return false;
     }
 }

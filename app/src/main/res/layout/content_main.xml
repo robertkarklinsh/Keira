@@ -12,16 +12,4 @@
     tools:context="com.gattaca.team.ui.activity.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <Button
-        android:id="@+id/startSearch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start search" />
-
-    <Button
-        android:id="@+id/stopSearch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/startSearch"
-        android:text="Stop search" />
 </RelativeLayout>
