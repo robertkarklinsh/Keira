@@ -10,21 +10,20 @@ import com.gattaca.team.prefs.SharedPrefHelper;
 import com.gattaca.team.service.IServiceConnection;
 import com.gattaca.team.service.bitalino.BitalinoConnection;
 import com.squareup.otto.Bus;
-import com.squareup.otto.ThreadEnforcer;
 
 public class MainApplication extends Application {
     private static IServiceConnection serviceConnectionImpl;
     private static Context context;
-    private static Bus bus = new Bus(ThreadEnforcer.ANY);
+    private static Bus uiBus = new Bus();
     private ActivityLifecycleCallbacks activityCallback = new ActivityLifecycleCallbacks() {
         @Override
         public void onActivityStarted(Activity activity) {
-            busRegister(activity);
+            uiBus.register(activity);
         }
 
         @Override
         public void onActivityStopped(Activity activity) {
-            busUnregister(activity);
+            uiBus.unregister(activity);
         }
 
         @Override
@@ -48,14 +47,8 @@ public class MainApplication extends Application {
         }
     };
 
-    public static void busRegister(Object obj) {
-        bus.register(obj);
-    }
-    public static void busUnregister(Object obj) {
-        bus.unregister(obj);
-    }
-    public static void busPost(Object obj) {
-        bus.post(obj);
+    public static void uiBusPost(Object obj) {
+        uiBus.post(obj);
     }
 
     public static IServiceConnection getServiceConnectionImpl() {

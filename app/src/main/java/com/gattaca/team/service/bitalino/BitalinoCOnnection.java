@@ -17,14 +17,17 @@ import com.gattaca.team.prefs.AppPref;
 import com.gattaca.team.service.ErrorCode;
 import com.gattaca.team.service.IServiceConnection;
 import com.gattaca.team.service.SensorData;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+import com.squareup.otto.ThreadEnforcer;
 
 import java.io.IOException;
 import java.util.UUID;
 
 public class BitalinoConnection extends HandlerThread implements IServiceConnection, Handler.Callback {
     final private static int HZ = 100;
-    final private static int FRAMES_COUNT = 100;
+    final private static int FRAMES_COUNT = 10;
+    public static Bus bus = new Bus(ThreadEnforcer.ANY);
     private Handler handler;
     private State state;
     private BluetoothSocket sock;
@@ -81,7 +84,7 @@ public class BitalinoConnection extends HandlerThread implements IServiceConnect
                         btAdapter.cancelDiscovery();
                     }
                     if (AppPref.BitalinoMac.getStr() == null) {
-                        MainApplication.busRegister(this);
+                        bus.register(this);
                         MainApplication.getContext().registerReceiver(BtDiscaveryReceiver.getInstance(), new IntentFilter(BluetoothDevice.ACTION_FOUND));
                         Log.d(getClass().getSimpleName(), " discovery starting with " + btAdapter.startDiscovery());
                     } else {
@@ -118,7 +121,7 @@ public class BitalinoConnection extends HandlerThread implements IServiceConnect
                         for (BITalinoFrame frame : frames) {
                             sensorData.addFrame(frame);
                         }
-                        MainApplication.busPost(sensorData);
+                        MainApplication.uiBusPost(sensorData);
                     } catch (BITalinoException e) {
                         e.printStackTrace();
                     }
@@ -145,7 +148,7 @@ public class BitalinoConnection extends HandlerThread implements IServiceConnect
                 break;
             case Error:
                 // throw error body to bus
-                MainApplication.busPost(msg.obj);
+                MainApplication.uiBusPost(msg.obj);
                 break;
         }
         return true;
@@ -157,7 +160,7 @@ public class BitalinoConnection extends HandlerThread implements IServiceConnect
         if ("bitalino".equals(device.getName())) {
             AppPref.BitalinoMac.set(device.getAddress());
             MainApplication.getContext().unregisterReceiver(BtDiscaveryReceiver.getInstance());
-            MainApplication.busUnregister(this);
+            bus.unregister(this);
             BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
 
             handler.sendEmptyMessage(State.Connection.ordinal());

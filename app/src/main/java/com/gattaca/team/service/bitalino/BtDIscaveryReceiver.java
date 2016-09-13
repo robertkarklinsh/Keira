@@ -5,8 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.gattaca.team.MainApplication;
-
 public class BtDiscaveryReceiver extends BroadcastReceiver {
     private static BtDiscaveryReceiver instance;
 
@@ -21,7 +19,7 @@ public class BtDiscaveryReceiver extends BroadcastReceiver {
         final String action = intent.getAction();
         switch (action) {
             case BluetoothDevice.ACTION_FOUND:
-                MainApplication.busPost(intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE));
+                BitalinoConnection.bus.post(intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE));
                 break;
         }
     }
