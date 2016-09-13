@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
-import com.gattaca.bitalinoecgchart.R;
+import com.gattaca.team.R;
 
 public class TrackerActivity extends AppCompatActivity {
 
@@ -34,7 +34,7 @@ public class TrackerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_tabs);
+        setContentView(R.layout.activity_tracker);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar1);
 

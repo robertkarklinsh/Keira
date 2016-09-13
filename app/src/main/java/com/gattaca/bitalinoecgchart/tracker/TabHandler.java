@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gattaca.bitalinoecgchart.R;
+import com.gattaca.team.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,13 +41,13 @@ public class TabHandler {
 
 
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            tabLayout.getTabAt(i).setCustomView(R.layout.custom_tab_layout);
+            tabLayout.getTabAt(i).setCustomView(R.layout.tracker_custom_tab_layout);
             TextView tx = (TextView) tabLayout.getTabAt(i).getCustomView().findViewById(R.id.custom_tab_text);
             tx.setText(days[i]);
             tx.setTextColor(Color.WHITE);
 
         }
-        ImageView img = (ImageView) tabLayout.getTabAt(k).getCustomView().findViewById(R.id.custom_tab_img);
+        ImageView img = (ImageView) tabLayout.getTabAt(k).getCustomView().findViewById(R.id.tracker_custom_tab_img);
         img.setImageResource(R.drawable.dial_ex);
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -55,21 +55,21 @@ public class TabHandler {
             public void onTabSelected(TabLayout.Tab tab) {
 //               tab.setIcon(R.drawable.dial_ex);
 
-                ImageView img = (ImageView) tab.getCustomView().findViewById(R.id.custom_tab_img);
+                ImageView img = (ImageView) tab.getCustomView().findViewById(R.id.tracker_custom_tab_img);
                 img.setImageResource(R.drawable.dial_ex);
                 mViewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                ImageView img = (ImageView) tab.getCustomView().findViewById(R.id.custom_tab_img);
+                ImageView img = (ImageView) tab.getCustomView().findViewById(R.id.tracker_custom_tab_img);
                 img.setImageResource(R.drawable.dial);
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
-                ImageView img = (ImageView) tab.getCustomView().findViewById(R.id.custom_tab_img);
+                ImageView img = (ImageView) tab.getCustomView().findViewById(R.id.tracker_custom_tab_img);
                 img.setImageResource(R.drawable.dial_ex);
             }
         });
@@ -150,9 +150,7 @@ public class TabHandler {
             if (this.getArguments() != null) {
                 position = (int) this.getArguments().get(ARG_SECTION_NUMBER);
             }
-//            View rootView = inflater.inflate(R.layout.fragment_test_tabs, container, false);
-//            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-//            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
             View rootView = inflater.inflate(R.layout.activity_test_expand_tabs, container, false);
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
 

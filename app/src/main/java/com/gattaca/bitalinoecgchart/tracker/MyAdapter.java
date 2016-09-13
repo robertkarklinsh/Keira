@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.gattaca.bitalinoecgchart.R;
+import com.gattaca.team.R;
 import com.gattaca.bitalinoecgchart.tracker.data.DrugItemContainer;
 import com.gattaca.bitalinoecgchart.tracker.data.ProgressBarItemContainer;
 import com.gattaca.bitalinoecgchart.tracker.data.TaskItemContainer;
@@ -114,7 +114,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                         for (int i = 0; i < receptions.size() - 1; i++) {
                             DrugItemContainer.Reception reception = receptions.get(i);
-                            LinearLayout drugCircle = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.drug_circle, viewGroup);
+                            LinearLayout drugCircle = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_drug_circle, viewGroup);
                             ((TextView) drugCircle.findViewById(R.id.custom_drug_button_text)).setText(reception.getTime());
                             ((ImageView) drugCircle.findViewById(R.id.custom_drug_button_img)).setImageResource(
                                     reception.getStatus() ? R.drawable.circle : R.drawable.circle_grey
@@ -122,11 +122,11 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             drugCircle.setOnClickListener(new DrugButtonListener());
                             itemImages.addView(drugCircle);
                             LinearLayout line = (LinearLayout) LayoutInflater.from(context)
-                                    .inflate(R.layout.drug_line, viewGroup);
+                                    .inflate(R.layout.tracker_drug_line, viewGroup);
                             itemImages.addView(line);
                         }
                         DrugItemContainer.Reception reception = receptions.get(receptions.size() - 1);
-                        LinearLayout drugCircle = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.drug_circle, viewGroup);
+                        LinearLayout drugCircle = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_drug_circle, viewGroup);
                         ((TextView) drugCircle.findViewById(R.id.custom_drug_button_text)).setText(reception.getTime());
                         ((ImageView) drugCircle.findViewById(R.id.custom_drug_button_img)).setImageResource(
                                 reception.getStatus() ? R.drawable.circle : R.drawable.circle_grey
@@ -162,7 +162,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         ((TextView) itemHeader.findViewById(R.id.tracker_item_text_gray)).setText(taskItemContainer.getGrayText());
                         ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(taskItemContainer.getIcon());
                         for (Boolean task : taskItemContainer.getTasks()) {
-                            LinearLayout drugCircle = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.drug_circle, viewGroup);
+                            LinearLayout drugCircle = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_drug_circle, viewGroup);
                             ((TextView) drugCircle.findViewById(R.id.custom_drug_button_text)).setText("");
                             ((ImageView) drugCircle.findViewById(R.id.custom_drug_button_img)).setImageResource(
                                     task ? R.drawable.circle_with_arrow : R.drawable.circle_grey

@@ -1,5 +1,7 @@
 package com.gattaca.team.ui.container.impl;
 
+import android.widget.RelativeLayout;
+
 import com.gattaca.team.R;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.model.impl.TrackerModel;
@@ -12,6 +14,11 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
     @Override
     protected void reDraw() {
         //TODO: implements
+        TrackerModel model = (TrackerModel) this.getModel();
+        RelativeLayout rv = (RelativeLayout)this.getRootView();
+//        rv.addView();
+
+
     }
 
     @Override
