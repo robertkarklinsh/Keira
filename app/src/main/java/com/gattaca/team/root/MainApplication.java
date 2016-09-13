@@ -14,7 +14,7 @@ import com.squareup.otto.Bus;
 
 import io.fabric.sdk.android.Fabric;
 
-public class MainApplication extends Application {
+public final class MainApplication extends Application {
     private static IServiceConnection serviceConnectionImpl;
     private static Context context;
     private static Bus uiBus = new Bus();

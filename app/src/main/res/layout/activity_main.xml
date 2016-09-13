@@ -21,6 +21,12 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/container_tracker" />
+
+    <include layout="@layout/container_data_bank" />
+
+    <include layout="@layout/container_monitor" />
+
+    <include layout="@layout/container_notification_center" />
 
 </android.support.design.widget.CoordinatorLayout>

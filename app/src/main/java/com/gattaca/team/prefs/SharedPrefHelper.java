@@ -7,7 +7,7 @@ import android.util.Log;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SharedPrefHelper {
+public final class SharedPrefHelper {
     public static final String DEFAULT_String = null;
     public static final int DEFAULT_Integer = 0;
     public static final float DEFAULT_Float = 0.0F;

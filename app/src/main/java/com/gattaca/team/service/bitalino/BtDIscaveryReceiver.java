@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class BtDiscaveryReceiver extends BroadcastReceiver {
+public final class BtDiscaveryReceiver extends BroadcastReceiver {
     private static BtDiscaveryReceiver instance;
 
     public static BtDiscaveryReceiver getInstance() {

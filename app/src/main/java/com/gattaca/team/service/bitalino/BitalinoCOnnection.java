@@ -24,7 +24,7 @@ import com.squareup.otto.ThreadEnforcer;
 import java.io.IOException;
 import java.util.UUID;
 
-public class BitalinoConnection extends HandlerThread implements IServiceConnection, Handler.Callback {
+public final class BitalinoConnection extends HandlerThread implements IServiceConnection, Handler.Callback {
     final private static int HZ = 100;
     final private static int FRAMES_COUNT = 10;
     public static Bus bus = new Bus(ThreadEnforcer.ANY);
