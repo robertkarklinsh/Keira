@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">Keira</string>
+    <!-- MENU NAVIGATION -->
     <string name="navigation_item_1">Лента событий</string>
     <string name="navigation_item_2">Трекер</string>
     <string name="navigation_item_3">Монитор</string>
     <string name="navigation_item_4">Банк данных</string>
+
+    <!-- TOASTS MESSAGES-->
+    <string name="toast_not_implemented">В разработке</string>
     <string name="title_activity_monitor">MainActivity</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"

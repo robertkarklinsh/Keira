@@ -5,8 +5,11 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.gattaca.team.R;
 import com.gattaca.team.prefs.SharedPrefHelper;
 import com.gattaca.team.service.IServiceConnection;
 import com.gattaca.team.service.bitalino.BitalinoConnection;
@@ -60,6 +63,17 @@ public final class MainApplication extends Application {
 
     public static Context getContext() {
         return context;
+    }
+
+    public static void showToastNotImplemented() {
+        showToast(context.getResources().getString(R.string.toast_not_implemented));
+    }
+
+    public static void showToast(final String text) {
+        Toast t = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+        t.setDuration(Toast.LENGTH_LONG);
+        t.setGravity(Gravity.CENTER, 0, 0);
+        t.show();
     }
 
     @Override
