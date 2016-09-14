@@ -2,6 +2,9 @@ package com.gattaca.team.ui.container.impl;
 
 import android.app.Activity;
 
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.RelativeLayout;
 
 import com.gattaca.team.R;
@@ -35,9 +38,14 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
     @Override
     protected void reDraw() {
         //TODO: implements
-        TrackerModel model = (TrackerModel) this.getModel();
-        RelativeLayout rv = (RelativeLayout)this.getRootView();
+        TrackerModel model = this.getModel();
+        RelativeLayout relativeLayout = (RelativeLayout)this.getRootView();
 //        rv.addView();
+
+        RecyclerView rv = (RecyclerView) relativeLayout.findViewById(R.id.my_recycler_view);
+        rv.setLayoutManager(new LinearLayoutManager(context));
+        rv.setItemAnimator(new DefaultItemAnimator());
+
 
 
     }

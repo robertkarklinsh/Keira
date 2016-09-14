@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@drawable/tracket_header_new"
+    android:layout_height="112dp">
+
+    <!--<ImageView-->
+        <!--android:id="@+id/header"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:src="@drawable/action_bar_expanded"-->
+        <!--android:fitsSystemWindows="true"-->
+        <!--android:scaleType="centerCrop" />-->
+
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs1"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="center" />
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:background="@drawable/health_progress_bar1"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:layout_height="?attr/actionBarSize">
+        <LinearLayout
+            android:layout_weight="1.2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:textColor="#ffffff"
+                android:text = "1 из 2"/>
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:textColor="#ffffff"
+                android:text = "измерений"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1.2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:textColor="#ffffff"
+                android:text = "1 из 2"/>
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:textColor="#ffffff"
+                android:text = "приемов"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:textColor="#ffffff"
+                android:text = "1 из 2"/>
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:textColor="#ffffff"
+                android:gravity="center_vertical"
+                android:text = "заданий"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

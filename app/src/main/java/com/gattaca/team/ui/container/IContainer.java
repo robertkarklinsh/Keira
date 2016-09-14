@@ -1,6 +1,7 @@
 package com.gattaca.team.ui.container;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.View;
 
 import com.gattaca.team.R;
@@ -10,10 +11,12 @@ public abstract class IContainer<Model extends IContainerModel> {
     private final Class<Model> modelClass;
     private final View rootView;
     private Model model;
+    protected Context context;
 
     public IContainer(Activity screen, Class<Model> modelClass, final int rootViewId) {
         this.modelClass = modelClass;
         this.rootView = screen.findViewById(rootViewId);
+        this.context = screen;
         this.bindView();
     }
 
