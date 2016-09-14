@@ -1,6 +1,6 @@
 package com.gattaca.bitalinoecgchart.tracker.data;
 
-import com.gattaca.bitalinoecgchart.R;
+import com.gattaca.team.R;
 
 /**
  * Created by Artem on 03.09.2016.

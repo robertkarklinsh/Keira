@@ -3,7 +3,7 @@ package com.gattaca.bitalinoecgchart.tracker;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.gattaca.bitalinoecgchart.R;
+import com.gattaca.team.R;
 
 /**
  * Created by Artem on 27.08.2016.
