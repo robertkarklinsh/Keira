@@ -1,7 +1,9 @@
 package com.gattaca.bitalinoecgchart.tracker;
 
+import android.support.design.widget.TabLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.gattaca.team.R;
 
@@ -46,6 +48,23 @@ public class ViewHoldersCollection {
             imgHolder = mView.findViewById(R.id.tracker_item_image_holder);
             textHolder =  mView.findViewById(R.id.tracker_item_text_holder);
 
+        }
+    }
+
+    public static class TopViewHolder extends RecyclerView.ViewHolder {
+        // each data item is just a string in this case
+        public View mView;
+        public TabLayout tabLayout;
+        public LinearLayout ll;
+
+        public boolean isInitialized = false;
+
+
+        public TopViewHolder(View mView) {
+            super(mView);
+            this.mView = mView;
+            tabLayout = (TabLayout) mView.findViewById(R.id.tracker_tabs);
+            ll = (LinearLayout) mView.findViewById(R.id.tracker_top_ll);
         }
     }
 

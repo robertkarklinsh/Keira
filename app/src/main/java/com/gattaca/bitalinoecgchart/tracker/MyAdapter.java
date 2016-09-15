@@ -205,13 +205,13 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            expanded[arrPos] = !expanded[arrPos];;
+            expanded[arrPos] = !expanded[arrPos];
             if (expanded[arrPos]) {
                 notifyItemRangeInserted(startFromPosition, count);
             } else {
                 notifyItemRangeRemoved(startFromPosition, count);
             }
-            recyclerView.getLayoutManager().scrollToPosition(headerPostion);
+//            recyclerView.getLayoutManager().scrollToPosition(headerPostion);
         }
     }
 
