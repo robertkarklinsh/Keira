@@ -79,11 +79,11 @@ dependencies {
     }
     compile('com.mikepenz:fastadapter:1.6.0@aar') {
         transitive = true
-    }
+    }/*
     compile(group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-android', version: '1.6', classifier: 'dstu3') {
         exclude module: 'javax.servlet-api'
         exclude module: 'hapi-fhir-base'
-    }
+    }*/
     compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
         transitive = true;
     }

@@ -41,6 +41,10 @@ public abstract class IContainer<Model extends IContainerModel> {
         return this.rootView;
     }
 
+    public void changeCurrentVisibilityState(final boolean isHide) {
+        getRootView().setVisibility(isHide ? View.GONE : View.VISIBLE);
+    }
+
     protected Model getModel() {
         return this.model;
     }

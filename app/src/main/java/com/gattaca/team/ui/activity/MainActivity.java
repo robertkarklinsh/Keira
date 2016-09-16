@@ -3,11 +3,13 @@ package com.gattaca.team.ui.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.gattaca.team.R;
+import com.gattaca.team.service.SensorData;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.container.MainMenu;
 import com.gattaca.team.ui.container.impl.DataBankContainer;
@@ -83,12 +85,12 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
         if (currentContainer == null) {
             //TODO: start state of application. No any animations needed
             notificationCenterContainer.getRootView().setVisibility(View.GONE);
-            trackerContainer.getRootView().setVisibility(View.GONE);
-            monitorContainer.getRootView().setVisibility(View.GONE);
-            dataBankContainer.getRootView().setVisibility(View.GONE);
+            trackerContainer.changeCurrentVisibilityState(true);
+            monitorContainer.changeCurrentVisibilityState(true);
+            dataBankContainer.changeCurrentVisibilityState(true);
         } else {
             //TODO: animate change views
-            currentContainer.getRootView().setVisibility(View.GONE);
+            currentContainer.changeCurrentVisibilityState(true);
         }
         switch (item) {
             case Notification:
@@ -104,7 +106,7 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
                 currentContainer = dataBankContainer;
                 break;
         }
-        currentContainer.getRootView().setVisibility(View.VISIBLE);
+        currentContainer.changeCurrentVisibilityState(false);
         getSupportActionBar().setTitle(item.getNameId());
         //TODO: stub
         currentContainer.reDraw(null);
@@ -125,5 +127,18 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
         else {
             //Error case
         }*/
+    }
+
+    @Subscribe
+    public void tickSensorData(SensorData data) {
+        final StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < data.countTicks(); i++) {
+            builder.append("\ntimestump=").append(data.getTimeStump(i));
+            for (int j = 0; j < data.getChannels(); j++) {
+                builder.append("#").append(j).append("=").append(data.getVoltByChannel(i, j)).append("   ");
+            }
+            builder.append("\n");
+        }
+        Log.i(getClass().getSimpleName(), builder.toString());
     }
 }

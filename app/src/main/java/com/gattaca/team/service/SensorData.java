@@ -5,12 +5,18 @@ import com.bitalino.comm.BITalinoFrame;
 import java.util.ArrayList;
 
 public final class SensorData {
-    private final ArrayList<ItemData> list = new ArrayList<>();
+    final public static int HZ = 100;
+    final public static int FRAMES_COUNT = 10;
+    private final ArrayList<ItemData> list = new ArrayList<>(HZ / FRAMES_COUNT);
     private final long timeStumpStart, timeStumpEnd;
 
     public SensorData(final long timeStumpStart, final long timeStumpEnd) {
         this.timeStumpStart = timeStumpStart;
         this.timeStumpEnd = timeStumpEnd;
+    }
+
+    public static int getChannels() {
+        return ItemData.CHANNELS_BITRATE.length;
     }
 
     public void addFrame(final BITalinoFrame frame) {
@@ -21,20 +27,16 @@ public final class SensorData {
         list.add(item);
     }
 
-    public double getAvrVolt(int position) throws NoSuchMethodException {
+    public double getAvrVolt(int frame) throws NoSuchMethodException {
         throw new NoSuchMethodException();
     }
 
-    public double getVoltByChannel(int position, int channel) {
-        return list.get(position).getVoltByChannel(channel);
+    public double getVoltByChannel(int frame, int channel) {
+        return list.get(frame).getVoltByChannel(channel);
     }
 
     public long getTimeStump(final int position) {
-        return timeStumpStart + (timeStumpEnd - timeStumpStart) * position;
-    }
-
-    public int getChannels() {
-        return ItemData.CHANNELS_BITRATE.length;
+        return timeStumpStart + (timeStumpEnd - timeStumpStart) * position / countTicks();
     }
 
     public int countTicks() {

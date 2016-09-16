@@ -37,23 +37,13 @@ public final class MonitorContainer extends IContainer<MonitorModel> {
 
     }
 
-/*
-    @Subscribe
-    public void tickSensorData(SensorData data) {
-        final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < data.countTicks(); i++) {
-            builder.append("\ntimestump=").append(data.getTimeStump(i));
-            for (int j = 0; j < data.getChannels(); j++) {
-                builder.append("#").append(j).append("=").append(data.getVoltByChannel(i, j)).append("   ");
-            }
-            builder.append("\n");
+    @Override
+    public void changeCurrentVisibilityState(final boolean isHide) {
+        super.changeCurrentVisibilityState(isHide);
+        if (isHide) {
+            MainApplication.getServiceConnectionImpl().stopConnection();
+        } else {
+            MainApplication.getServiceConnectionImpl().fakeGeneration();
         }
-        Log.i(getClass().getSimpleName(), builder.toString());
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                text.setText(builder.toString());
-            }
-        });
-    }*/
+    }
 }

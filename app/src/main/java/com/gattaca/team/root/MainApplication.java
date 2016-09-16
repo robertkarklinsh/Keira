@@ -20,7 +20,7 @@ import io.fabric.sdk.android.Fabric;
 public final class MainApplication extends Application {
     private static IServiceConnection serviceConnectionImpl;
     private static Context context;
-    private static Bus uiBus = new Bus();
+    private static Bus uiBus = new MainThreadBus();
     private ActivityLifecycleCallbacks activityCallback = new ActivityLifecycleCallbacks() {
         @Override
         public void onActivityStarted(Activity activity) {
