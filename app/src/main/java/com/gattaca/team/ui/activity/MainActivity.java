@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.gattaca.team.R;
 import com.gattaca.team.service.SensorData;
+import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.container.MainMenu;
@@ -140,6 +141,11 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
         else {
             //Error case
         }*/
+    }
+
+    @Subscribe
+    public void listenerForNewActivityRequest(ActivityTransferData request) {
+        request.launchRequestedActivity(this);
     }
 
     @Subscribe

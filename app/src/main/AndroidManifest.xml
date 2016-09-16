@@ -26,6 +26,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.gattaca.team.ui.activity.MonitorEcg"
+            android:label="@string/monitor_main_action_ecg"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="560c164e31ab2d572612b57e14498b098b212b11" />
