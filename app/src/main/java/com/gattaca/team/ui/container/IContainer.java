@@ -12,8 +12,12 @@ public abstract class IContainer<Model extends IContainerModel> {
     private Model model;
 
     public IContainer(Activity screen, Class<Model> modelClass, final int rootViewId) {
+        this(screen.findViewById(rootViewId), modelClass);
+    }
+
+    protected IContainer(View rootView, Class<Model> modelClass) {
         this.modelClass = modelClass;
-        this.rootView = screen.findViewById(rootViewId);
+        this.rootView = rootView;
         this.bindView();
     }
 

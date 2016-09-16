@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.gattaca.team.R;
 import com.gattaca.team.service.SensorData;
+import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.container.MainMenu;
 import com.gattaca.team.ui.container.impl.DataBankContainer;
@@ -55,8 +56,20 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
     protected void onStart() {
         super.onStart();
         if (currentContainer == null) {
-            requestChangeToNewContainer(MainMenu.values()[0]);
+            requestChangeToNewContainer(new ContainerTransferData(MainMenu.values()[0]));
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        currentContainer.changeCurrentVisibilityState(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        currentContainer.changeCurrentVisibilityState(true);
     }
 
     @Override
@@ -73,7 +86,7 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
 
     @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-        requestChangeToNewContainer(MainMenu.values()[position]);
+        requestChangeToNewContainer(new ContainerTransferData(MainMenu.values()[position]));
         return false;
     }
 
@@ -81,7 +94,7 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
     /**
      * For open new container from any ui place
      * */
-    public void requestChangeToNewContainer(final MainMenu item) {
+    public void requestChangeToNewContainer(final ContainerTransferData item) {
         if (currentContainer == null) {
             //TODO: start state of application. No any animations needed
             notificationCenterContainer.getRootView().setVisibility(View.GONE);
@@ -92,7 +105,7 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
             //TODO: animate change views
             currentContainer.changeCurrentVisibilityState(true);
         }
-        switch (item) {
+        switch (item.getMenuItemForOpen()) {
             case Notification:
                 currentContainer = notificationCenterContainer;
                 break;
@@ -107,9 +120,9 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
                 break;
         }
         currentContainer.changeCurrentVisibilityState(false);
-        getSupportActionBar().setTitle(item.getNameId());
+        getSupportActionBar().setTitle(item.getMenuItemForOpen().getNameId());
         //TODO: stub
-        currentContainer.reDraw(null);
+        currentContainer.reDraw(item.getModelForSubContainer());
         invalidateOptionsMenu();
         /*final Class requestedModel = currentContainer.getModelClass();
         if(requestedModel == NotificationCenterModel.class){

@@ -6,6 +6,10 @@
     <string name="navigation_item_3">Монитор</string>
     <string name="navigation_item_4">Банк данных</string>
 
+    <!-- MONITOR TEXTS-->
+    <string name="monitor_main_action_ecg">ЭКГ</string>
+    <string name="monitor_main_action_pulse">Пульс</string>
+
     <!-- TOASTS MESSAGES-->
     <string name="toast_not_implemented">В разработке</string>
 </resources>
