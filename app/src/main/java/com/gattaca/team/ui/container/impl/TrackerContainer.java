@@ -11,6 +11,7 @@ import com.gattaca.bitalinoecgchart.tracker.TabMachine;
 import com.gattaca.bitalinoecgchart.tracker.ui.FooterItem;
 import com.gattaca.bitalinoecgchart.tracker.ui.HeaderItem;
 import com.gattaca.bitalinoecgchart.tracker.ui.Item;
+import com.gattaca.bitalinoecgchart.tracker.ui.TopItem;
 import com.gattaca.team.R;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.ui.container.IContainer;
@@ -68,6 +69,8 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
                     mItemAdapter.add(new Item().withItemContainer(TabMachine.getItemContainer(i, expanded)));
                     break;
+                case 3:
+                    mItemAdapter.add(new TopItem());
             }
         }
 

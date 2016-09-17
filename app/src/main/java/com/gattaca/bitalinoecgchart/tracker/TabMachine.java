@@ -85,6 +85,7 @@ public class TabMachine {
 
         private void populateList(Boolean[] expanded) {
             list.clear();
+            list.add(ViewType.TOP);
             for (int i = 0; i < 3; i++) {
                 list.add(ViewType.HEADER);
                 int amt = expanded[i] ? counts[i] : collapseCount;

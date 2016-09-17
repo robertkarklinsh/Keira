@@ -6,7 +6,8 @@ package com.gattaca.bitalinoecgchart.tracker.data;
 public enum ViewType {
     HEADER(0), //0
     ITEM(2), // 2
-    FOOTER(1); //1
+    FOOTER(1), //1
+    TOP(3);
     public final int number;
 
     ViewType(int number) {
