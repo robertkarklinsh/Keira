@@ -22,8 +22,8 @@ import com.mikepenz.fastadapter.IItem;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 
 public final class TrackerContainer extends IContainer<TrackerModel> {
-    FastAdapter mFastAdapter = new FastAdapter();
-    ItemAdapter mItemAdapter = new ItemAdapter();
+    FastAdapter mFastAdapter;// = new FastAdapter();
+    ItemAdapter mItemAdapter;// = new ItemAdapter();
     public TrackerContainer(final Activity screen) {
         super(screen, TrackerModel.class, R.id.container_tracker_id);
     }
@@ -48,23 +48,13 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
     @Override
     protected void reDraw() {
         Boolean[] expanded = {false, false, false}; //0 -drug 1-measurements 2- tasks
-        //TODO: implements
         TrackerModel model = this.getModel();
-        RelativeLayout relativeLayout = (RelativeLayout)this.getRootView();
-//        rv.addView();
-
-        RecyclerView rv = (RecyclerView) relativeLayout.findViewById(R.id.my_recycler_view);
-        rv.setLayoutManager(new LinearLayoutManager(context));
-        rv.setItemAnimator(new DefaultItemAnimator());
-        rv.setAdapter(mItemAdapter.wrap(mFastAdapter));
-
         int count = TabMachine.getAllCount(expanded);
         for (int i = 0; i < count; i++){
             int type = TabMachine.getViewType(i, expanded);
             switch (type) {
                 case 0 :
-                    mItemAdapter.add(new HeaderItem().withExpanded(expanded).withName(TabMachine.getHeaderName(i, expanded)))
-                    ;
+                    mItemAdapter.add(new HeaderItem().withExpanded(expanded).withName(TabMachine.getHeaderName(i, expanded)));
                     break;
                 case 1 :
                     int pos = TabMachine.getExpandPosition(i, expanded);
@@ -81,13 +71,28 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
             }
         }
 
-
-
     }
 
     @Override
     public void bindView() {
         //TODO: implements
+
+        //TODO: implements
+
+        RelativeLayout relativeLayout = (RelativeLayout)this.getRootView();
+//        rv.addView();
+        if (mFastAdapter == null) {
+            mFastAdapter = new FastAdapter();
+        }
+        if (mItemAdapter == null) {
+            mItemAdapter = new ItemAdapter();
+        }
+        RecyclerView rv = (RecyclerView) relativeLayout.findViewById(R.id.my_recycler_view);
+        rv.setLayoutManager(new LinearLayoutManager(context));
+        rv.setItemAnimator(new DefaultItemAnimator());
+        rv.setAdapter(mItemAdapter.wrap(mFastAdapter));
+
+
     }
 
     class ExpandListener implements FastAdapter.OnClickListener {
@@ -104,18 +109,21 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
             this.headerPostion = headerPostion;
         }
 
-//        @Override
-//        public void onClick(View v) {
-//
-////            recyclerView.getLayoutManager().scrollToPosition(headerPostion);
-//        }
 
         @Override
         public boolean onClick(View v, IAdapter adapter, IItem item, int position) {
             expanded[arrPos] = !expanded[arrPos];
             if (expanded[arrPos]) {
+                for (int i = 0 ; i < count; i++) {
+//                    mItemAdapter.add
+                    mItemAdapter.add(startFromPosition + i , new Item().withItemContainer(TabMachine.getItemContainer(startFromPosition + i, expanded)));
+                }
                 mItemAdapter.notifyItemRangeInserted(startFromPosition, count);
             } else {
+                for (int i = 0 ; i < count; i++) {
+                    mItemAdapter.remove(startFromPosition + i);
+                }
+
                 mItemAdapter.notifyItemRangeRemoved(startFromPosition, count);
             }
             return true;
