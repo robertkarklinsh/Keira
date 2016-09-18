@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:background="@drawable/tracket_header_new"
+    android:background="@drawable/t1"
     android:baselineAligned="false"
-    android:layout_height="168dp">
+    android:layout_height="150dp">
 
     <!--<ImageView-->
         <!--android:id="@+id/header"-->
@@ -23,7 +23,10 @@
         android:layout_width="match_parent"
         android:id="@+id/tracker_custom_tabs"
         android:orientation="horizontal"
-        android:layout_height="?attr/actionBarSize">
+        android:gravity="center"
+        android:layout_height="70dp"
+
+        android:layout_marginBottom="28dp">
 
     </LinearLayout>
 
@@ -32,9 +35,10 @@
         android:layout_width="match_parent"
         android:background="@drawable/health_progress_bar1"
         android:orientation="horizontal"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="bottom"
-        android:gravity="bottom">
+        android:layout_height="44dp"
+        android:gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
         <LinearLayout
             android:layout_weight="1.2"
             android:layout_width="0dp"
@@ -104,4 +108,4 @@
                 android:text = "заданий"/>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

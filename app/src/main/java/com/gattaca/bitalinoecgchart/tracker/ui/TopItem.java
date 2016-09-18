@@ -43,6 +43,7 @@ public class TopItem extends AbstractItem<TopItem, ViewHoldersCollection.TopView
         ViewGroup viewGroup = (ViewGroup) holder.mView.getParent();
         Context context = holder.mView.getContext();
         LinearLayout tabs = (LinearLayout) holder.mView.findViewById(R.id.tracker_custom_tabs);
+        tabs.removeAllViews();
         for (int i = 0; i < topContainer.getDays().size(); i++) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1);
             LinearLayout item = (LinearLayout) LayoutInflater.from(context)

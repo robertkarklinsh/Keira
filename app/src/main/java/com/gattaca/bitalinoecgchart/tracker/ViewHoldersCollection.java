@@ -64,6 +64,7 @@ public class ViewHoldersCollection {
             this.mView = mView;
             tabLayout = (LinearLayout) mView.findViewById(R.id.tracker_custom_tabs);
             ll = (LinearLayout) mView.findViewById(R.id.tracker_top_ll);
+
         }
     }
 
