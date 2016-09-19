@@ -3,13 +3,11 @@ package com.gattaca.team.ui.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.gattaca.team.R;
-import com.gattaca.team.service.SensorData;
 import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
@@ -146,18 +144,5 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
     @Subscribe
     public void listenerForNewActivityRequest(ActivityTransferData request) {
         request.launchRequestedActivity(this);
-    }
-
-    @Subscribe
-    public void tickSensorData(SensorData data) {
-        final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < data.countTicks(); i++) {
-            builder.append("\ntimestump=").append(data.getTimeStump(i));
-            for (int j = 0; j < data.getChannels(); j++) {
-                builder.append("#").append(j).append("=").append(data.getVoltByChannel(i, j)).append("   ");
-            }
-            builder.append("\n");
-        }
-        Log.i(getClass().getSimpleName(), builder.toString());
     }
 }

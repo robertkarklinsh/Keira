@@ -17,7 +17,8 @@ import com.gattaca.team.prefs.AppPref;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.service.ErrorCode;
 import com.gattaca.team.service.IServiceConnection;
-import com.gattaca.team.service.SensorData;
+import com.gattaca.team.service.main.RootSensorListener;
+import com.gattaca.team.service.main.SensorData;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
@@ -109,7 +110,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                                 sensorData.addFrame(frame);
                             }
                             currentTime = tmpTime;
-                            MainApplication.uiBusPost(sensorData);
+                            RootSensorListener.postSensorData(sensorData);
                         }
                         synchronized (block) {
                             block.wait(timeOffset);
@@ -196,7 +197,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                         for (BITalinoFrame frame : frames) {
                             sensorData.addFrame(frame);
                         }
-                        MainApplication.uiBusPost(sensorData);
+                        RootSensorListener.postSensorData(sensorData);
                     } catch (BITalinoException e) {
                         e.printStackTrace();
                     }

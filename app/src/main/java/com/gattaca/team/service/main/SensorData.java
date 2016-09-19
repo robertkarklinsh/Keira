@@ -1,4 +1,4 @@
-package com.gattaca.team.service;
+package com.gattaca.team.service.main;
 
 import com.bitalino.comm.BITalinoFrame;
 
