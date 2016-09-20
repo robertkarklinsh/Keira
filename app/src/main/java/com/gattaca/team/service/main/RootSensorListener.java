@@ -3,10 +3,10 @@ package com.gattaca.team.service.main;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.util.Log;
 
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.service.IServiceConnection;
+import com.gattaca.team.service.analysis.PanTompkins;
 import com.gattaca.team.service.bitalino.BitalinoConnection;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -17,11 +17,29 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     private Bus bus = new Bus(ThreadEnforcer.ANY);
     private IServiceConnection serviceConnectionImpl = new BitalinoConnection();
     private Handler handler;
+    private PanTompkins[] algoritms;
 
-    RootSensorListener() {
+    private RootSensorListener() {
         super("RootSensorListener");
+        final int[] simpleRates = serviceConnectionImpl.getChannelsBitRate();
+        algoritms = new PanTompkins[simpleRates.length];
+        for (int i = 0; i < simpleRates.length; i++) {
+            algoritms[i] = new PanTompkins(simpleRates[i]);
+        }
         start();
         waitUntilReady();
+    }
+
+    public static void startRaw() {
+        getInstance().serviceConnectionImpl.startConnection();
+    }
+
+    public static void stopRaw() {
+        getInstance().serviceConnectionImpl.stopConnection();
+    }
+
+    public static void generateRaw() {
+        getInstance().serviceConnectionImpl.fakeGeneration();
     }
 
     public static void postSensorData(final SensorData data) {
@@ -35,7 +53,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         return instance;
     }
 
-    synchronized void waitUntilReady() {
+    private synchronized void waitUntilReady() {
         this.handler = new Handler(this.getLooper(), this);
     }
 
@@ -43,8 +61,32 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     public boolean handleMessage(Message msg) {
         switch (What.values()[msg.what]) {
             case DataTick:
-                //TODO: logic for work with data
-                MainApplication.uiBusPost(msg.obj);
+                SensorData.FormattedSensorItem item;
+                final SensorData data = SensorData.class.cast(msg.obj);
+                data.resetCursor();
+                do {
+                    for (int i = 0; i < data.getMaxChannelCount(); i++) {
+                        item = data.getItem(i);
+                        algoritms[i].next(item.getValue(), item.getTime());
+                        item.setNewValue(algoritms[i].y[3]); // FIXME: y[3] - is it correct ?
+
+                        if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
+                            if (checkQRS(PanTompkins.QRS.qrsCurrent)) {
+                                // TODO: add QRS timestump to DB for check its time count
+                                if (++algoritms[i].countPC > 2) {
+                                    algoritms[i].countPC = 0;
+                                    // TODO: generate PC_3
+                                }
+                            } else {
+                                if (algoritms[i].countPC == 2) {
+                                    // TODO: generate PC_2
+                                }
+                                algoritms[i].countPC = 0;
+                            }
+                        }
+                    }
+                } while (data.nextCursor());
+                MainApplication.uiBusPost(data);
                 break;
         }
         return true;
@@ -56,6 +98,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         m.what = What.DataTick.ordinal();
         m.obj = data;
         handler.sendMessage(m);
+        /*
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < data.countTicks(); i++) {
             builder.append("\ntimestump=").append(data.getTimeStump(i));
@@ -64,10 +107,25 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
             }
             builder.append("\n");
         }
-        Log.i(getClass().getSimpleName(), builder.toString());
+        Log.i(getClass().getSimpleName(), builder.toString());*/
     }
 
-    enum What {
-        DataTick
+    boolean checkQRS(PanTompkins.QRS current) {
+        if (current == null) return false;
+        switch (current.classification) {
+            case APC:
+            case APC_ABERRANT:
+            case PVC:
+            case PVC_ABERRANT:
+            case PREMATURE:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private enum What {
+        DataTick,
+        DetectPC,
     }
 }

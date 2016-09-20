@@ -54,10 +54,6 @@ public final class MainApplication extends Application {
     public static void uiBusPost(Object obj) {
         uiBus.post(obj);
     }
-/*
-    public static IServiceConnection getServiceConnectionImpl() {
-        return serviceConnectionImpl;
-    }*/
 
     public static Context getContext() {
         return context;

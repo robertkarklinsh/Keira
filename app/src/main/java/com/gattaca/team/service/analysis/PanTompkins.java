@@ -52,6 +52,7 @@ public class PanTompkins extends LmeFilter {
 	public static final double diff_a[] = {8d};
 	public static final double diff_b[] = {2d, 1d, 0d, -1d, -2d};
 	public static boolean learning = true;
+	public int countPC = 0;
 	/**
 	 * group delay of the filter steps after the bandpassing
 	 */

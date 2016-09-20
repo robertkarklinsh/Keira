@@ -1,65 +1,67 @@
 package com.gattaca.team.service.main;
 
-import com.bitalino.comm.BITalinoFrame;
-
-import java.util.ArrayList;
-
 public final class SensorData {
-    final public static int HZ = 100;
-    final public static int FRAMES_COUNT = 10;
-    private final ArrayList<ItemData> list = new ArrayList<>(HZ / FRAMES_COUNT);
-    private final long timeStumpStart, timeStumpEnd;
+    private final long timeStumpStart, timeStumpStep;
+    private final FormattedSensorItem[][] data;
+    private int frameIndex = 0;
 
-    public SensorData(final long timeStumpStart, final long timeStumpEnd) {
+    public SensorData(final int maxChannels, final int frames, final long timeStumpStart, final long timeStumpEnd) {
         this.timeStumpStart = timeStumpStart;
-        this.timeStumpEnd = timeStumpEnd;
+        this.data = new FormattedSensorItem[frames][maxChannels];
+        this.timeStumpStep = (timeStumpEnd - timeStumpStart) / frames;
     }
 
-    public static int getChannels() {
-        return ItemData.CHANNELS_BITRATE.length;
-    }
-
-    public void addFrame(final BITalinoFrame frame) {
-        ItemData item = new ItemData();
-        for (int i = 0; i < getChannels(); i++) {
-            item.setVolts(i, frame.getAnalog(i));
+    public void next(int... row) {
+        if (row.length <= this.data.length) {
+            int channel = 0;
+            for (int value : row) {
+                setValue(value, channel++);
+            }
         }
-        list.add(item);
+        nextCursor();
     }
 
-    public double getAvrVolt(int frame) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    public int getMaxChannelCount() {
+        return this.data[0].length;
     }
 
-    public double getVoltByChannel(int frame, int channel) {
-        return list.get(frame).getVoltByChannel(channel);
+    public FormattedSensorItem getItem(int channel) {
+        return data[frameIndex][channel];
     }
 
-    public long getTimeStump(final int position) {
-        return timeStumpStart + (timeStumpEnd - timeStumpStart) * position / countTicks();
+    public void setValue(double value, int channel) {
+        data[frameIndex][channel] = new FormattedSensorItem(value, timeStumpStart + timeStumpStep * frameIndex);
     }
 
-    public int countTicks() {
-        return list.size();
+    public boolean nextCursor() {
+        frameIndex++;
+        return frameIndex == data.length;
     }
 
-    static class ItemData {
-        static final int CHANNELS_BITRATE[] = {10, 10, 10, 10, 6, 6};
-        private static final double VCC = 3.3;
-        private static final double GECG = 1100;
-        final double[] volts = new double[CHANNELS_BITRATE.length];
+    public void resetCursor() {
+        frameIndex = 0;
+    }
 
-        public double getVoltByChannel(int channel) {
-            return volts[channel];
+
+    public static class FormattedSensorItem {
+        private final long time;
+        private double value;
+
+        FormattedSensorItem(double value, long time) {
+            this.setNewValue(value);
+            this.time = time;
         }
 
-        public void setVolts(final int channnel, final int values) {
-            volts[channnel] = convert(values, CHANNELS_BITRATE[channnel]);
+        public void setNewValue(double value) {
+            this.value = value;
         }
 
-        private double convert(int analog, int bitRate) {
-            return 1000 * ((double) analog / (1 << bitRate) - 0.5) * VCC / GECG;
+        public double getValue() {
+            return this.value;
+        }
+
+        public long getTime() {
+            return this.time;
         }
     }
-
 }

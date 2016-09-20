@@ -30,10 +30,18 @@ import java.io.InputStreamReader;
 import java.util.UUID;
 
 public final class BitalinoConnection extends HandlerThread implements IServiceConnection, Handler.Callback {
-    public static Bus bus = new Bus(ThreadEnforcer.ANY);
+    private final static int HZ = 100;
+    private final static int FRAMES_COUNT = 10;
+    private final static int BitalinoChannels = 1;
+    private final static int[] CHANNELS_BITRATE = {10, 10, 10, 10, 6, 6};
+    private static final double VCC = 3.3;
+    private static final double GECG = 1100;
+
+    static Bus bus = new Bus(ThreadEnforcer.ANY);
+
     private final Object block = new Object();
     private Handler handler;
-    private State state;
+    //private State state;
     private BluetoothSocket sock;
     private BITalinoDevice bitalino;
     private boolean forceStopAnyProcess = false;
@@ -42,6 +50,19 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
         super("BitalinoConnection");
         start();
         waitUntilReady();
+    }
+
+    private static double convert(double value, int channel) {
+        return 1000 * (value / (1 << CHANNELS_BITRATE[channel]) - 0.5) * VCC / GECG;
+    }
+
+    @Override
+    public int[] getChannelsBitRate() {
+        int[] idx = new int[BitalinoChannels];
+        for (int i = 0; i < idx.length; i++) {
+            idx[i] = CHANNELS_BITRATE[i];
+        }
+        return idx;
     }
 
     @Override
@@ -63,7 +84,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
         handler.sendEmptyMessage(State.StopConnection.ordinal());
     }
 
-    synchronized void waitUntilReady() {
+    private synchronized void waitUntilReady() {
         this.handler = new Handler(this.getLooper(), this);
         this.handler.sendEmptyMessage(State.NoConnection.ordinal());
 
@@ -72,12 +93,12 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
     @Override
     public boolean handleMessage(Message msg) {
         final Message newState = new Message();
-        state = State.values()[msg.what];
+        final State state = State.values()[msg.what];
         Log.d(getClass().getSimpleName(), "new state is " + state);
 
         switch (state) {
             case FaceGeneration:
-                final long timeOffset = DateUtils.SECOND_IN_MILLIS / SensorData.HZ; // ms per data tick
+                final long timeOffset = DateUtils.SECOND_IN_MILLIS / HZ; // ms per data tick
                 InputStream in = null;
                 BufferedReader reader = null;
                 long tmpTime, currentTime = System.currentTimeMillis();
@@ -89,7 +110,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                     String mLine = reader.readLine();
                     int line = 0, sig;
                     String[] splits;
-                    final BITalinoFrame[] frames = new BITalinoFrame[SensorData.FRAMES_COUNT];
+                    final BITalinoFrame[] frames = new BITalinoFrame[FRAMES_COUNT];
 
                     while (!forceStopAnyProcess && mLine != null) {
                         splits = mLine.split("\t");
@@ -102,12 +123,15 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                         }
                         mLine = reader.readLine();
 
-                        if (line++ != 0 && line % SensorData.FRAMES_COUNT == 0) {
+                        if (line++ != 0 && line % FRAMES_COUNT == 0) {
                             line = 0;
-                            tmpTime = currentTime + timeOffset * SensorData.FRAMES_COUNT;
-                            sensorData = new SensorData(currentTime, tmpTime);
+                            tmpTime = currentTime + timeOffset * FRAMES_COUNT;
+                            sensorData = new SensorData(BitalinoChannels, HZ / FRAMES_COUNT, currentTime, tmpTime);
                             for (BITalinoFrame frame : frames) {
-                                sensorData.addFrame(frame);
+                                for (int i = 0; i < BitalinoChannels; i++) {
+                                    sensorData.setValue(convert(frame.getAnalog(i), i), i);
+                                }
+                                sensorData.nextCursor();
                             }
                             currentTime = tmpTime;
                             RootSensorListener.postSensorData(sensorData);
@@ -138,11 +162,12 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                 Log.e(getClass().getSimpleName(), "tries were " + tmpLines);
                 break;
             case NoConnection:
-                //TODO: default state
+                // default state
                 forceStopAnyProcess = false;
                 try {
                     MainApplication.getContext().unregisterReceiver(BtDiscaveryReceiver.getInstance());
                 } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                 }
                 break;
             case Search:
@@ -169,12 +194,11 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                 }
                 break;
             case Connection:
-                //TODO: connect to device by mac address
                 final BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(AppPref.BitalinoMac.getStr());
                 try {
                     sock = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
                     sock.connect();
-                    bitalino = new BITalinoDevice(SensorData.HZ, new int[]{0, 1, 2, 3, 4, 5});
+                    bitalino = new BITalinoDevice(HZ, new int[]{0, 1, 2, 3, 4, 5});
                     bitalino.open(sock.getInputStream(), sock.getOutputStream());
                     bitalino.start();
                     handler.sendEmptyMessage(State.TransferData.ordinal());
@@ -189,13 +213,16 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                 if (sock != null && bitalino != null) {
                     try {
                         final long startTime = System.currentTimeMillis();
-                        final BITalinoFrame[] frames = bitalino.read(SensorData.FRAMES_COUNT);
+                        final BITalinoFrame[] frames = bitalino.read(FRAMES_COUNT);
                         final long endTime = System.currentTimeMillis();
                         handler.sendEmptyMessage(State.TransferData.ordinal());
 
-                        sensorData = new SensorData(startTime, endTime);
+                        sensorData = new SensorData(BitalinoChannels, HZ / FRAMES_COUNT, startTime, endTime);
                         for (BITalinoFrame frame : frames) {
-                            sensorData.addFrame(frame);
+                            for (int i = 0; i < BitalinoChannels; i++) {
+                                sensorData.setValue(frame.getAnalog(i), i);
+                            }
+                            sensorData.nextCursor();
                         }
                         RootSensorListener.postSensorData(sensorData);
                     } catch (BITalinoException e) {
@@ -244,7 +271,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
     }
 
 
-    enum State {
+    private enum State {
         FaceGeneration,
         NoConnection,
         Search,
