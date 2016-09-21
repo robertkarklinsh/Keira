@@ -47,4 +47,8 @@ public abstract class IContainer<Model extends IContainerModel> {
     protected Model getModel() {
         return this.model;
     }
+
+    protected Context getContext() {
+        return context;
+    }
 }

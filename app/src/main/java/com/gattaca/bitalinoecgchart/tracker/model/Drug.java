@@ -1,5 +1,6 @@
 package com.gattaca.bitalinoecgchart.tracker.model;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -9,6 +10,9 @@ import java.util.List;
 public class Drug implements Completable {
     private boolean completed = false;
     private String name;
+    private int dose;
+    //TODO maybe we must unify doses Enum etc;
+    private String units;
     private int count;
     private List<Intake> intakes;
 
@@ -17,8 +21,36 @@ public class Drug implements Completable {
         return completed;
     }
 
-    private static class Intake {
+    public static class Intake {
         private boolean taken;
-        static GregorianCalendar time;
+        private GregorianCalendar time;
+
+        public boolean isTaken() {
+            return taken;
+        }
+        public String getTimeAsString () {
+            return time.get(Calendar.HOUR_OF_DAY) + ":" + time.get(Calendar.MINUTE);
+        }
+
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public List<Intake> getIntakes() {
+        return intakes;
+    }
+
+    public int getDose() {
+        return dose;
+    }
+
+    public String getUnits() {
+        return units;
     }
 }

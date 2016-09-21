@@ -5,6 +5,10 @@ package com.gattaca.bitalinoecgchart.tracker.model;
  */
 public class Measurement implements Completable {
     private boolean completed = false;
+    private String name ;
+    private String duration;
+    private String units;
+
 
     @Override
     public boolean isCompleted() {
