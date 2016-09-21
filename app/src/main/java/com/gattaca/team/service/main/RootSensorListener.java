@@ -4,6 +4,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 
+import com.gattaca.team.db.RealmController;
+import com.gattaca.team.db.event.NotifyEventObject;
+import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.service.IServiceConnection;
 import com.gattaca.team.service.analysis.PanTompkins;
@@ -14,7 +17,10 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.gattaca.team.service.events.NotifyType.PC_detect;
 
 public final class RootSensorListener extends HandlerThread implements Handler.Callback {
     private static RootSensorListener instance;
@@ -35,14 +41,20 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     }
 
     public static void startRaw() {
+        getInstance().bus.register(getInstance());
         getInstance().serviceConnectionImpl.startConnection();
     }
 
     public static void stopRaw() {
         getInstance().serviceConnectionImpl.stopConnection();
+        try {
+            getInstance().bus.unregister(getInstance());
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     public static void generateRaw() {
+        getInstance().bus.register(getInstance());
         getInstance().serviceConnectionImpl.fakeGeneration();
     }
 
@@ -59,10 +71,13 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
 
     private static void generateEvent(@NotifyType int eventType, final List<PanTompkins.QRS> list) {
         final NotifyEvent event = new NotifyEvent(eventType);
+        final NotifyEventObject notifyEventObject = new NotifyEventObject().setEventType(eventType);
         for (PanTompkins.QRS qrs : list) {
             event.addTime(qrs.rTimestamp);
+            notifyEventObject.setTime(qrs.rTimestamp);
         }
         MainApplication.uiBusPost(event);
+        RealmController.save(notifyEventObject);
     }
 
     private synchronized void waitUntilReady() {
@@ -75,16 +90,22 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
             case DataTick:
                 SensorData.FormattedSensorItem item;
                 final SensorData data = SensorData.class.cast(msg.obj);
+                final List<SensorPointData> sensorPointData = new ArrayList<>();
                 data.resetCursor();
                 do {
                     for (int i = 0; i < data.getMaxChannelCount(); i++) {
                         item = data.getItem(i);
                         algoritms[i].next(item.getValue(), item.getTime());
                         item.setNewValue(algoritms[i].y[3]); // FIXME: y[3] - is it correct ?
-
+                        sensorPointData.add(new SensorPointData()
+                                .setChannel(i)
+                                .setTime(item.getTime())
+                                .setValue(algoritms[i].y[3]));
                         if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
                             if (checkQRS(PanTompkins.QRS.qrsCurrent)) {
-                                // TODO: add QRS time stump to DB for check its time count
+                                RealmController.save(new NotifyEventObject()
+                                        .setEventType(PC_detect)
+                                        .setTime(PanTompkins.QRS.qrsCurrent.rTimestamp));
                                 if (algoritms[i].countPC.size() == 2) {
                                     generateEvent(NotifyType.PC_3, algoritms[i].countPC);
                                     algoritms[i].countPC.clear();
@@ -100,6 +121,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                         }
                     }
                 } while (data.nextCursor());
+                RealmController.saveList(sensorPointData);
                 MainApplication.uiBusPost(data);
                 break;
         }

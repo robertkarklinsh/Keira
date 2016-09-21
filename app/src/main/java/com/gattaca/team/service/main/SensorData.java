@@ -34,8 +34,7 @@ public final class SensorData {
     }
 
     public boolean nextCursor() {
-        frameIndex++;
-        return frameIndex == data.length;
+        return ++frameIndex < data.length;
     }
 
     public void resetCursor() {

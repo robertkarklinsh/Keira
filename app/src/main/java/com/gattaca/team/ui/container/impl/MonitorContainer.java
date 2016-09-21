@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.gattaca.team.R;
 import com.gattaca.team.root.MainApplication;
+import com.gattaca.team.service.main.RootSensorListener;
 import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.model.impl.MonitorModel;
@@ -41,12 +42,12 @@ public final class MonitorContainer extends IContainer<MonitorModel> implements 
 
     @Override
     public void changeCurrentVisibilityState(final boolean isHide) {
+        if (isHide && getRootView().getVisibility() == View.VISIBLE) {
+            RootSensorListener.stopRaw();
+        } else if (!isHide && getRootView().getVisibility() == View.GONE) {
+            RootSensorListener.generateRaw();
+        }
         super.changeCurrentVisibilityState(isHide);
-        /*if (isHide) {
-            MainApplication.getServiceConnectionImpl().stopConnection();
-        } else {
-            MainApplication.getServiceConnectionImpl().fakeGeneration();
-        }*/
     }
 
     @Override

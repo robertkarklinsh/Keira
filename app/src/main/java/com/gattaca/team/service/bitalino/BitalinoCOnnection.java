@@ -72,7 +72,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
 
     @Override
     public void fakeGeneration() {
-        handler.sendEmptyMessage(State.FaceGeneration.ordinal());
+        handler.sendEmptyMessage(State.FakeGeneration.ordinal());
     }
 
     @Override
@@ -97,7 +97,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
         Log.d(getClass().getSimpleName(), "new state is " + state);
 
         switch (state) {
-            case FaceGeneration:
+            case FakeGeneration:
                 final long timeOffset = DateUtils.SECOND_IN_MILLIS / HZ; // ms per data tick
                 InputStream in = null;
                 BufferedReader reader = null;
@@ -129,7 +129,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                             sensorData = new SensorData(BitalinoChannels, HZ / FRAMES_COUNT, currentTime, tmpTime);
                             for (BITalinoFrame frame : frames) {
                                 for (int i = 0; i < BitalinoChannels; i++) {
-                                    sensorData.setValue(convert(frame.getAnalog(i), i), i);
+                                    sensorData.setValue(convert(frame.getAnalog(1), 1), i);
                                 }
                                 sensorData.nextCursor();
                             }
@@ -272,7 +272,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
 
 
     private enum State {
-        FaceGeneration,
+        FakeGeneration,
         NoConnection,
         Search,
         Connection,
