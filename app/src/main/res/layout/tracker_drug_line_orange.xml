@@ -18,5 +18,5 @@
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:background="@drawable/drug_line" />
+        android:background="@drawable/drug_line_orange" />
 </LinearLayout>

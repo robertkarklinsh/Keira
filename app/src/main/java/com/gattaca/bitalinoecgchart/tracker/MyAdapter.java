@@ -122,7 +122,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             drugCircle.setOnClickListener(new DrugButtonListener());
                             itemImages.addView(drugCircle);
                             LinearLayout line = (LinearLayout) LayoutInflater.from(context)
-                                    .inflate(R.layout.tracker_drug_line, viewGroup);
+                                    .inflate(R.layout.tracker_drug_line_blue, viewGroup);
                             itemImages.addView(line);
                         }
                         DrugItemContainer.Reception reception = receptions.get(receptions.size() - 1);

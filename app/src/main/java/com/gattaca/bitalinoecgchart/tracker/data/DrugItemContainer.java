@@ -4,6 +4,8 @@ import com.gattaca.team.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 /**
  * Created by Artem on 28.08.2016.
  */
@@ -30,7 +32,8 @@ public class DrugItemContainer extends TrackerItemContainer {
 
     public static class Reception {
         boolean status = false;
-        String time = "00:00";
+        Integer hours;
+        Integer minutes;
         Long timeL = 0L;
 
         public boolean getStatus() {
@@ -42,24 +45,41 @@ public class DrugItemContainer extends TrackerItemContainer {
         }
 
         public String getTime() {
-            return time;
+            return String.format(Locale.ROOT, "%02d:%02d", hours, minutes);
+
         }
 
-        public void setTime(String time) {
-            this.time = time;
+        public Integer getHours() {
+            return hours;
         }
 
-        public Reception(boolean status, String time) {
+        public void setHours(Integer hours) {
+            this.hours = hours;
+        }
+
+        public Integer getMinutes() {
+            return minutes;
+        }
+
+        public void setMinutes(Integer minutes) {
+            this.minutes = minutes;
+        }
+
+
+        public Reception(boolean status, Integer hours, Integer minutes) {
             this.status = status;
-            this.time = time;
+            this.hours = hours;
+            this.minutes = minutes;
         }
     }
 
     public static DrugItemContainer example(int pos) {
         DrugItemContainer cont = new DrugItemContainer("Vicodin" + pos, "2 mg", R.drawable.pills_icon);
-        cont.addReception(new Reception(true, "12:00"));
-        cont.addReception(new Reception(true, "14:00"));
-        cont.addReception(new Reception(true, "15:00"));
+        cont.addReception(new Reception(true, 12, 00));
+        cont.addReception(new Reception(true, 14, 00));
+        cont.addReception(new Reception(false, 22, 00));
+        cont.addReception(new Reception(false, 23, 58));
+
         return cont;
     }
 }
