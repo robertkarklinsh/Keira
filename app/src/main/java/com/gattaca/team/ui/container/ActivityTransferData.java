@@ -3,6 +3,7 @@ package com.gattaca.team.ui.container;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.gattaca.team.ui.activity.MonitorBpm;
 import com.gattaca.team.ui.activity.MonitorEcg;
 
 public final class ActivityTransferData {
@@ -24,7 +25,8 @@ public final class ActivityTransferData {
     }
 
     public enum AvailableActivity {
-        ECG(MonitorEcg.class);
+        ECG(MonitorEcg.class),
+        BPM(MonitorBpm.class);
 
         final private Class cls;
 

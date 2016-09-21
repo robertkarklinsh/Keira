@@ -57,7 +57,7 @@ public final class MonitorContainer extends IContainer<MonitorModel> implements 
                 MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.ECG));
                 break;
             case R.id.monitor_main_action_pulse:
-                MainApplication.showToastNotImplemented();
+                MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.BPM));
                 break;
         }
     }

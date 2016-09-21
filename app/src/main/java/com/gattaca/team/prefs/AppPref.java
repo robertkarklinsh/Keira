@@ -3,7 +3,8 @@ package com.gattaca.team.prefs;
 import java.util.Set;
 
 public enum AppPref {
-    BitalinoMac(String.class),;
+    BitalinoMac(String.class),
+    FakeGeneration(Boolean.class),;
 
     private final Class<?> type;
 

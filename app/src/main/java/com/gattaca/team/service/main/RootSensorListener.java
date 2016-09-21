@@ -20,8 +20,6 @@ import com.squareup.otto.ThreadEnforcer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gattaca.team.service.events.NotifyType.PC_detect;
-
 public final class RootSensorListener extends HandlerThread implements Handler.Callback {
     private static RootSensorListener instance;
     private Bus bus = new Bus(ThreadEnforcer.ANY);
@@ -101,7 +99,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                                 .setChannel(i)
                                 .setTime(item.getTime())
                                 .setValue(algoritms[i].y[3]));
-                        if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
+                        /*if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
                             if (checkQRS(PanTompkins.QRS.qrsCurrent)) {
                                 RealmController.save(new NotifyEventObject()
                                         .setEventType(PC_detect)
@@ -118,7 +116,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                                 }
                                 algoritms[i].countPC.clear();
                             }
-                        }
+                        }*/
                     }
                 } while (data.nextCursor());
                 RealmController.saveList(sensorPointData);
