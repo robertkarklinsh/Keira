@@ -8,9 +8,13 @@ import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.service.IServiceConnection;
 import com.gattaca.team.service.analysis.PanTompkins;
 import com.gattaca.team.service.bitalino.BitalinoConnection;
+import com.gattaca.team.service.events.NotifyEvent;
+import com.gattaca.team.service.events.NotifyType;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
+
+import java.util.List;
 
 public final class RootSensorListener extends HandlerThread implements Handler.Callback {
     private static RootSensorListener instance;
@@ -53,6 +57,14 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         return instance;
     }
 
+    private static void generateEvent(@NotifyType int eventType, final List<PanTompkins.QRS> list) {
+        final NotifyEvent event = new NotifyEvent(eventType);
+        for (PanTompkins.QRS qrs : list) {
+            event.addTime(qrs.rTimestamp);
+        }
+        MainApplication.uiBusPost(event);
+    }
+
     private synchronized void waitUntilReady() {
         this.handler = new Handler(this.getLooper(), this);
     }
@@ -72,16 +84,18 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
 
                         if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
                             if (checkQRS(PanTompkins.QRS.qrsCurrent)) {
-                                // TODO: add QRS timestump to DB for check its time count
-                                if (++algoritms[i].countPC > 2) {
-                                    algoritms[i].countPC = 0;
-                                    // TODO: generate PC_3
+                                // TODO: add QRS time stump to DB for check its time count
+                                if (algoritms[i].countPC.size() == 2) {
+                                    generateEvent(NotifyType.PC_3, algoritms[i].countPC);
+                                    algoritms[i].countPC.clear();
+                                } else {
+                                    algoritms[i].countPC.add(PanTompkins.QRS.qrsCurrent);
                                 }
                             } else {
-                                if (algoritms[i].countPC == 2) {
-                                    // TODO: generate PC_2
+                                if (algoritms[i].countPC.size() == 2) {
+                                    generateEvent(NotifyType.PC_2, algoritms[i].countPC);
                                 }
-                                algoritms[i].countPC = 0;
+                                algoritms[i].countPC.clear();
                             }
                         }
                     }
