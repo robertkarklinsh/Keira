@@ -1,4 +1,4 @@
-package com.gattaca.team.service.events;
+package com.gattaca.team.annotation;
 
 import android.support.annotation.IntDef;
 

@@ -67,21 +67,25 @@ public final class RealmController {
         realm.commitTransaction();
     }*/
     public static void save(RealmModel item) {
+        final long time = System.currentTimeMillis();
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealm(item);
         realm.commitTransaction();
-        Log.d(RealmController.class.getSimpleName(), item.toString());
+
+        Log.d(RealmController.class.getSimpleName(), "time=" + (System.currentTimeMillis() - time) + " ms");
     }
 
     public static void saveList(List<? extends RealmModel> list) {
+        final long time = System.currentTimeMillis();
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealm(list);
         realm.commitTransaction();
 
-        for (RealmModel item : list) {
-            Log.d(RealmController.class.getSimpleName(), item.toString());
-        }
+        Log.d(RealmController.class.getSimpleName(), "size= " + list.size() + " time=" + (System.currentTimeMillis() - time) + " ms");
+        //for (RealmModel item : list) {
+        // Log.d(RealmController.class.getSimpleName(), item.toString());
+        //}
     }
 }

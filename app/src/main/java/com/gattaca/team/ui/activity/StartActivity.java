@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.gattaca.team.R;
+import com.gattaca.team.annotation.FakeMessage;
 import com.gattaca.team.prefs.AppPref;
 import com.gattaca.team.service.fake.FakeDataController;
-import com.gattaca.team.service.fake.FakeMessage;
 import com.squareup.otto.Subscribe;
 
 public final class StartActivity extends AppCompatActivity {
@@ -20,7 +20,7 @@ public final class StartActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (AppPref.FakeGeneration.getBool(false)) {
+        if (!AppPref.FakeGeneration.getBool(false)) {
             FakeDataController.startGeneration();
         } else {
             next();
@@ -33,7 +33,7 @@ public final class StartActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void generationStateChange(final @FakeMessage int state) {
+    public void generationStateChange(final @FakeMessage Integer state) {
         if (state == FakeMessage.Finish) {
             next();
         }

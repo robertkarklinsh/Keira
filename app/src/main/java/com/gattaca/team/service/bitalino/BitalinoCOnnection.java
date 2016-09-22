@@ -105,7 +105,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                 SensorData sensorData;
                 int tmpLines = 0;
                 try {
-                    in = MainApplication.getContext().getAssets().open("bitalino.txt");
+                    in = MainApplication.getContext().getAssets().open("sensor/bitalino.txt");
                     reader = new BufferedReader(new InputStreamReader(in));
                     String mLine = reader.readLine();
                     int line = 0, sig;

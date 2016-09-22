@@ -1,5 +1,8 @@
 package com.gattaca.team.service.events;
 
+import com.gattaca.team.annotation.NotifyEventTag;
+import com.gattaca.team.annotation.NotifyType;
+
 import java.util.ArrayList;
 
 public final class NotifyEvent {

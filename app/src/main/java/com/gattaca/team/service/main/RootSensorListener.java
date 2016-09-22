@@ -3,16 +3,19 @@ package com.gattaca.team.service.main;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.util.Log;
 
+import com.gattaca.team.annotation.NotifyType;
+import com.gattaca.team.annotation.RRType;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.event.NotifyEventObject;
+import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.service.IServiceConnection;
 import com.gattaca.team.service.analysis.PanTompkins;
 import com.gattaca.team.service.bitalino.BitalinoConnection;
 import com.gattaca.team.service.events.NotifyEvent;
-import com.gattaca.team.service.events.NotifyType;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
@@ -86,6 +89,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     public boolean handleMessage(Message msg) {
         switch (What.values()[msg.what]) {
             case DataTick:
+                @RRType String RRtype;
                 SensorData.FormattedSensorItem item;
                 final SensorData data = SensorData.class.cast(msg.obj);
                 final List<SensorPointData> sensorPointData = new ArrayList<>();
@@ -99,11 +103,18 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                                 .setChannel(i)
                                 .setTime(item.getTime())
                                 .setValue(algoritms[i].y[3]));
-                        /*if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
-                            if (checkQRS(PanTompkins.QRS.qrsCurrent)) {
-                                RealmController.save(new NotifyEventObject()
-                                        .setEventType(PC_detect)
+                        //FIXME: it's not work!!!
+                        if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
+                            RRtype = checkQRS(PanTompkins.QRS.qrsCurrent);
+                            long time = PanTompkins.QRS.qrsCurrent.rTimestamp - PanTompkins.QRS.qrsPrevious.rTimestamp;
+                            if (time >= 40 && time <= 130) {
+                                RealmController.save(new RR()
+                                        .setType(RRtype)
                                         .setTime(PanTompkins.QRS.qrsCurrent.rTimestamp));
+                            } else {
+                                Log.e(getClass().getSimpleName(), "skip from " + time);
+                            }
+                            /*if (!RRtype.equals(RRType.N)) {
                                 if (algoritms[i].countPC.size() == 2) {
                                     generateEvent(NotifyType.PC_3, algoritms[i].countPC);
                                     algoritms[i].countPC.clear();
@@ -115,8 +126,9 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                                     generateEvent(NotifyType.PC_2, algoritms[i].countPC);
                                 }
                                 algoritms[i].countPC.clear();
-                            }
-                        }*/
+                            }*/
+                            PanTompkins.QRS.qrsCurrent.segState = PanTompkins.QRS.SegmentationStatus.PROCESSED;
+                        }
                     }
                 } while (data.nextCursor());
                 RealmController.saveList(sensorPointData);
@@ -132,29 +144,25 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         m.what = What.DataTick.ordinal();
         m.obj = data;
         handler.sendMessage(m);
-        /*
-        final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < data.countTicks(); i++) {
-            builder.append("\ntimestump=").append(data.getTimeStump(i));
-            for (int j = 0; j < data.getChannels(); j++) {
-                builder.append("#").append(j).append("=").append(data.getVoltByChannel(i, j)).append("   ");
-            }
-            builder.append("\n");
-        }
-        Log.i(getClass().getSimpleName(), builder.toString());*/
     }
 
-    boolean checkQRS(PanTompkins.QRS current) {
-        if (current == null) return false;
+    private
+    @RRType
+    String checkQRS(PanTompkins.QRS current) {
+        if (current == null) return RRType.N;
         switch (current.classification) {
             case APC:
+                return RRType.A;
             case APC_ABERRANT:
+                return RRType.a;
             case PVC:
+                return RRType.V;
             case PVC_ABERRANT:
+                return RRType.V;
             case PREMATURE:
-                return true;
+                return RRType.J;
             default:
-                return false;
+                return RRType.N;
         }
     }
 

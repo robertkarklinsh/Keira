@@ -1,7 +1,7 @@
 package com.gattaca.team.db.event;
 
 
-import com.gattaca.team.service.events.NotifyType;
+import com.gattaca.team.annotation.NotifyType;
 
 import io.realm.RealmList;
 import io.realm.RealmModel;

@@ -1,4 +1,4 @@
-package com.gattaca.team.service.fake;
+package com.gattaca.team.annotation;
 
 import android.support.annotation.IntDef;
 
