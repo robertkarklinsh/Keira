@@ -33,10 +33,10 @@ public @interface NotifyType {
     int PC_Period_1_hour = PC_Period_30_min + 1;
     int PC_Period_12_hours = PC_Period_1_hour + 1;
     int PC_Period_24_hours = PC_Period_12_hours + 1;
-    int PC_more_limit_per_hour = PC_Period_24_hours + 1;
+    int PC_more_limit_per_hour = PC_Period_24_hours + 1;        //
     int PC_more_limit_per_day = PC_more_limit_per_hour + 1;
-    int PC_2 = PC_more_limit_per_day + 1;
-    int PC_3 = PC_2 + 1;
+    int PC_2 = PC_more_limit_per_day + 1;                       //
+    int PC_3 = PC_2 + 1;                                        //
     int PC_detect = PC_3 + 1;
     // PULSE (BPM) events
     int BPM_less_40 = 100;

@@ -167,7 +167,6 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                 try {
                     MainApplication.getContext().unregisterReceiver(BtDiscaveryReceiver.getInstance());
                 } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
                 }
                 break;
             case Search:

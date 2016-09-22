@@ -2,7 +2,10 @@ package com.gattaca.team.db;
 
 import android.app.Activity;
 import android.app.Application;
-import android.util.Log;
+
+import com.gattaca.team.db.event.NotifyEventObject;
+import com.gattaca.team.db.sensor.RR;
+import com.gattaca.team.db.sensor.SensorPointData;
 
 import java.util.List;
 
@@ -61,11 +64,14 @@ public final class RealmController {
      * Static methods for work with controller
      * ===============================================================================================
      */
-    /*public void clearAll() {
+    public static void clearAll() {
+        final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        realm.delete(QrsPc.class);
+        realm.delete(RR.class);
+        realm.delete(NotifyEventObject.class);
+        realm.delete(SensorPointData.class);
         realm.commitTransaction();
-    }*/
+    }
     public static void save(RealmModel item) {
         final long time = System.currentTimeMillis();
         final Realm realm = Realm.getDefaultInstance();
@@ -73,7 +79,7 @@ public final class RealmController {
         realm.copyToRealm(item);
         realm.commitTransaction();
 
-        Log.d(RealmController.class.getSimpleName(), "time=" + (System.currentTimeMillis() - time) + " ms");
+        //  Log.d(RealmController.class.getSimpleName(), "time=" + (System.currentTimeMillis() - time) + " ms");
     }
 
     public static void saveList(List<? extends RealmModel> list) {
@@ -83,7 +89,7 @@ public final class RealmController {
         realm.copyToRealm(list);
         realm.commitTransaction();
 
-        Log.d(RealmController.class.getSimpleName(), "size= " + list.size() + " time=" + (System.currentTimeMillis() - time) + " ms");
+        //Log.d(RealmController.class.getSimpleName(), "size= " + list.size() + " time=" + (System.currentTimeMillis() - time) + " ms");
         //for (RealmModel item : list) {
         // Log.d(RealmController.class.getSimpleName(), item.toString());
         //}

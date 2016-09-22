@@ -9,8 +9,9 @@ import io.realm.annotations.RealmClass;
 
 @RealmClass
 public class NotifyEventObject implements RealmModel {
-    private RealmList<NotifyEventTime> times;
+    private RealmList<NotifyEventTime> times = new RealmList<>();
     private int count;
+    private boolean fake = true;
     private
     @NotifyType
     int eventType;
@@ -25,6 +26,16 @@ public class NotifyEventObject implements RealmModel {
 
     public static String getNamedFieldType() {
         return NotifyEventObject.class.getSimpleName() + ".eventType";
+    }
+
+    public static String getNamedFieldFake() {
+        return NotifyEventObject.class.getSimpleName() + ".fake";
+    }
+
+
+    public NotifyEventObject realData() {
+        this.fake = false;
+        return this;
     }
 
     public RealmList<NotifyEventTime> getTime() {
