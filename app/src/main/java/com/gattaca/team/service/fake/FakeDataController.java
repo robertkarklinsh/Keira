@@ -9,6 +9,7 @@ import com.gattaca.team.annotation.FakeMessage;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
+import com.gattaca.team.prefs.AppPref;
 import com.gattaca.team.root.MainApplication;
 
 import java.io.BufferedReader;
@@ -128,7 +129,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                 changeState(FakeMessage.Finish);
                 break;
             case FakeMessage.Finish:
-                //AppPref.FakeGeneration.set(true);
+                AppPref.FakeGeneration.set(true);
                 break;
         }
         MainApplication.uiBusPost(reason);
