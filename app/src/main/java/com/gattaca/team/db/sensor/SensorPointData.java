@@ -2,10 +2,12 @@ package com.gattaca.team.db.sensor;
 
 
 import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
 public class SensorPointData implements RealmModel {
+    @PrimaryKey
     private long time;
     private double value;
     private int channel = 0;

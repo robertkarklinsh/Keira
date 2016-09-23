@@ -4,4 +4,5 @@
     <item name="navigation_action_2" type="id" />
     <item name="navigation_action_3" type="id" />
     <item name="navigation_action_4" type="id" />
+    <item name="list_item_notify_center" type="id" />
 </resources>

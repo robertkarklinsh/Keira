@@ -4,14 +4,15 @@ package com.gattaca.team.db.sensor;
 import com.gattaca.team.annotation.RRType;
 
 import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
 public class RR implements RealmModel {
+    @PrimaryKey
     private long time;
-    private
     @RRType
-    String type = RRType.N;
+    private String type = RRType.N;
 
     public static String getNamedFieldTime() {
         return RR.class.getSimpleName() + ".time";

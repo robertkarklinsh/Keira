@@ -12,6 +12,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmModel;
+import io.realm.RealmResults;
 
 public final class RealmController {
     private static RealmController instance;
@@ -76,7 +77,7 @@ public final class RealmController {
         final long time = System.currentTimeMillis();
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        realm.copyToRealm(item);
+        realm.copyToRealmOrUpdate(item);
         realm.commitTransaction();
 
         //  Log.d(RealmController.class.getSimpleName(), "time=" + (System.currentTimeMillis() - time) + " ms");
@@ -86,12 +87,16 @@ public final class RealmController {
         final long time = System.currentTimeMillis();
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        realm.copyToRealm(list);
+        realm.copyToRealmOrUpdate(list);
         realm.commitTransaction();
 
         //Log.d(RealmController.class.getSimpleName(), "size= " + list.size() + " time=" + (System.currentTimeMillis() - time) + " ms");
         //for (RealmModel item : list) {
         // Log.d(RealmController.class.getSimpleName(), item.toString());
         //}
+    }
+
+    public static RealmResults<NotifyEventObject> getAllEvents() {
+        return Realm.getDefaultInstance().where(NotifyEventObject.class).findAll();
     }
 }

@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.gattaca.team.R;
+import com.gattaca.team.db.RealmController;
 import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
@@ -16,6 +17,8 @@ import com.gattaca.team.ui.container.impl.DataBankContainer;
 import com.gattaca.team.ui.container.impl.MonitorContainer;
 import com.gattaca.team.ui.container.impl.NotificationCenterContainer;
 import com.gattaca.team.ui.container.impl.TrackerContainer;
+import com.gattaca.team.ui.model.IListContainerModel;
+import com.gattaca.team.ui.model.impl.NotificationCenterModel;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -104,9 +107,11 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
             //TODO: animate change views
             currentContainer.changeCurrentVisibilityState(true);
         }
+        IListContainerModel model = item.getModelForSubContainer();
         switch (item.getMenuItemForOpen()) {
             case Notification:
                 currentContainer = notificationCenterContainer;
+                model = new NotificationCenterModel(RealmController.getAllEvents());
                 break;
             case Tracker:
                 currentContainer = trackerContainer;
@@ -121,7 +126,7 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
         currentContainer.changeCurrentVisibilityState(false);
         getSupportActionBar().setTitle(item.getMenuItemForOpen().getNameId());
         //TODO: stub
-        currentContainer.reDraw(item.getModelForSubContainer());
+        currentContainer.reDraw(model);
         invalidateOptionsMenu();
         /*final Class requestedModel = currentContainer.getModelClass();
         if(requestedModel == NotificationCenterModel.class){

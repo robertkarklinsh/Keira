@@ -7,6 +7,7 @@ import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.gattaca.team.annotation.FakeMessage;
+import com.gattaca.team.annotation.ModuleName;
 import com.gattaca.team.annotation.NotifyType;
 import com.gattaca.team.annotation.RRType;
 import com.gattaca.team.db.RealmController;
@@ -57,7 +58,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
         switch (reason) {
             case FakeMessage.Start:
                 RealmController.clearAll();
-                final int max = 10000;
+                final int max = 20000;
                 final long startTime = System.currentTimeMillis() - DateUtils.DAY_IN_MILLIS;
                 final int timeOffset = 3;
                 long time;
@@ -118,6 +119,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
 
                             if (PcTimesAgain.size() == 3) {
                                 eventsList.add(new NotifyEventObject()
+                                        .setModuleNameResId(ModuleName.Monitor)
                                         .setEventType(NotifyType.PC_3)
                                         .setTime(PcTimesAgain.get(1)));
                                 PcTimesAgain.clear();
@@ -125,6 +127,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         } else {
                             if (PcTimesAgain.size() == 2) {
                                 eventsList.add(new NotifyEventObject()
+                                        .setModuleNameResId(ModuleName.Monitor)
                                         .setEventType(NotifyType.PC_2)
                                         .setTime((PcTimesAgain.get(1) - PcTimesAgain.get(0)) / 2));
                             }
@@ -134,6 +137,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         // only 1 event move 30 bits per session
                         if (pc_count_per_session == 31) {
                             eventsList.add(new NotifyEventObject()
+                                    .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.PC_more_limit_per_hour)
                                     .setTime(time));
                         }
@@ -141,16 +145,19 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         int bpm = (int) (60 / Double.valueOf(splits[2]));
                         if (bpm < 40) {
                             eventsList.add(new NotifyEventObject()
+                                    .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_less_40)
                                     .setCount(bpm)
                                     .setTime(time));
                         } else if (bpm < 50) {
                             eventsList.add(new NotifyEventObject()
+                                    .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_less_50_more_40)
                                     .setCount(bpm)
                                     .setTime(time));
                         } else if (bpm > 100) {
                             eventsList.add(new NotifyEventObject()
+                                    .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_more_100)
                                     .setCount(bpm)
                                     .setTime(time));

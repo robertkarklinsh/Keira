@@ -1,23 +1,29 @@
 package com.gattaca.team.db.event;
 
 
+import com.gattaca.team.annotation.ModuleName;
 import com.gattaca.team.annotation.NotifyType;
 
-import io.realm.RealmList;
 import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
 public class NotifyEventObject implements RealmModel {
-    private RealmList<NotifyEventTime> times = new RealmList<>();
+    private
+    @PrimaryKey
+    long time;
     private int count;
     private boolean fake = true;
+    private
+    @ModuleName
+    int moduleNameResId;
     private
     @NotifyType
     int eventType;
 
     public static String getNamedFieldTime() {
-        return NotifyEventObject.class.getSimpleName() + ".times";
+        return NotifyEventObject.class.getSimpleName() + ".time";
     }
 
     public static String getNamedFieldCount() {
@@ -38,12 +44,23 @@ public class NotifyEventObject implements RealmModel {
         return this;
     }
 
-    public RealmList<NotifyEventTime> getTime() {
-        return this.times;
+    public long getTime() {
+        return this.time;
     }
 
     public NotifyEventObject setTime(long time) {
-        this.times.add(new NotifyEventTime().setTime(time));
+        this.time = time;
+        return this;
+    }
+
+    public
+    @ModuleName
+    int getModuleNameResId() {
+        return this.moduleNameResId;
+    }
+
+    public NotifyEventObject setModuleNameResId(@ModuleName int moduleNameResId) {
+        this.moduleNameResId = moduleNameResId;
         return this;
     }
 

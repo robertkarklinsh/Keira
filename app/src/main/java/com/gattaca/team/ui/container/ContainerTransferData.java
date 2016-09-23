@@ -1,16 +1,16 @@
 package com.gattaca.team.ui.container;
 
-import com.gattaca.team.ui.model.IContainerModel;
+import com.gattaca.team.ui.model.IListContainerModel;
 
 public final class ContainerTransferData {
     final private MainMenu menuItemForOpen;
-    final private IContainerModel modelForSubContainer;
+    final private IListContainerModel modelForSubContainer;
 
     public ContainerTransferData(MainMenu menuItemForOpen) {
         this(menuItemForOpen, null);
     }
 
-    public ContainerTransferData(MainMenu menuItemForOpen, IContainerModel modelForSubContainer) {
+    public ContainerTransferData(MainMenu menuItemForOpen, IListContainerModel modelForSubContainer) {
         this.menuItemForOpen = menuItemForOpen;
         this.modelForSubContainer = modelForSubContainer;
     }
@@ -19,7 +19,7 @@ public final class ContainerTransferData {
         return this.menuItemForOpen;
     }
 
-    public IContainerModel getModelForSubContainer() {
+    public IListContainerModel getModelForSubContainer() {
         return modelForSubContainer;
     }
 }
