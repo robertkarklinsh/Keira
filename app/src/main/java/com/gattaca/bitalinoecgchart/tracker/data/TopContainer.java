@@ -69,7 +69,7 @@ public class TopContainer {
     }
     public static TopContainer example() {
         String[] day = new String[] {"пн","вт","ср","чт","пт","сб","вс"};
-        boolean[] futures = new boolean[] {false, false,false, true,true,true,true};
+        boolean[] futures = new boolean[] {false, false,false, false,true,true,true};
         int[] percents = new int[] {100,100,50,0,0,0,0};
         List<Day> list = new ArrayList<>();
         for(int i = 0 ; i < 7; i ++ ) {

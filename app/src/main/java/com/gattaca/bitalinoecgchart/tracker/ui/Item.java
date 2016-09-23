@@ -1,8 +1,10 @@
 package com.gattaca.bitalinoecgchart.tracker.ui;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -89,14 +91,16 @@ public class Item extends AbstractItem<Item, ViewHoldersCollection.DrugItemViewH
         ((ImageView) drugCircleF.findViewById(R.id.custom_drug_button_img)).setImageResource(
                 chooseDrugCircle(receptionF.getStatus(), receptionF.getHours(), receptionF.getMinutes())
         );
+        drugCircleF.setOnClickListener(new DrugItemClickListener(receptionF, null, (ImageView) drugCircleF.findViewById(R.id.custom_drug_button_img)));
         itemImages.addView(drugCircleF);
 
         for (int i = 1; i < receptions.size(); i++) {
             DrugItemContainer.Reception reception = receptions.get(i);
             LinearLayout line = (LinearLayout) LayoutInflater.from(context)
-                    .inflate(
-                            isExpired(reception.getStatus(), reception.getHours(), reception.getMinutes()) ? R.layout.tracker_drug_line_orange : R.layout.tracker_drug_line_blue,
-                            viewGroup);
+                    .inflate(R.layout.tracker_drug_line_blue, viewGroup);
+            ImageView lineImage = (ImageView) line.findViewById(R.id.tracker_drug_line);
+            lineImage.setBackground(chooseDrugLine(reception.getStatus(), reception.getHours(), reception.getMinutes(),context));
+
             itemImages.addView(line);
 
             LinearLayout drugCircle = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_drug_circle, viewGroup);
@@ -104,8 +108,22 @@ public class Item extends AbstractItem<Item, ViewHoldersCollection.DrugItemViewH
             ((ImageView) drugCircle.findViewById(R.id.custom_drug_button_img)).setImageResource(
                     chooseDrugCircle(reception.getStatus(), reception.getHours(), reception.getMinutes())
             );
-//                    drugCircle.setOnClickListener(new DrugButtonListener());
+            drugCircle.setOnClickListener(new DrugItemClickListener(reception, lineImage, (ImageView) drugCircle.findViewById(R.id.custom_drug_button_img)));
             itemImages.addView(drugCircle);
+        }
+
+    }
+
+    private Drawable chooseDrugLine(boolean status, int hour, int minute, Context context) {
+        if (status) {
+            return  context.getDrawable(R.drawable.drug_line_blue);
+
+        } else {
+            if (isExpired(status, hour, minute)) {
+                return context.getDrawable(R.drawable.drug_line_orange);
+            } else {
+                return context.getDrawable(R.drawable.drug_line_grey);
+            }
         }
 
     }
@@ -177,5 +195,29 @@ public class Item extends AbstractItem<Item, ViewHoldersCollection.DrugItemViewH
         ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(measurementItemContainer.getIcon());
         LinearLayout progress = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_measurement_progess, viewGroup);
         itemImages.addView(progress);
+    }
+
+    private class DrugItemClickListener implements View.OnClickListener {
+        private DrugItemContainer.Reception reception;
+
+        private ImageView drugLine;
+        private ImageView drugCircle;
+
+        public DrugItemClickListener(DrugItemContainer.Reception reception, ImageView drugLine, ImageView drugCircle) {
+            this.reception = reception;
+            this.drugLine = drugLine;
+            this.drugCircle = drugCircle;
+        }
+
+        @Override
+        public void onClick(View view) {
+            reception.setStatus(!reception.getStatus());
+            drugCircle.setImageResource(
+                    chooseDrugCircle(reception.getStatus(), reception.getHours(), reception.getMinutes()));
+            if (drugLine != null) {
+                drugLine.setBackground(
+                        chooseDrugLine(reception.getStatus(), reception.getHours(), reception.getMinutes(),view.getContext()));
+            }
+        }
     }
 }

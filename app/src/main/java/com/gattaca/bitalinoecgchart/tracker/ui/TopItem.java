@@ -118,7 +118,7 @@ public class TopItem extends AbstractItem<TopItem, ViewHoldersCollection.TopView
             if (recyclerView == null) {
                 return;
             }
-
+            TopItem.this.topContainer.setSelected(position);
             ((ImageView) v).setImageResource(dayIconHandler(day, true));
             previousSelectedView.setImageResource(dayIconHandler(previousSelectedDay,false));
             previousSelectedView = (ImageView) v;
