@@ -45,32 +45,6 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
     @Override
     protected void reDraw() {
-//        Boolean[] expanded = {false, false, false}; //0 -drug 1-measurements 2- tasks
-//        TrackerModel model = this.getModel();
-//        int count = TabMachine.getAllCount(expanded);
-//        for (int i = 0; i < count; i++){
-//            int type = TabMachine.getViewType(i, expanded);
-//            switch (type) {
-//                case 0 :
-//                    mItemAdapter.add(new HeaderItem().withExpanded(expanded).withName(TabMachine.getHeaderName(i, expanded)));
-//                    break;
-//                case 1 :
-//                    int pos = TabMachine.getExpandPosition(i, expanded);
-//                    int expandCount = TabMachine.expandCount(expanded, i);
-//                    int startFromPos = TabMachine.getStartFromPos(expanded, i);
-//                    int headerPosition = TabMachine.getHeaderPos(expanded, i);
-//
-//                    mItemAdapter.add(new FooterItem().withOnItemClickListener(new ExpandListener(pos, startFromPos, expandCount, headerPosition,expanded)));
-//                    break;
-//                case 2:
-//
-//                    mItemAdapter.add(new Item().withItemContainer(TabMachine.getItemContainer(i, expanded)));
-//                    break;
-//                case 3:
-//                    mItemAdapter.add(new TopItem());
-//            }
-//        }
-//
         mItemAdapter.clear();
         TopItem topItem = new TopItem().withModelDao(modelDao).linkToRecycleView(recyclerView).withOnItemClickListener(new FastAdapter.OnClickListener<TopItem>() {
             @Override

@@ -1,5 +1,7 @@
 package com.gattaca.bitalinoecgchart.tracker.data;
 
+import com.gattaca.bitalinoecgchart.tracker.v2.ModelDao;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,11 +71,10 @@ public class TopContainer {
     }
     public static TopContainer example() {
         String[] day = new String[] {"пн","вт","ср","чт","пт","сб","вс"};
-        boolean[] futures = new boolean[] {false, false,false, false,true,true,true};
         int[] percents = new int[] {100,100,50,0,0,0,0};
         List<Day> list = new ArrayList<>();
         for(int i = 0 ; i < 7; i ++ ) {
-            list.add(new Day(futures[i],percents[i],day[i]));
+            list.add(new Day(ModelDao.currentDayOfWeek() < i ,percents[i],day[i]));
         }
         return new TopContainer(list, 4);
     }

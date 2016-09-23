@@ -8,8 +8,10 @@ import com.gattaca.bitalinoecgchart.tracker.model.Drug;
 import com.gattaca.bitalinoecgchart.tracker.model.Measurement;
 import com.gattaca.bitalinoecgchart.tracker.model.Task;
 import com.gattaca.bitalinoecgchart.tracker.model.Week;
+import com.gattaca.bitalinoecgchart.tracker.ui.DrugItem;
 import com.gattaca.bitalinoecgchart.tracker.ui.HeaderItem;
-import com.gattaca.bitalinoecgchart.tracker.ui.Item;
+import com.gattaca.bitalinoecgchart.tracker.ui.TaskItem;
+import com.gattaca.bitalinoecgchart.tracker.ui.TrackerItem;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.ArrayList;
@@ -88,13 +90,13 @@ public class ModelDao {
             Day day = week.getDays().get(i);
             res.add(new HeaderItem().withName(dayModifier(day, currentDay)));
             for (Drug drug : day.getDrugs()) {
-                res.add(new Item().withItemContainer(buildDrugItemContainer(drug)));
+                res.add(new DrugItem().withItemContainer(buildDrugItemContainer(drug)));
             }
             for (Measurement measurement : day.getMeasurements()) {
-                res.add(new Item().withItemContainer(buildProgressBarItemContainer(measurement)));
+                res.add(new TrackerItem().withItemContainer(buildProgressBarItemContainer(measurement)));
             }
             for (Task task : day.getTasks()) {
-                res.add(new Item().withItemContainer(buildTaskItemContainer(task)));
+                res.add(new TaskItem().withItemContainer(buildTaskItemContainer(task)));
             }
         }
         return res;
