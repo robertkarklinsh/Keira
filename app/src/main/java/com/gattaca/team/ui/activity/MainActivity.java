@@ -18,6 +18,7 @@ import com.gattaca.team.ui.container.impl.MonitorContainer;
 import com.gattaca.team.ui.container.impl.NotificationCenterContainer;
 import com.gattaca.team.ui.container.impl.TrackerContainer;
 import com.gattaca.team.ui.model.IListContainerModel;
+import com.gattaca.team.ui.model.impl.DataBankModel;
 import com.gattaca.team.ui.model.impl.NotificationCenterModel;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -121,6 +122,7 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
                 break;
             case DataBank:
                 currentContainer = dataBankContainer;
+                model = new DataBankModel(RealmController.getAllSessions());
                 break;
         }
         currentContainer.changeCurrentVisibilityState(false);

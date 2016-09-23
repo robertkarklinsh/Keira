@@ -21,10 +21,14 @@ public final class TimeStump extends TextView {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setTime(final long time) {
-        final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss:SSS");
+    public static String convert(final long time, final String scheme) {
+        final SimpleDateFormat formatter = new SimpleDateFormat(scheme);
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
-        setText(formatter.format(calendar.getTime()));
+        return formatter.format(calendar.getTime());
+    }
+
+    public void setTime(final long time) {
+        setText(convert(time, "dd/MM/yyyy hh:mm:ss:SSS"));
     }
 }

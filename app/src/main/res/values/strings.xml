@@ -10,6 +10,10 @@
     <string name="monitor_main_action_ecg">ЭКГ</string>
     <string name="monitor_main_action_pulse">Пульс</string>
 
+    <!-- DATA BANK TEXTS-->
+    <string name="bank_data_formatted_session_item">Сессия: %1$S - %2$S</string>
+
+
     <!-- TOASTS MESSAGES-->
     <string name="toast_not_implemented">В разработке</string>
 </resources>

@@ -15,11 +15,11 @@ public class RR implements RealmModel {
     private String type = RRType.N;
 
     public static String getNamedFieldTime() {
-        return RR.class.getSimpleName() + ".time";
+        return "time";
     }
 
     public static String getNamedFieldType() {
-        return RR.class.getSimpleName() + ".type";
+        return "type";
     }
 
     public

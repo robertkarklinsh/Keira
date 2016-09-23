@@ -6,6 +6,7 @@ import android.app.Application;
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
+import com.gattaca.team.db.sensor.Session;
 
 import java.util.List;
 
@@ -72,6 +73,7 @@ public final class RealmController {
         realm.delete(RR.class);
         realm.delete(NotifyEventObject.class);
         realm.delete(SensorPointData.class);
+        realm.delete(Session.class);
         realm.commitTransaction();
     }
     public static void save(RealmModel item) {
@@ -103,5 +105,11 @@ public final class RealmController {
                 .where(NotifyEventObject.class)
                 .findAll()
                 .sort(NotifyEventObject.getNamedFieldTime(), Sort.DESCENDING);
+    }
+
+    public static RealmResults<Session> getAllSessions() {
+        return Realm.getDefaultInstance()
+                .where(Session.class)
+                .findAll();
     }
 }

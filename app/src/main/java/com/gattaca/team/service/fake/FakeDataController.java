@@ -14,6 +14,7 @@ import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
+import com.gattaca.team.db.sensor.Session;
 import com.gattaca.team.prefs.AppPref;
 import com.gattaca.team.root.MainApplication;
 
@@ -74,8 +75,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                     in = MainApplication.getContext().getAssets().open("session/samples.csv");
                     reader = new BufferedReader(new InputStreamReader(in));
                     String mLine = reader.readLine();
-                    int line = 0,
-                            pc_count_per_session = 0,
+                    int pc_count_per_session = 0,
                             pointsCount = 0,
                             ppCounts = 0,
                             eventPcCounts = 0,
@@ -88,10 +88,9 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         for (int i = 1; i < splits.length; i++) {
                             sensorList.add(new SensorPointData()
                                     .setChannel(i - 1)
-                                    .setTime(startTime + line * timeOffset)
+                                    .setTime(startTime + pointsCount * timeOffset)
                                     .setValue(Double.valueOf(splits[i])));
                         }
-                        line++;
                         mLine = reader.readLine();
 
                         if (sensorList.size() >= max) {
@@ -138,7 +137,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                                 eventsList.add(new NotifyEventObject()
                                         .setModuleNameResId(ModuleName.Monitor)
                                         .setEventType(NotifyType.PC_2)
-                                        .setTime(PcTimesAgain.get(0) + (PcTimesAgain.get(1) - PcTimesAgain.get(0)) / 2));
+                                        .setTime(PcTimesAgain.get(1)));
                             }
                             PcTimesAgain.clear();
                         }
@@ -197,6 +196,10 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         RealmController.saveList(eventsList);
                         eventsList.clear();
                     }
+
+                    RealmController.save(new Session()
+                            .setTimeStart(startTime)
+                            .setTimeFinish(startTime + pointsCount * timeOffset));
 
                     changeState(FakeMessage.Finish);
                     Log.i(getClass().getSimpleName(), "Sensor data count is " + pointsCount);

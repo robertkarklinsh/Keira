@@ -27,15 +27,15 @@ public class NotifyEventObject implements RealmModel {
     }
 
     public static String getNamedFieldCount() {
-        return NotifyEventObject.class.getSimpleName() + ".count";
+        return "count";
     }
 
     public static String getNamedFieldType() {
-        return NotifyEventObject.class.getSimpleName() + ".eventType";
+        return "eventType";
     }
 
     public static String getNamedFieldFake() {
-        return NotifyEventObject.class.getSimpleName() + ".fake";
+        return "fake";
     }
 
 
