@@ -23,7 +23,7 @@ public class NotifyEventObject implements RealmModel {
     int eventType;
 
     public static String getNamedFieldTime() {
-        return NotifyEventObject.class.getSimpleName() + ".time";
+        return "time";
     }
 
     public static String getNamedFieldCount() {

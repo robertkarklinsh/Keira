@@ -68,12 +68,18 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                 final ArrayList<RR> rrList = new ArrayList<>();
                 final ArrayList<NotifyEventObject> eventsList = new ArrayList<>();
                 final ArrayList<Long> PcTimesAgain = new ArrayList<>();
+                boolean block = false;
 
                 try {
                     in = MainApplication.getContext().getAssets().open("session/samples.csv");
                     reader = new BufferedReader(new InputStreamReader(in));
                     String mLine = reader.readLine();
-                    int line = 0, pc_count_per_session = 0, pointsCount = 0, ppCounts = 0, eventCounts = 0;
+                    int line = 0,
+                            pc_count_per_session = 0,
+                            pointsCount = 0,
+                            ppCounts = 0,
+                            eventPcCounts = 0,
+                            eventBpmCounts = 0;
                     String[] splits;
 
                     while (mLine != null) {
@@ -116,8 +122,10 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         // Search PC
                         if (!splits[1].equals(RRType.N)) {
                             pc_count_per_session++;
+                            PcTimesAgain.add(time);
 
                             if (PcTimesAgain.size() == 3) {
+                                eventPcCounts++;
                                 eventsList.add(new NotifyEventObject()
                                         .setModuleNameResId(ModuleName.Monitor)
                                         .setEventType(NotifyType.PC_3)
@@ -126,16 +134,19 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                             }
                         } else {
                             if (PcTimesAgain.size() == 2) {
+                                eventPcCounts++;
                                 eventsList.add(new NotifyEventObject()
                                         .setModuleNameResId(ModuleName.Monitor)
                                         .setEventType(NotifyType.PC_2)
-                                        .setTime((PcTimesAgain.get(1) - PcTimesAgain.get(0)) / 2));
+                                        .setTime(PcTimesAgain.get(0) + (PcTimesAgain.get(1) - PcTimesAgain.get(0)) / 2));
                             }
                             PcTimesAgain.clear();
                         }
 
                         // only 1 event move 30 bits per session
-                        if (pc_count_per_session == 31) {
+                        if (!block && pc_count_per_session == 31) {
+                            block = true;
+                            eventPcCounts++;
                             eventsList.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.PC_more_limit_per_hour)
@@ -144,18 +155,21 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         // Search BPM
                         int bpm = (int) (60 / Double.valueOf(splits[2]));
                         if (bpm < 40) {
+                            eventBpmCounts++;
                             eventsList.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_less_40)
                                     .setCount(bpm)
                                     .setTime(time));
-                        } else if (bpm < 50) {
+                        } else if (bpm < 45) {
+                            eventBpmCounts++;
                             eventsList.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_less_50_more_40)
                                     .setCount(bpm)
                                     .setTime(time));
-                        } else if (bpm > 100) {
+                        } else if (bpm > 120) {
+                            eventBpmCounts++;
                             eventsList.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_more_100)
@@ -170,7 +184,6 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                             rrList.clear();
                         }
                         if (eventsList.size() >= max / 2) {
-                            eventCounts += eventsList.size();
                             RealmController.saveList(eventsList);
                             eventsList.clear();
                         }
@@ -181,7 +194,6 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         rrList.clear();
                     }
                     if (!eventsList.isEmpty()) {
-                        eventCounts += eventsList.size();
                         RealmController.saveList(eventsList);
                         eventsList.clear();
                     }
@@ -189,7 +201,8 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                     changeState(FakeMessage.Finish);
                     Log.i(getClass().getSimpleName(), "Sensor data count is " + pointsCount);
                     Log.i(getClass().getSimpleName(), "RR interval data count is " + ppCounts);
-                    Log.i(getClass().getSimpleName(), "Events count are " + eventCounts);
+                    Log.i(getClass().getSimpleName(), "Events pc count are " + eventPcCounts);
+                    Log.i(getClass().getSimpleName(), "Events bpm count are " + eventBpmCounts);
                 } catch (Exception tx) {
                     tx.printStackTrace();
                 } finally {

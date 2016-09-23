@@ -13,6 +13,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmModel;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public final class RealmController {
     private static RealmController instance;
@@ -74,7 +75,7 @@ public final class RealmController {
         realm.commitTransaction();
     }
     public static void save(RealmModel item) {
-        final long time = System.currentTimeMillis();
+        // final long time = System.currentTimeMillis();
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(item);
@@ -84,7 +85,7 @@ public final class RealmController {
     }
 
     public static void saveList(List<? extends RealmModel> list) {
-        final long time = System.currentTimeMillis();
+        //final long time = System.currentTimeMillis();
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(list);
@@ -97,6 +98,10 @@ public final class RealmController {
     }
 
     public static RealmResults<NotifyEventObject> getAllEvents() {
-        return Realm.getDefaultInstance().where(NotifyEventObject.class).findAll();
+        return Realm
+                .getDefaultInstance()
+                .where(NotifyEventObject.class)
+                .findAll()
+                .sort(NotifyEventObject.getNamedFieldTime(), Sort.DESCENDING);
     }
 }

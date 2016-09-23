@@ -8,6 +8,7 @@ import com.gattaca.team.R;
 import com.gattaca.team.annotation.ModuleName;
 import com.gattaca.team.annotation.NotifyEventTag;
 import com.gattaca.team.ui.view.MarkerByNotifyTag;
+import com.gattaca.team.ui.view.TimeStump;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.HashSet;
@@ -51,22 +52,24 @@ public final class NotifyCenterListItem extends AbstractItem<NotifyCenterListIte
     public void bindView(ViewHolder viewHolder, List payloads) {
         super.bindView(viewHolder, payloads);
         viewHolder.module.setText(moduleNameResId);
-        viewHolder.time.setText("" + timeStump);
+        viewHolder.time.setTime(timeStump);
         viewHolder.text.setText(text);
-        for (int a : tags) {
-            viewHolder.tag.setTag(a);
+        for (@NotifyEventTag int a : tags) {
+            if (a == NotifyEventTag.Yellow || a == NotifyEventTag.Red) viewHolder.tag.setTag(a);
         }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView time, module, text;
+        TextView module, text;
+        TimeStump time;
         MarkerByNotifyTag tag;
 
         public ViewHolder(View view) {
             super(view);
-            time = (TextView) view.findViewById(R.id.time);
+            time = (TimeStump) view.findViewById(R.id.time);
             module = (TextView) view.findViewById(R.id.module);
             text = (TextView) view.findViewById(R.id.text);
+            tag = (MarkerByNotifyTag) view.findViewById(R.id.marker);
         }
     }
 }
