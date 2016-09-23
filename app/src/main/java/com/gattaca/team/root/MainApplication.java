@@ -10,17 +10,16 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.gattaca.team.R;
+import com.gattaca.team.db.RealmController;
 import com.gattaca.team.prefs.SharedPrefHelper;
-import com.gattaca.team.service.IServiceConnection;
-import com.gattaca.team.service.bitalino.BitalinoConnection;
+import com.gattaca.team.service.main.RootSensorListener;
 import com.squareup.otto.Bus;
 
 import io.fabric.sdk.android.Fabric;
 
 public final class MainApplication extends Application {
-    private static IServiceConnection serviceConnectionImpl;
     private static Context context;
-    private static Bus uiBus = new Bus();
+    private static Bus uiBus = new MainThreadBus();
     private ActivityLifecycleCallbacks activityCallback = new ActivityLifecycleCallbacks() {
         @Override
         public void onActivityStarted(Activity activity) {
@@ -57,10 +56,6 @@ public final class MainApplication extends Application {
         uiBus.post(obj);
     }
 
-    public static IServiceConnection getServiceConnectionImpl() {
-        return serviceConnectionImpl;
-    }
-
     public static Context getContext() {
         return context;
     }
@@ -81,8 +76,9 @@ public final class MainApplication extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         context = this.getApplicationContext();
-        serviceConnectionImpl = new BitalinoConnection();
         SharedPrefHelper.getInstance(context, "app");
         registerActivityLifecycleCallbacks(activityCallback);
+        RealmController.with(this);
+        RootSensorListener.getInstance();
     }
 }

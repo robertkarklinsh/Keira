@@ -8,4 +8,6 @@
     <item name="tracker_header" type="id" />
     <item name="tracker_footer" type="id" />
     <item name="tracker_item" type="id" />
+    <item name="list_item_notify_center" type="id" />
+    <item name="list_item_data_bank" type="id" />
 </resources>

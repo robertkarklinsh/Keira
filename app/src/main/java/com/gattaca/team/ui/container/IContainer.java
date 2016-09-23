@@ -14,9 +14,13 @@ public abstract class IContainer<Model extends IContainerModel> {
     protected Context context;
 
     public IContainer(Activity screen, Class<Model> modelClass, final int rootViewId) {
-        this.modelClass = modelClass;
-        this.rootView = screen.findViewById(rootViewId);
+        this(screen.findViewById(rootViewId), modelClass);
         this.context = screen;
+    }
+
+    protected IContainer(View rootView, Class<Model> modelClass) {
+        this.modelClass = modelClass;
+        this.rootView = rootView;
         this.bindView();
     }
 
@@ -42,6 +46,10 @@ public abstract class IContainer<Model extends IContainerModel> {
 
     public final View getRootView() {
         return this.rootView;
+    }
+
+    public void changeCurrentVisibilityState(final boolean isHide) {
+        getRootView().setVisibility(isHide ? View.GONE : View.VISIBLE);
     }
 
     protected Model getModel() {

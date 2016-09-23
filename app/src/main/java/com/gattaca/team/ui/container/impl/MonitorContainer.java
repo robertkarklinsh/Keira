@@ -1,13 +1,16 @@
 package com.gattaca.team.ui.container.impl;
 
 import android.app.Activity;
+import android.view.View;
 
 import com.gattaca.team.R;
 import com.gattaca.team.root.MainApplication;
+import com.gattaca.team.service.main.RootSensorListener;
+import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.model.impl.MonitorModel;
 
-public final class MonitorContainer extends IContainer<MonitorModel> {
+public final class MonitorContainer extends IContainer<MonitorModel> implements View.OnClickListener {
     public MonitorContainer(final Activity screen) {
         super(screen, MonitorModel.class, R.id.container_monitor_id);
     }
@@ -33,27 +36,29 @@ public final class MonitorContainer extends IContainer<MonitorModel> {
 
     @Override
     public void bindView() {
-        //TODO: implements
-
+        getRootView().findViewById(R.id.monitor_main_action_ecg).setOnClickListener(this);
+        getRootView().findViewById(R.id.monitor_main_action_pulse).setOnClickListener(this);
     }
 
-/*
-    @Subscribe
-    public void tickSensorData(SensorData data) {
-        final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < data.countTicks(); i++) {
-            builder.append("\ntimestump=").append(data.getTimeStump(i));
-            for (int j = 0; j < data.getChannels(); j++) {
-                builder.append("#").append(j).append("=").append(data.getVoltByChannel(i, j)).append("   ");
-            }
-            builder.append("\n");
+    @Override
+    public void changeCurrentVisibilityState(final boolean isHide) {
+        if (isHide && getRootView().getVisibility() == View.VISIBLE) {
+            RootSensorListener.stopRaw();
+        } else if (!isHide && getRootView().getVisibility() == View.GONE) {
+            RootSensorListener.generateRaw();
         }
-        Log.i(getClass().getSimpleName(), builder.toString());
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                text.setText(builder.toString());
-            }
-        });
-    }*/
+        super.changeCurrentVisibilityState(isHide);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.monitor_main_action_ecg:
+                MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.ECG));
+                break;
+            case R.id.monitor_main_action_pulse:
+                MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.BPM));
+                break;
+        }
+    }
 }

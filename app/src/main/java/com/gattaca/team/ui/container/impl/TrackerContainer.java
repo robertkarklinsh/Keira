@@ -10,6 +10,7 @@ import com.gattaca.bitalinoecgchart.tracker.ui.TopItem;
 import com.gattaca.bitalinoecgchart.tracker.v2.ModelDao;
 import com.gattaca.team.R;
 import com.gattaca.team.root.MainApplication;
+import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.container.MainMenu;
 import com.gattaca.team.ui.model.impl.TrackerModel;
@@ -38,7 +39,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
                 MainApplication.showToastNotImplemented();
                 break;
             case R.id.toolbar_action_open_monitor:
-                MainApplication.uiBusPost(MainMenu.Monitor);
+                MainApplication.uiBusPost(new ContainerTransferData(MainMenu.Monitor));
                 break;
         }
     }
