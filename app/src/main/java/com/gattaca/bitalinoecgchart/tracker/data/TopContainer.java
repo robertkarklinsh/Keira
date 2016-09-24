@@ -71,7 +71,7 @@ public class TopContainer {
     }
     public static TopContainer example() {
         String[] day = new String[] {"пн","вт","ср","чт","пт","сб","вс"};
-        int[] percents = new int[] {100,100,50,0,0,0,0};
+        int[] percents = new int[] {100,0,50,67,30,40,0};
         List<Day> list = new ArrayList<>();
         for(int i = 0 ; i < 7; i ++ ) {
             list.add(new Day(ModelDao.currentDayOfWeek() < i ,percents[i],day[i]));

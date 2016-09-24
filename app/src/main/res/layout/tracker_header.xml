@@ -9,7 +9,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:text="Лекарства"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"
         android:textColor="#000000"
         android:gravity="center_vertical"
         android:layout_gravity="center_vertical"/>

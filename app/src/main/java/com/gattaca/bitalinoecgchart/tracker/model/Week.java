@@ -23,7 +23,7 @@ public class Week {
     }
 
     public static Week stub() {
-        String[] days = new String[] {"пн","вт","ср","чт","пт","сб","вс"};
+        String[] days = {"ПН","ВТ","СР","ЧТ","ПТ","СБ","ВС"};;
         Week week = new Week();
         for (int i = 0 ; i < DAYS_IN_WEEK; i ++) {
             Day day = Day.example();

@@ -24,6 +24,12 @@ import java.util.List;
  */
 public class TopItem extends AbstractItem<TopItem, ViewHoldersCollection.TopViewHolder> {
 
+    private static final ImgHolder ZERO_PERCENT = new ImgHolder(R.drawable.zero_percent_big, R.drawable.zero_percent_small);
+    private static final ImgHolder TWENTY_FIVE_PERCENT = new ImgHolder(R.drawable.twentyfive_percent_big, R.drawable.twentyfive_percent_small);
+    private static final ImgHolder FIFTY_PERCENT = new ImgHolder(R.drawable.fifty_percent_big, R.drawable.fifty_percent_small);
+    private static final ImgHolder SEVENTY_FIVE_PERCENT = new ImgHolder(R.drawable.seventyfive_percent_big, R.drawable.seventyfive_percent_small);
+    private static final ImgHolder COMPLETED = new ImgHolder(R.drawable.completed_big, R.drawable.completed_small);
+
     TopContainer topContainer = TopContainer.example();
     RecyclerView recyclerView;
     int previousSelected = -1;
@@ -79,9 +85,9 @@ public class TopItem extends AbstractItem<TopItem, ViewHoldersCollection.TopView
                 previousSelectedDay = topContainer.getDays().get(i);
                 previousSelectedView = ((ImageView) item.findViewById(R.id.tracker_custom_tab_img));
 
-                ((ImageView) item.findViewById(R.id.tracker_custom_tab_img)).setImageResource(dayIconHandler(topContainer.getDays().get(i),true));
+                ((ImageView) item.findViewById(R.id.tracker_custom_tab_img)).setImageResource(dayIconHandler(topContainer.getDays().get(i), true));
             } else {
-                ((ImageView) item.findViewById(R.id.tracker_custom_tab_img)).setImageResource(dayIconHandler(topContainer.getDays().get(i),false));
+                ((ImageView) item.findViewById(R.id.tracker_custom_tab_img)).setImageResource(dayIconHandler(topContainer.getDays().get(i), false));
 
             }
 
@@ -90,17 +96,30 @@ public class TopItem extends AbstractItem<TopItem, ViewHoldersCollection.TopView
     }
 
 
-    static int dayIconHandler(TopContainer.Day day, boolean selected){
+    static int dayIconHandler(TopContainer.Day day, boolean selected) {
         if (day.isFuture()) {
             return R.drawable.circle_inactive_day;
         }
-        if (selected) {
-            return R.drawable.dial_ex;
-        } else {
-            return R.drawable.dial;
-        }
+        return selected ? imageSelector(day).big : imageSelector(day).small;
     }
 
+
+    static private ImgHolder imageSelector(TopContainer.Day day) {
+        if (day.getPercent() == 0) {
+            return ZERO_PERCENT;
+        } else {
+            if (day.getPercent() < 38) {
+                return TWENTY_FIVE_PERCENT;
+            } else if (day.getPercent() < 63) {
+                return FIFTY_PERCENT;
+            } else if (day.getPercent() == 100) {
+                return COMPLETED;
+            } else {
+                return SEVENTY_FIVE_PERCENT;
+            }
+        }
+
+    }
 
     private class TopItemClickListener implements View.OnClickListener {
         TopContainer.Day day;
@@ -120,7 +139,7 @@ public class TopItem extends AbstractItem<TopItem, ViewHoldersCollection.TopView
             }
             TopItem.this.topContainer.setSelected(position);
             ((ImageView) v).setImageResource(dayIconHandler(day, true));
-            previousSelectedView.setImageResource(dayIconHandler(previousSelectedDay,false));
+            previousSelectedView.setImageResource(dayIconHandler(previousSelectedDay, false));
             previousSelectedView = (ImageView) v;
             previousSelectedDay = day;
             previousSelected = position;
@@ -148,5 +167,23 @@ public class TopItem extends AbstractItem<TopItem, ViewHoldersCollection.TopView
 //        return  (View v) -> new ViewHoldersCollection.TopViewHolder(v);
 
         return ViewHoldersCollection.TopViewHolder::new;
+    }
+
+    private static class ImgHolder {
+        int big;
+        int small;
+
+        public ImgHolder(int big, int small) {
+            this.big = big;
+            this.small = small;
+        }
+
+        public int getBig() {
+            return big;
+        }
+
+        public int getSmall() {
+            return small;
+        }
     }
 }

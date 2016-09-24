@@ -3,7 +3,6 @@ package com.gattaca.team.ui.container.impl;
 import android.app.Activity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.gattaca.bitalinoecgchart.tracker.ui.TopItem;
@@ -15,7 +14,6 @@ import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.container.MainMenu;
 import com.gattaca.team.ui.model.impl.TrackerModel;
 import com.mikepenz.fastadapter.FastAdapter;
-import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 
 public final class TrackerContainer extends IContainer<TrackerModel> {
@@ -47,13 +45,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
     @Override
     protected void reDraw() {
         mItemAdapter.clear();
-        TopItem topItem = new TopItem().withModelDao(modelDao).linkToRecycleView(recyclerView).withOnItemClickListener(new FastAdapter.OnClickListener<TopItem>() {
-            @Override
-            public boolean onClick(View v, IAdapter<TopItem> adapter, TopItem item, int position) {
-
-                return false;
-            }
-        });
+        TopItem topItem = new TopItem().withModelDao(modelDao).linkToRecycleView(recyclerView);
         mItemAdapter.add(topItem);
         mItemAdapter.add(modelDao.getAllItemList());
 
@@ -75,15 +67,6 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
                     super.onViewDetachedFromWindow(holder);
                     holder.itemView.clearAnimation();
                 }
-//                @Override
-//                public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-//                    super.onBindViewHolder(holder, position);
-//                    Animation animation = AnimationUtils.loadAnimation(context,
-//                            (position > lastPosition) ? R.anim.up_from_bottom
-//                                    : R.anim.down_from_top);
-//                    holder.itemView.startAnimation(animation);
-//                    lastPosition = position;
-//                }
             };
         }
         if (mItemAdapter == null) {

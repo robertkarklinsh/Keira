@@ -18,7 +18,7 @@
         android:id="@+id/tracker_custom_tab_img"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/dial"
+        android:src="@drawable/completed_small"
         android:layout_gravity="center"/>
 
 
