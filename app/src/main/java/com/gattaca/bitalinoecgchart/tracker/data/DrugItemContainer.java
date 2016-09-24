@@ -1,5 +1,6 @@
 package com.gattaca.bitalinoecgchart.tracker.data;
 
+import com.gattaca.bitalinoecgchart.tracker.model.Drug;
 import com.gattaca.team.R;
 
 import java.util.ArrayList;
@@ -10,6 +11,21 @@ import java.util.Locale;
  * Created by Artem on 28.08.2016.
  */
 public class DrugItemContainer extends TrackerItemContainer {
+
+    Drug drug;
+
+    public static DrugItemContainer fromDrug(Drug drug) {
+        String name = drug.getName();
+        int dose = drug.getDose();
+        String units = drug.getUnits();
+        DrugItemContainer result = new DrugItemContainer(name, dose + " " + units, R.drawable.pills_icon);
+        result.drug = drug;
+        for(Drug.Intake intake : drug.getIntakes()) {
+            Reception reception = Reception.fromIntake(intake);
+
+        }
+        return result;
+    }
 
     public DrugItemContainer(String blackText, String grayText, int icon) {
         super(blackText, grayText, icon);
@@ -34,7 +50,15 @@ public class DrugItemContainer extends TrackerItemContainer {
         boolean status = false;
         Integer hours;
         Integer minutes;
+        Drug.Intake intake;
         Long timeL = 0L;
+
+        public static Reception fromIntake(Drug.Intake intake) {
+            int hours = intake.getHours();
+            int minutes = intake.getMinutes();
+            Boolean status = intake.isTaken();
+            return new Reception(status, hours, minutes);
+        }
 
         public boolean getStatus() {
             return status;

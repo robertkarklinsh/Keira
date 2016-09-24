@@ -26,6 +26,13 @@ public class ModelDao {
     private static final String TODAY = "сегодня";
     private static final String YESTERDAY = "вчера";
 
+    public ModelDao() {
+    }
+
+    public ModelDao(Week week) {
+        this.week = week;
+    }
+
     Week week = Week.stub();
     static GregorianCalendar time = new GregorianCalendar();
 

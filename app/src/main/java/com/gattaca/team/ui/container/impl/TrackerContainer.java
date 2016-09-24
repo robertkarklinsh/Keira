@@ -5,6 +5,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.widget.RelativeLayout;
 
+import com.gattaca.bitalinoecgchart.tracker.model.Week;
 import com.gattaca.bitalinoecgchart.tracker.ui.TopItem;
 import com.gattaca.bitalinoecgchart.tracker.v2.ModelDao;
 import com.gattaca.team.R;
@@ -16,11 +17,18 @@ import com.gattaca.team.ui.model.impl.TrackerModel;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import io.realm.Realm;
+
 public final class TrackerContainer extends IContainer<TrackerModel> {
     FastAdapter mFastAdapter;// = new FastAdapter();
     ItemAdapter mItemAdapter;// = new ItemAdapter();
     ModelDao modelDao = new ModelDao();
     RecyclerView recyclerView;
+    Realm realm;
+    GregorianCalendar calendar = new GregorianCalendar();
     public TrackerContainer(final Activity screen) {
         super(screen, TrackerModel.class, R.id.container_tracker_id);
     }
@@ -56,18 +64,14 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
         //TODO: implements
 
         //TODO: implements
-
+        realm = Realm.getDefaultInstance();
+        int weekNum = calendar.get(Calendar.WEEK_OF_YEAR);
+        Week week = realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), weekNum).findFirst();
+        modelDao = new ModelDao(week);
         RelativeLayout relativeLayout = (RelativeLayout)this.getRootView();
-//        rv.addView();
+
         if (mFastAdapter == null) {
-            mFastAdapter = new FastAdapter() {
-                int lastPosition = -1;
-                @Override
-                public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
-                    super.onViewDetachedFromWindow(holder);
-                    holder.itemView.clearAnimation();
-                }
-            };
+            mFastAdapter = new FastAdapter();
         }
         if (mItemAdapter == null) {
             mItemAdapter = new ItemAdapter();
@@ -78,7 +82,6 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
         rv.setItemAnimator(new DefaultItemAnimator());
         rv.setAdapter(mItemAdapter.wrap(mFastAdapter));
-
 
 
 

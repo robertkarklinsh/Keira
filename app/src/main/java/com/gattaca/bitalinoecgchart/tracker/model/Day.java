@@ -1,15 +1,19 @@
 package com.gattaca.bitalinoecgchart.tracker.model;
 
-import java.util.ArrayList;
+import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
+
 import java.util.List;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
 
 /**
  * Created by Artem on 12.09.2016.
  */
-public class Day {
-    List<Measurement> measurements = new ArrayList<>();
-    List<Drug> drugs = new ArrayList<>();
-    List<Task> tasks = new ArrayList<>();
+public class Day extends RealmObject implements TrackerItemContainer {
+    RealmList<Measurement> measurements = new RealmList<>();
+    RealmList<Drug> drugs = new RealmList<>();
+    RealmList<Task> tasks = new RealmList<>();
 
     public String getName() {
         return name;
@@ -34,7 +38,7 @@ public class Day {
         return measurements;
     }
 
-    public void setMeasurements(List<Measurement> measurements) {
+    public void setMeasurements(RealmList<Measurement> measurements) {
         this.measurements = measurements;
     }
 
@@ -42,7 +46,7 @@ public class Day {
         return drugs;
     }
 
-    public void setDrugs(List<Drug> drugs) {
+    public void setDrugs(RealmList<Drug> drugs) {
         this.drugs = drugs;
     }
 
@@ -50,11 +54,9 @@ public class Day {
         return tasks;
     }
 
-    public void setTasks(List<Task> tasks) {
+    public void setTasks(RealmList<Task> tasks) {
         this.tasks = tasks;
     }
-
-
 
     public static Day example() {
         Day day = new Day();
@@ -65,6 +67,8 @@ public class Day {
         }
         return day;
     }
+
+
 
 
 }

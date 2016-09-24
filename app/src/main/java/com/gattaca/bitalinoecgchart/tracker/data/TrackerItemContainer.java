@@ -45,14 +45,6 @@ public abstract class TrackerItemContainer {
         this.grayText = grayText;
     }
 
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
     public TrackerItemContainer(int icon, String blackText, String grayText, boolean visible) {
 
         this.icon = icon;
