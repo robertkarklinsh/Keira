@@ -5,6 +5,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.widget.RelativeLayout;
 
+import com.gattaca.bitalinoecgchart.tracker.data.TopContainer;
 import com.gattaca.bitalinoecgchart.tracker.model.Week;
 import com.gattaca.bitalinoecgchart.tracker.ui.TopItem;
 import com.gattaca.bitalinoecgchart.tracker.v2.ModelDao;
@@ -29,6 +30,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
     RecyclerView recyclerView;
     Realm realm;
     GregorianCalendar calendar = new GregorianCalendar();
+    Week week ;
     public TrackerContainer(final Activity screen) {
         super(screen, TrackerModel.class, R.id.container_tracker_id);
     }
@@ -53,7 +55,9 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
     @Override
     protected void reDraw() {
         mItemAdapter.clear();
-        TopItem topItem = new TopItem().withModelDao(modelDao).linkToRecycleView(recyclerView);
+        TopItem topItem = new TopItem()
+                .withModelDao(modelDao).linkToRecycleView(recyclerView)
+                .withTopContainer(TopContainer.createFromWeek(week));
         mItemAdapter.add(topItem);
         mItemAdapter.add(modelDao.getAllItemList());
 
@@ -65,8 +69,11 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
         //TODO: implements
         realm = Realm.getDefaultInstance();
+        if(calendar == null) {
+            calendar = new GregorianCalendar();
+        }
         int weekNum = calendar.get(Calendar.WEEK_OF_YEAR);
-        Week week = realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), weekNum).findFirst();
+        week = realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), weekNum).findFirst();
         modelDao = new ModelDao(week);
         RelativeLayout relativeLayout = (RelativeLayout)this.getRootView();
 

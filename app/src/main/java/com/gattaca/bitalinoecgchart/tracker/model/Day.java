@@ -1,7 +1,5 @@
 package com.gattaca.bitalinoecgchart.tracker.model;
 
-import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
-
 import java.util.List;
 
 import io.realm.RealmList;
@@ -10,13 +8,35 @@ import io.realm.RealmObject;
 /**
  * Created by Artem on 12.09.2016.
  */
-public class Day extends RealmObject implements TrackerItemContainer {
+public class Day extends RealmObject {
     RealmList<Measurement> measurements = new RealmList<>();
     RealmList<Drug> drugs = new RealmList<>();
     RealmList<Task> tasks = new RealmList<>();
 
     public String getName() {
         return name;
+    }
+
+    public int getPercent() {
+        int count = 0;
+        int completed = 0;
+        for (Drug drug : drugs) {
+            for (Intake intake : drug.getIntakes()) {
+                count ++;
+                if (intake.isTaken()) {
+                    completed ++;
+                }
+            }
+        }
+        for (Task task : tasks) {
+            for (TaskAction taskAction: task.getActions()) {
+                count++;
+                if (taskAction.isCompleted()) {
+                    completed ++;
+                }
+            }
+        }
+        return (int)Math.round((double)completed/(double)count);
     }
 
     public void setName(String name) {
@@ -67,8 +87,5 @@ public class Day extends RealmObject implements TrackerItemContainer {
         }
         return day;
     }
-
-
-
 
 }

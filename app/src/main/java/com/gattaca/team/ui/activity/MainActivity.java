@@ -26,6 +26,8 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.squareup.otto.Subscribe;
 
+import io.realm.Realm;
+
 public final class MainActivity extends AppCompatActivity implements Drawer.OnDrawerItemClickListener {
     private IContainer trackerContainer, notificationCenterContainer, monitorContainer, dataBankContainer, currentContainer;
 
@@ -151,5 +153,11 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
     @Subscribe
     public void listenerForNewActivityRequest(ActivityTransferData request) {
         request.launchRequestedActivity(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Realm.getDefaultInstance().close();
+        super.onDestroy();
     }
 }

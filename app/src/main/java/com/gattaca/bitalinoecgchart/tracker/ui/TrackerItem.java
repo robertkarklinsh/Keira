@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gattaca.bitalinoecgchart.tracker.ViewHoldersCollection;
-import com.gattaca.bitalinoecgchart.tracker.data.ProgressBarItemContainer;
+import com.gattaca.bitalinoecgchart.tracker.model.Measurement;
 import com.gattaca.team.R;
 
 import java.util.List;
@@ -19,15 +19,15 @@ import java.util.List;
 public class TrackerItem extends Item {
     @Override
     void bindCustomView(ViewHoldersCollection.DrugItemViewHolder holder, List payloads) {
-        ProgressBarItemContainer measurementItemContainer = (ProgressBarItemContainer) itemContainer;
+        Measurement measurement = (Measurement) itemContainer;
         ViewGroup viewGroup = (ViewGroup) holder.mView.getParent();
         Context context = holder.mView.getContext();
         LinearLayout itemHeader = (LinearLayout) holder.mView.findViewById(R.id.tracker_item_text_holder);
         LinearLayout itemImages = (LinearLayout) holder.mView.findViewById(R.id.tracker_item_image_holder);
         itemImages.removeAllViews();
-        ((TextView) itemHeader.findViewById(R.id.tracker_item_text_black)).setText(measurementItemContainer.getBlackText());
-        ((TextView) itemHeader.findViewById(R.id.tracker_item_text_gray)).setText(measurementItemContainer.getGrayText());
-        ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(measurementItemContainer.getIcon());
+        ((TextView) itemHeader.findViewById(R.id.tracker_item_text_black)).setText(measurement.getBlackText());
+        ((TextView) itemHeader.findViewById(R.id.tracker_item_text_gray)).setText(measurement.getGrayText());
+        ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(measurement.getIcon());
         LinearLayout progress = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_measurement_progess, viewGroup);
         itemImages.addView(progress);
 

@@ -1,8 +1,5 @@
 package com.gattaca.bitalinoecgchart.tracker.v2;
 
-import com.gattaca.bitalinoecgchart.tracker.data.DrugItemContainer;
-import com.gattaca.bitalinoecgchart.tracker.data.ProgressBarItemContainer;
-import com.gattaca.bitalinoecgchart.tracker.data.TaskItemContainer;
 import com.gattaca.bitalinoecgchart.tracker.model.Day;
 import com.gattaca.bitalinoecgchart.tracker.model.Drug;
 import com.gattaca.bitalinoecgchart.tracker.model.Measurement;
@@ -97,13 +94,13 @@ public class ModelDao {
             Day day = week.getDays().get(i);
             res.add(new HeaderItem().withName(dayModifier(day, currentDay)));
             for (Drug drug : day.getDrugs()) {
-                res.add(new DrugItem().withItemContainer(buildDrugItemContainer(drug)));
+                res.add(new DrugItem().withItemContainer(drug));
             }
             for (Measurement measurement : day.getMeasurements()) {
-                res.add(new TrackerItem().withItemContainer(buildProgressBarItemContainer(measurement)));
+                res.add(new TrackerItem().withItemContainer(measurement));
             }
             for (Task task : day.getTasks()) {
-                res.add(new TaskItem().withItemContainer(buildTaskItemContainer(task)));
+                res.add(new TaskItem().withItemContainer(task));
             }
         }
         return res;
@@ -118,24 +115,5 @@ public class ModelDao {
     }
 
 
-    private static DrugItemContainer buildDrugItemContainer(Drug drug) {
-        return DrugItemContainer.example(1);
-//        String name = drug.getName();
-//        String dose = drug.getDose() + drug.getUnits();
-//        DrugItemContainer drugItemContainer = new DrugItemContainer(name, dose, R.drawable.pills_icon);
-//        for (Drug.Intake intake : drug.getIntakes()) {
-//            drugItemContainer.addReception(new DrugItemContainer.Reception(intake.isTaken(), intake.getTimeAsString()));
-//        }
-//        return drugItemContainer;
-    }
 
-    private static ProgressBarItemContainer buildProgressBarItemContainer(Measurement measurement) {
-        return ProgressBarItemContainer.example(1);
-        //Todo real converter
-    }
-
-    private static TaskItemContainer buildTaskItemContainer(Task task) {
-        return TaskItemContainer.example(1);
-        //Todo real converter
-    }
 }

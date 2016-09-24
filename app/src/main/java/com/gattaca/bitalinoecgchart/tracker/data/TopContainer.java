@@ -1,5 +1,6 @@
 package com.gattaca.bitalinoecgchart.tracker.data;
 
+import com.gattaca.bitalinoecgchart.tracker.model.Week;
 import com.gattaca.bitalinoecgchart.tracker.v2.ModelDao;
 
 import java.util.ArrayList;
@@ -77,6 +78,15 @@ public class TopContainer {
             list.add(new Day(ModelDao.currentDayOfWeek() < i ,percents[i],day[i]));
         }
         return new TopContainer(list, 4);
+    }
+
+    public static TopContainer createFromWeek(Week week) {
+        List<Day> list = new ArrayList<>();
+        for(int i = 0 ; i < 7; i ++ ) {
+            com.gattaca.bitalinoecgchart.tracker.model.Day day = week.getDays().get(i);
+            list.add(new Day(ModelDao.currentDayOfWeek() < i ,day.getPercent(),day.getName().toLowerCase()));
+        }
+        return new TopContainer(list, 0);
     }
 
 }
