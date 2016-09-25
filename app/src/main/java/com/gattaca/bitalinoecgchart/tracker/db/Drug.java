@@ -1,11 +1,10 @@
-package com.gattaca.bitalinoecgchart.tracker.model;
+package com.gattaca.bitalinoecgchart.tracker.db;
 
 import com.gattaca.bitalinoecgchart.tracker.data.ItemType;
 import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
 import com.gattaca.team.R;
 
 import java.util.List;
-import java.util.Locale;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;

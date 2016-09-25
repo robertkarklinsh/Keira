@@ -1,4 +1,4 @@
-package com.gattaca.bitalinoecgchart.tracker.model;
+package com.gattaca.bitalinoecgchart.tracker.db;
 
 import java.util.List;
 
