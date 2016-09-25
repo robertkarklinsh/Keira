@@ -1,10 +1,10 @@
 package com.gattaca.bitalinoecgchart.tracker.v2;
 
-import com.gattaca.bitalinoecgchart.tracker.model.Day;
-import com.gattaca.bitalinoecgchart.tracker.model.Drug;
-import com.gattaca.bitalinoecgchart.tracker.model.Measurement;
-import com.gattaca.bitalinoecgchart.tracker.model.Task;
-import com.gattaca.bitalinoecgchart.tracker.model.Week;
+import com.gattaca.bitalinoecgchart.tracker.db.Day;
+import com.gattaca.bitalinoecgchart.tracker.db.Drug;
+import com.gattaca.bitalinoecgchart.tracker.db.Measurement;
+import com.gattaca.bitalinoecgchart.tracker.db.Task;
+import com.gattaca.bitalinoecgchart.tracker.db.Week;
 import com.gattaca.bitalinoecgchart.tracker.ui.DrugItem;
 import com.gattaca.bitalinoecgchart.tracker.ui.HeaderItem;
 import com.gattaca.bitalinoecgchart.tracker.ui.TaskItem;
@@ -20,8 +20,8 @@ import java.util.List;
  * Created by Artem on 18.09.2016.
  */
 public class ModelDao {
-    private static final String TODAY = "сегодня";
-    private static final String YESTERDAY = "вчера";
+    private static final String TODAY = "СЕГОДНЯ";
+    private static final String YESTERDAY = "ВЧЕРА";
 
     public ModelDao() {
     }
@@ -30,7 +30,7 @@ public class ModelDao {
         this.week = week;
     }
 
-    Week week = Week.stub();
+    Week week ;
     static GregorianCalendar time = new GregorianCalendar();
 
     public int getCount() {
@@ -65,7 +65,7 @@ public class ModelDao {
         if (day.getNumber() == currentDay) {
             return TODAY;
         }
-        if (day.getNumber() - 1 == currentDay) {
+        if (day.getNumber() == currentDay - 1) {
             return YESTERDAY;
         }
         return day.getName();

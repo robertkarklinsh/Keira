@@ -9,18 +9,13 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.gattaca.bitalinoecgchart.tracker.model.Week;
-import com.gattaca.bitalinoecgchart.tracker.v2.StubWeekCreator;
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.prefs.SharedPrefHelper;
 import com.gattaca.team.service.main.RootSensorListener;
 import com.squareup.otto.Bus;
 
-import java.util.GregorianCalendar;
-
 import io.fabric.sdk.android.Fabric;
-import io.realm.Realm;
 
 public final class MainApplication extends Application {
     private static Context context;
@@ -85,17 +80,8 @@ public final class MainApplication extends Application {
         registerActivityLifecycleCallbacks(activityCallback);
         RealmController.with(this);
         RootSensorListener.getInstance();
-        Realm realm = Realm.getDefaultInstance();
-        if (realm.where(Week.class)
-                .equalTo(Week.getNamedFieldWeekNum(),new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR))
-                .findFirst() == null) {
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    Week week = realm.createObject(Week.class, new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR));
-                    new StubWeekCreator(week, realm).fillStubWeek();
-                }
-            });
-        }
+
+
+
     }
 }

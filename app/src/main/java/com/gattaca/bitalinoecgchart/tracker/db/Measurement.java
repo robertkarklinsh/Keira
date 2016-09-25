@@ -12,8 +12,36 @@ import io.realm.RealmObject;
 public class Measurement extends RealmObject implements TrackerItemContainer{
     private boolean completed = false;
     private String name ;
-    private String duration;
+    private int duration;
     private String units;
+
+    public String getName() {
+        return name;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public String getUnits() {
+        return units;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
+    }
 
     public boolean isCompleted() {
         return completed;

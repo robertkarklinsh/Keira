@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.gattaca.bitalinoecgchart.tracker.data.TopContainer;
-import com.gattaca.bitalinoecgchart.tracker.model.Week;
+import com.gattaca.bitalinoecgchart.tracker.db.Week;
 import com.gattaca.bitalinoecgchart.tracker.ui.TopItem;
 import com.gattaca.bitalinoecgchart.tracker.v2.ModelDao;
+import com.gattaca.bitalinoecgchart.tracker.v2.StubWeekCreator;
 import com.gattaca.team.R;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.ui.container.ContainerTransferData;
@@ -26,11 +28,12 @@ import io.realm.Realm;
 public final class TrackerContainer extends IContainer<TrackerModel> {
     FastAdapter mFastAdapter;// = new FastAdapter();
     ItemAdapter mItemAdapter;// = new ItemAdapter();
-    ModelDao modelDao = new ModelDao();
+    ModelDao modelDao;
     RecyclerView recyclerView;
     Realm realm;
     GregorianCalendar calendar = new GregorianCalendar();
-    Week week ;
+    Week week;
+
     public TrackerContainer(final Activity screen) {
         super(screen, TrackerModel.class, R.id.container_tracker_id);
     }
@@ -65,18 +68,29 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
     @Override
     public void bindView() {
+        realm = Realm.getDefaultInstance();
+        if (realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR)).findFirst() == null) {
+            realm.executeTransaction((Realm realm) -> {
+                        try {
+                            Week week = realm.createObject(Week.class, new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR));
+                            StubWeekCreator swc = new StubWeekCreator(week, realm);
+                            swc.fillStubWeek();
+                        } catch (Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+            );
+        }
         //TODO: implements
 
-        //TODO: implements
-        realm = Realm.getDefaultInstance();
-        if(calendar == null) {
+        if (calendar == null) {
             calendar = new GregorianCalendar();
         }
         int weekNum = calendar.get(Calendar.WEEK_OF_YEAR);
+        realm = Realm.getDefaultInstance();
         week = realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), weekNum).findFirst();
         modelDao = new ModelDao(week);
-        RelativeLayout relativeLayout = (RelativeLayout)this.getRootView();
-
+        RelativeLayout relativeLayout = (RelativeLayout) this.getRootView();
         if (mFastAdapter == null) {
             mFastAdapter = new FastAdapter();
         }
@@ -89,7 +103,6 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
         rv.setItemAnimator(new DefaultItemAnimator());
         rv.setAdapter(mItemAdapter.wrap(mFastAdapter));
-
 
 
     }

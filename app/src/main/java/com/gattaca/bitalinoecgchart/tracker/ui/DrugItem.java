@@ -11,12 +11,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gattaca.bitalinoecgchart.tracker.ViewHoldersCollection;
-import com.gattaca.bitalinoecgchart.tracker.model.Drug;
-import com.gattaca.bitalinoecgchart.tracker.model.Intake;
+import com.gattaca.bitalinoecgchart.tracker.db.Drug;
+import com.gattaca.bitalinoecgchart.tracker.db.Intake;
 import com.gattaca.team.R;
 
 import java.util.Calendar;
 import java.util.List;
+
+import io.realm.Realm;
 
 /**
  * Created by Artem on 23.09.2016.
@@ -151,7 +153,8 @@ public class DrugItem extends Item {
 
         @Override
         public void onClick(View view) {
-            intake.setTaken(!intake.isTaken());
+            Realm.getDefaultInstance().executeTransaction((Realm realm) -> intake.setTaken(!intake.isTaken()));
+
             drugCircle.setImageResource(
                     chooseDrugCircle(intake.isTaken(), intake.getHours(), intake.getMinutes()));
             if (drugLine != null) {

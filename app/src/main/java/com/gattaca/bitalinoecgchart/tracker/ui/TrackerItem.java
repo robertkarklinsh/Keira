@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gattaca.bitalinoecgchart.tracker.ViewHoldersCollection;
-import com.gattaca.bitalinoecgchart.tracker.model.Measurement;
+import com.gattaca.bitalinoecgchart.tracker.db.Measurement;
 import com.gattaca.team.R;
 
 import java.util.List;

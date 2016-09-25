@@ -1,7 +1,5 @@
 package com.gattaca.bitalinoecgchart.tracker.db;
 
-import java.util.List;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
@@ -54,7 +52,7 @@ public class Day extends RealmObject {
         this.number = number;
     }
 
-    public List<Measurement> getMeasurements() {
+    public RealmList<Measurement> getMeasurements() {
         return measurements;
     }
 
@@ -62,7 +60,7 @@ public class Day extends RealmObject {
         this.measurements = measurements;
     }
 
-    public List<Drug> getDrugs() {
+    public RealmList<Drug> getDrugs() {
         return drugs;
     }
 
@@ -70,7 +68,7 @@ public class Day extends RealmObject {
         this.drugs = drugs;
     }
 
-    public List<Task> getTasks() {
+    public RealmList<Task> getTasks() {
         return tasks;
     }
 

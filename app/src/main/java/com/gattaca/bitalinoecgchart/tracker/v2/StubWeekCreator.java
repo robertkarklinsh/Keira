@@ -1,12 +1,12 @@
 package com.gattaca.bitalinoecgchart.tracker.v2;
 
-import com.gattaca.bitalinoecgchart.tracker.model.Day;
-import com.gattaca.bitalinoecgchart.tracker.model.Drug;
-import com.gattaca.bitalinoecgchart.tracker.model.Intake;
-import com.gattaca.bitalinoecgchart.tracker.model.Measurement;
-import com.gattaca.bitalinoecgchart.tracker.model.Task;
-import com.gattaca.bitalinoecgchart.tracker.model.TaskAction;
-import com.gattaca.bitalinoecgchart.tracker.model.Week;
+import com.gattaca.bitalinoecgchart.tracker.db.Day;
+import com.gattaca.bitalinoecgchart.tracker.db.Drug;
+import com.gattaca.bitalinoecgchart.tracker.db.Intake;
+import com.gattaca.bitalinoecgchart.tracker.db.Measurement;
+import com.gattaca.bitalinoecgchart.tracker.db.Task;
+import com.gattaca.bitalinoecgchart.tracker.db.TaskAction;
+import com.gattaca.bitalinoecgchart.tracker.db.Week;
 
 import io.realm.Realm;
 
@@ -71,6 +71,9 @@ public class StubWeekCreator {
 
     private Measurement createMeasurment(String name, int duration, String units) {
         Measurement measurement = realm.createObject(Measurement.class);
+        measurement.setName(name);
+        measurement.setDuration(duration);
+        measurement.setUnits(units);
         return measurement;
     }
 

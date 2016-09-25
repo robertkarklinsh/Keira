@@ -4,8 +4,6 @@ import com.gattaca.bitalinoecgchart.tracker.data.ItemType;
 import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
 import com.gattaca.team.R;
 
-import java.util.List;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
@@ -41,7 +39,7 @@ public class Drug extends RealmObject implements TrackerItemContainer{
         return name;
     }
 
-    public List<Intake> getIntakes() {
+    public RealmList<Intake> getIntakes() {
         return intakes;
     }
 
