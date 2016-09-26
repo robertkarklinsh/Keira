@@ -12,5 +12,6 @@
     <com.gattaca.team.ui.view.Bpm
         android:id="@+id/bpm"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 </RelativeLayout>

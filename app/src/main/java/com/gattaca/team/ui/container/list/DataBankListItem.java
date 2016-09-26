@@ -34,8 +34,8 @@ public final class DataBankListItem extends AbstractItem<DataBankListItem, DataB
         super.bindView(viewHolder, payloads);
         final Resources res = viewHolder.text.getResources();
         viewHolder.text.setText(String.format(res.getString(R.string.bank_data_formatted_session_item),
-                TimeStump.convert(timeStumpStart, "dd/MM hh:mm"),
-                TimeStump.convert(timeStumpFinish, "dd/MM hh:mm")));
+                TimeStump.convert(timeStumpStart, "dd/MM HH:mm"),
+                TimeStump.convert(timeStumpFinish, "dd/MM HH:mm")));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

@@ -29,6 +29,6 @@ public final class TimeStump extends TextView {
     }
 
     public void setTime(final long time) {
-        setText(convert(time, "dd/MM/yyyy hh:mm:ss:SSS"));
+        setText(convert(time, "dd/MM/yyyy HH:mm:ss:SSS"));
     }
 }
