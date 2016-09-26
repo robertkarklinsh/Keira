@@ -1,12 +1,14 @@
 package com.gattaca.bitalinoecgchart.tracker.db;
 
 import io.realm.RealmList;
-import io.realm.RealmObject;
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
 /**
  * Created by Artem on 12.09.2016.
  */
-public class Day extends RealmObject {
+@RealmClass
+public class Day implements RealmModel {
     RealmList<Measurement> measurements = new RealmList<>();
     RealmList<Drug> drugs = new RealmList<>();
     RealmList<Task> tasks = new RealmList<>();
@@ -18,7 +20,7 @@ public class Day extends RealmObject {
     public int getPercent() {
         int count = 0;
         int completed = 0;
-        for (Drug drug : drugs) {
+        for (Drug drug : this.getDrugs()) {
             for (Intake intake : drug.getIntakes()) {
                 count ++;
                 if (intake.isTaken()) {
@@ -26,7 +28,7 @@ public class Day extends RealmObject {
                 }
             }
         }
-        for (Task task : tasks) {
+        for (Task task : this.getTasks()) {
             for (TaskAction taskAction: task.getActions()) {
                 count++;
                 if (taskAction.isCompleted()) {
@@ -34,7 +36,8 @@ public class Day extends RealmObject {
                 }
             }
         }
-        return (int)Math.round((double)completed/(double)count);
+        return (int)Math.round((double)completed/(double)count * 100.);
+
     }
 
     public void setName(String name) {

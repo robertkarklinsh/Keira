@@ -112,4 +112,8 @@ public final class RealmController {
                 .where(Session.class)
                 .findAll();
     }
+
+    public static Realm getRealm() {
+        return  Realm.getDefaultInstance();
+    }
 }

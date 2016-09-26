@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.gattaca.bitalinoecgchart.tracker.data.TopContainer;
 import com.gattaca.bitalinoecgchart.tracker.db.Week;
 import com.gattaca.bitalinoecgchart.tracker.ui.TopItem;
 import com.gattaca.bitalinoecgchart.tracker.v2.ModelDao;
-import com.gattaca.bitalinoecgchart.tracker.v2.StubWeekCreator;
 import com.gattaca.team.R;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.ui.container.ContainerTransferData;
@@ -68,19 +66,19 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
     @Override
     public void bindView() {
-        realm = Realm.getDefaultInstance();
-        if (realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR)).findFirst() == null) {
-            realm.executeTransaction((Realm realm) -> {
-                        try {
-                            Week week = realm.createObject(Week.class, new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR));
-                            StubWeekCreator swc = new StubWeekCreator(week, realm);
-                            swc.fillStubWeek();
-                        } catch (Exception e) {
-                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-            );
-        }
+//        realm = RealmController.getRealm();
+//        if (realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR)).findFirst() == null) {
+//            realm.executeTransaction((Realm realm) -> {
+//                        try {
+//                            Week week = realm.createObject(Week.class, new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR));
+//                            StubWeekCreator swc = new StubWeekCreator(week, realm);
+//                            swc.fillStubWeek();
+//                        } catch (Exception e) {
+//                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//            );
+//        }
         //TODO: implements
 
         if (calendar == null) {

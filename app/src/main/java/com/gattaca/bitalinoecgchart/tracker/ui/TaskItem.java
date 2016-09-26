@@ -64,6 +64,7 @@ public class TaskItem extends Item {
         public void onClick(View view) {
             Realm.getDefaultInstance().executeTransaction((Realm realm) ->
             task.getActions().get(position).setCompleted(!task.getActions().get(position).isCompleted()));
+
             taskCircle.setImageResource(
                     task.getActions().get(position).isCompleted() ? R.drawable.circle_with_arrow : R.drawable.circle_grey
             );

@@ -2,13 +2,15 @@ package com.gattaca.bitalinoecgchart.tracker.db;
 
 import java.util.Locale;
 
-import io.realm.RealmObject;
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
 /**
  * Created by Artem on 24.09.2016.
  */
 
-public class Intake extends RealmObject {
+@RealmClass
+public class Intake implements RealmModel {
     private boolean taken;
     private int hours;
     private int minutes;

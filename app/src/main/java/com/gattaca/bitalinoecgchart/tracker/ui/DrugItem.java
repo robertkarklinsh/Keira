@@ -154,7 +154,6 @@ public class DrugItem extends Item {
         @Override
         public void onClick(View view) {
             Realm.getDefaultInstance().executeTransaction((Realm realm) -> intake.setTaken(!intake.isTaken()));
-
             drugCircle.setImageResource(
                     chooseDrugCircle(intake.isTaken(), intake.getHours(), intake.getMinutes()));
             if (drugLine != null) {

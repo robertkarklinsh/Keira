@@ -5,12 +5,14 @@ import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
 import com.gattaca.team.R;
 
 import io.realm.RealmList;
-import io.realm.RealmObject;
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
 /**
  * Created by Artem on 12.09.2016.
  */
-public class Task extends RealmObject implements TrackerItemContainer{
+@RealmClass
+public class Task implements RealmModel, TrackerItemContainer{
     String name;
     int time;
     String units;

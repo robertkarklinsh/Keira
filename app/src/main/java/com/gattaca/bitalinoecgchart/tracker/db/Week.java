@@ -3,17 +3,24 @@ package com.gattaca.bitalinoecgchart.tracker.db;
 import java.util.List;
 
 import io.realm.RealmList;
-import io.realm.RealmObject;
+import io.realm.RealmModel;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
 
 /**
  * Created by Artem on 12.09.2016.
  */
-public class Week extends RealmObject {
+
+@RealmClass
+public class Week implements RealmModel {
     private RealmList<Day> days = new RealmList<>();
     public static final int DAYS_IN_WEEK = 7;
     @PrimaryKey
     int weekNumber;
+
+    public void setWeekNumber(int weekNumber) {
+        this.weekNumber = weekNumber;
+    }
 
     public static String getNamedFieldWeekNum() {
         return "weekNumber";

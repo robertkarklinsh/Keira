@@ -1,5 +1,7 @@
 package com.gattaca.bitalinoecgchart.tracker.v2;
 
+import android.support.v7.widget.RecyclerView;
+
 import com.gattaca.bitalinoecgchart.tracker.db.Day;
 import com.gattaca.bitalinoecgchart.tracker.db.Drug;
 import com.gattaca.bitalinoecgchart.tracker.db.Measurement;
@@ -32,6 +34,7 @@ public class ModelDao {
 
     Week week ;
     static GregorianCalendar time = new GregorianCalendar();
+    RecyclerView.Adapter adapter;
 
     public int getCount() {
         int res = 0;

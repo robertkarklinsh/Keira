@@ -5,12 +5,14 @@ import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
 import com.gattaca.team.R;
 
 import io.realm.RealmList;
-import io.realm.RealmObject;
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
 /**
  * Created by Artem on 12.09.2016.
  */
-public class Drug extends RealmObject implements TrackerItemContainer{
+@RealmClass
+public class Drug implements RealmModel, TrackerItemContainer {
     private boolean completed = false;
     private String name;
     private int dose;

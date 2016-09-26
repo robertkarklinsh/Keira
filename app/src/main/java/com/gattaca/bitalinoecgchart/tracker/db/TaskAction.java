@@ -1,12 +1,14 @@
 package com.gattaca.bitalinoecgchart.tracker.db;
 
-import io.realm.RealmObject;
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
 /**
  * Created by Artem on 24.09.2016.
  */
 
-public class TaskAction extends RealmObject {
+@RealmClass
+public class TaskAction implements RealmModel {
     private boolean completed;
 
     public boolean isCompleted() {

@@ -1,5 +1,7 @@
 package com.gattaca.bitalinoecgchart.tracker.ui;
 
+import android.support.v7.widget.RecyclerView;
+
 import com.gattaca.bitalinoecgchart.tracker.ViewHoldersCollection;
 import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
 import com.gattaca.team.R;
@@ -14,6 +16,7 @@ import java.util.List;
  */
 public abstract class Item extends AbstractItem<Item, ViewHoldersCollection.DrugItemViewHolder> {
 
+    protected RecyclerView.Adapter adapter;
     protected TrackerItemContainer itemContainer;
     static GregorianCalendar calendar = new GregorianCalendar();
 
@@ -21,6 +24,9 @@ public abstract class Item extends AbstractItem<Item, ViewHoldersCollection.Drug
         this.itemContainer = itemContainer;
         return this;
     }
+
+
+
 
     @Override
     public int getType() {
