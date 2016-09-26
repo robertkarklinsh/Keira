@@ -13,7 +13,7 @@ public class NotifyEventObject implements RealmModel {
     private
     @PrimaryKey
     long time;
-    private int count;
+    private float count;
     private boolean fake = true;
     private
     @ModuleName
@@ -64,11 +64,11 @@ public class NotifyEventObject implements RealmModel {
         return this;
     }
 
-    public int getCount() {
+    public float getCount() {
         return this.count;
     }
 
-    public NotifyEventObject setCount(int count) {
+    public NotifyEventObject setCount(float count) {
         this.count = count;
         return this;
     }

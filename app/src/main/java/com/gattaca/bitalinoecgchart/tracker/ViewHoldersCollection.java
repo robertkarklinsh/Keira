@@ -56,9 +56,6 @@ public class ViewHoldersCollection {
         public LinearLayout tabLayout;
         public LinearLayout ll;
 
-        public boolean isInitialized = false;
-
-
         public TopViewHolder(View mView) {
             super(mView);
             this.mView = mView;

@@ -1,4 +1,4 @@
-package com.gattaca.team.db.sensor;
+package com.gattaca.team.db.sensor.optimizing;
 
 
 import io.realm.RealmModel;
@@ -6,29 +6,29 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-public class SensorPointData implements RealmModel {
+public class SensorPoint_1_hour implements RealmModel {
     @PrimaryKey
     private long time;
     private double value;
     private int channel = 0;
 
     public static String getNamedFieldTime() {
-        return SensorPointData.class.getSimpleName() + ".time";
+        return SensorPoint_1_hour.class.getSimpleName() + ".time";
     }
 
     public static String getNamedFieldValue() {
-        return SensorPointData.class.getSimpleName() + ".value";
+        return SensorPoint_1_hour.class.getSimpleName() + ".value";
     }
 
     public static String getNamedFieldChannel() {
-        return SensorPointData.class.getSimpleName() + ".channel";
+        return SensorPoint_1_hour.class.getSimpleName() + ".channel";
     }
 
     public long getTime() {
         return time;
     }
 
-    public SensorPointData setTime(long time) {
+    public SensorPoint_1_hour setTime(long time) {
         this.time = time;
         return this;
     }
@@ -37,7 +37,7 @@ public class SensorPointData implements RealmModel {
         return value;
     }
 
-    public SensorPointData setValue(double value) {
+    public SensorPoint_1_hour setValue(float value) {
         this.value = value;
         return this;
     }
@@ -46,12 +46,8 @@ public class SensorPointData implements RealmModel {
         return channel;
     }
 
-    public SensorPointData setChannel(int channel) {
+    public SensorPoint_1_hour setChannel(int channel) {
         this.channel = channel;
-        return this;
-    }
-
-    public RealmModel convert() {
         return this;
     }
 

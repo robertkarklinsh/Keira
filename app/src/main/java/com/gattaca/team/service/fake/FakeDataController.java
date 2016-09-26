@@ -15,7 +15,10 @@ import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.db.sensor.Session;
+import com.gattaca.team.db.sensor.optimizing.SensorPoint_1_hour;
+import com.gattaca.team.db.sensor.optimizing.SensorPoint_5_min;
 import com.gattaca.team.prefs.AppPref;
+import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.root.MainApplication;
 
 import java.io.BufferedReader;
@@ -23,6 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.RealmModel;
 
 public final class FakeDataController extends HandlerThread implements Handler.Callback {
     private static FakeDataController instance;
@@ -59,52 +65,56 @@ public final class FakeDataController extends HandlerThread implements Handler.C
         switch (reason) {
             case FakeMessage.Start:
                 RealmController.clearAll();
-                final int max = 20000;
+                final int max = 40000;
                 final long startTime = System.currentTimeMillis() - DateUtils.DAY_IN_MILLIS;
                 final int timeOffset = 3;
-                long time;
+                final List<RealmModel> rawRealm = new ArrayList<>();
+                final ArrayList<Long> PcTimesAgain = new ArrayList<>();
+                final ArrayList<Float> bpm5 = new ArrayList<>();
+                final ArrayList<Float> bpm60 = new ArrayList<>();
+
                 InputStream in = null;
                 BufferedReader reader = null;
-                final ArrayList<SensorPointData> sensorList = new ArrayList<>();
-                final ArrayList<RR> rrList = new ArrayList<>();
-                final ArrayList<NotifyEventObject> eventsList = new ArrayList<>();
-                final ArrayList<Long> PcTimesAgain = new ArrayList<>();
+                String mLine;
+                String[] splits;
+
+                int pc_count_per_session = 0,
+                        pointsCount = 0,
+                        ppCounts = 0,
+                        eventPcCounts = 0,
+                        eventBpmCounts = 0,
+                        rr5 = 0,
+                        rr60 = 0,
+                        currentRrValue,
+                        prevRrValue = 0;
+                long time;
+                float bpm;
+                double timeRR, time5 = 0, time60 = 0;
                 boolean block = false;
 
                 try {
                     in = MainApplication.getContext().getAssets().open("session/samples.csv");
                     reader = new BufferedReader(new InputStreamReader(in));
-                    String mLine = reader.readLine();
-                    int pc_count_per_session = 0,
-                            pointsCount = 0,
-                            ppCounts = 0,
-                            eventPcCounts = 0,
-                            eventBpmCounts = 0;
-                    String[] splits;
+                    mLine = reader.readLine();
 
                     while (mLine != null) {
                         splits = mLine.split(",");
                         pointsCount++;
                         for (int i = 1; i < splits.length; i++) {
-                            sensorList.add(new SensorPointData()
+                            rawRealm.add(new SensorPointData()
                                     .setChannel(i - 1)
                                     .setTime(startTime + pointsCount * timeOffset)
                                     .setValue(Double.valueOf(splits[i])));
                         }
                         mLine = reader.readLine();
 
-                        if (sensorList.size() >= max) {
-                            RealmController.saveList(sensorList);
-                            sensorList.clear();
+                        if (rawRealm.size() >= max) {
+                            RealmController.saveList(rawRealm);
+                            rawRealm.clear();
                         }
                     }
                     in.close();
                     reader.close();
-
-                    if (!sensorList.isEmpty()) {
-                        RealmController.saveList(sensorList);
-                        sensorList.clear();
-                    }
 
                     in = MainApplication.getContext().getAssets().open("session/rr.txt");
                     reader = new BufferedReader(new InputStreamReader(in));
@@ -113,8 +123,9 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                     while (mLine != null) {
                         splits = mLine.split("\t");
                         ppCounts++;
-                        time = startTime + Integer.valueOf(splits[0]) * timeOffset;
-                        rrList.add(new RR()
+                        currentRrValue = Integer.valueOf(splits[0]);
+                        time = startTime + currentRrValue * timeOffset;
+                        rawRealm.add(new RR()
                                 .setTime(time)
                                 .setType(splits[1]));
 
@@ -125,7 +136,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
 
                             if (PcTimesAgain.size() == 3) {
                                 eventPcCounts++;
-                                eventsList.add(new NotifyEventObject()
+                                rawRealm.add(new NotifyEventObject()
                                         .setModuleNameResId(ModuleName.Monitor)
                                         .setEventType(NotifyType.PC_3)
                                         .setTime(PcTimesAgain.get(1)));
@@ -134,7 +145,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         } else {
                             if (PcTimesAgain.size() == 2) {
                                 eventPcCounts++;
-                                eventsList.add(new NotifyEventObject()
+                                rawRealm.add(new NotifyEventObject()
                                         .setModuleNameResId(ModuleName.Monitor)
                                         .setEventType(NotifyType.PC_2)
                                         .setTime(PcTimesAgain.get(1)));
@@ -146,55 +157,85 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         if (!block && pc_count_per_session == 31) {
                             block = true;
                             eventPcCounts++;
-                            eventsList.add(new NotifyEventObject()
+                            rawRealm.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.PC_more_limit_per_hour)
                                     .setTime(time));
                         }
                         // Search BPM
-                        int bpm = (int) (60 / Double.valueOf(splits[2]));
+                        timeRR = Math.abs(currentRrValue - prevRrValue) * timeOffset;
+                        time5 += timeRR;
+                        time60 += timeRR;
+                        bpm = (float) (60000 / timeRR);
+
                         if (bpm < 40) {
                             eventBpmCounts++;
-                            eventsList.add(new NotifyEventObject()
+                            rawRealm.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_less_40)
                                     .setCount(bpm)
                                     .setTime(time));
                         } else if (bpm < 45) {
                             eventBpmCounts++;
-                            eventsList.add(new NotifyEventObject()
+                            rawRealm.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_less_50_more_40)
                                     .setCount(bpm)
                                     .setTime(time));
                         } else if (bpm > 120) {
                             eventBpmCounts++;
-                            eventsList.add(new NotifyEventObject()
+                            rawRealm.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_more_100)
                                     .setCount(bpm)
                                     .setTime(time));
                         }
+
+                        if (time5 >= 1667) {
+                            time5 -= 1667;
+                            rr5++;
+                            rawRealm.add(new SensorPoint_5_min()
+                                    .setValue(AppUtils.convertListToAvrValue(bpm5))
+                                    .setTime(time));
+                            bpm5.clear();
+                        }
+                        if (time60 >= 20000) {
+                            time60 -= 20000;
+                            rr60++;
+                            rawRealm.add(new SensorPoint_1_hour()
+                                    .setValue(AppUtils.convertListToAvrValue(bpm60))
+                                    .setTime(time));
+                            bpm60.clear();
+                        }
+
                         mLine = reader.readLine();
 
 
-                        if (rrList.size() >= max / 2) {
-                            RealmController.saveList(rrList);
-                            rrList.clear();
+                        if (rawRealm.size() >= max) {
+                            RealmController.saveList(rawRealm);
+                            rawRealm.clear();
                         }
-                        if (eventsList.size() >= max / 2) {
-                            RealmController.saveList(eventsList);
-                            eventsList.clear();
-                        }
+                        prevRrValue = currentRrValue;
+
+                        bpm5.add(bpm);
+                        bpm60.add(bpm);
                     }
 
-                    if (!rrList.isEmpty()) {
-                        RealmController.saveList(rrList);
-                        rrList.clear();
+                    if (time5 > 0) {
+                        rr5++;
+                        rawRealm.add(new SensorPoint_5_min()
+                                .setValue(AppUtils.convertListToAvrValue(bpm5))
+                                .setTime(startTime + prevRrValue * timeOffset));
                     }
-                    if (!eventsList.isEmpty()) {
-                        RealmController.saveList(eventsList);
-                        eventsList.clear();
+                    if (time60 > 0) {
+                        rr5++;
+                        rawRealm.add(new SensorPoint_1_hour()
+                                .setValue(AppUtils.convertListToAvrValue(bpm60))
+                                .setTime(startTime + prevRrValue * timeOffset));
+                    }
+                    if (!rawRealm.isEmpty()) {
+                        RealmController.saveList(rawRealm);
+                        rawRealm.clear();
                     }
 
                     RealmController.save(new Session()
@@ -202,10 +243,10 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                             .setTimeFinish(startTime + pointsCount * timeOffset));
 
                     changeState(FakeMessage.Finish);
-                    Log.i(getClass().getSimpleName(), "Sensor data count is " + pointsCount);
-                    Log.i(getClass().getSimpleName(), "RR interval data count is " + ppCounts);
-                    Log.i(getClass().getSimpleName(), "Events pc count are " + eventPcCounts);
-                    Log.i(getClass().getSimpleName(), "Events bpm count are " + eventBpmCounts);
+
+                    Log.i(getClass().getSimpleName(), "Sensor data count = " + pointsCount + "\nRR interval data count is " + ppCounts);
+                    Log.i(getClass().getSimpleName(), "Events:\npc count = " + eventPcCounts + "\nbpm count = " + eventBpmCounts);
+                    Log.i(getClass().getSimpleName(), "Clustered:\n5 min = " + rr5 + "\n60 min = " + rr60);
                 } catch (Exception tx) {
                     tx.printStackTrace();
                 } finally {
