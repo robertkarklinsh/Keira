@@ -1,8 +1,6 @@
 package com.gattaca.team.db.sensor.optimizing;
 
 
-import java.util.List;
-
 import io.realm.RealmModel;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
@@ -39,11 +37,8 @@ public class SensorPoint_5_min implements RealmModel {
         return value;
     }
 
-    public SensorPoint_5_min setValue(List<Float> value) {
-        for (float bpm : value) {
-            this.value += bpm;
-        }
-        this.value /= value.size();
+    public SensorPoint_5_min setValue(float value) {
+        this.value = value;
         return this;
     }
 

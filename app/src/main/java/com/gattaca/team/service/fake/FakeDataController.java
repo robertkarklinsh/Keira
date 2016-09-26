@@ -18,6 +18,7 @@ import com.gattaca.team.db.sensor.Session;
 import com.gattaca.team.db.sensor.optimizing.SensorPoint_1_hour;
 import com.gattaca.team.db.sensor.optimizing.SensorPoint_5_min;
 import com.gattaca.team.prefs.AppPref;
+import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.root.MainApplication;
 
 import java.io.BufferedReader;
@@ -193,20 +194,20 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         if (time5 >= 1667) {
                             time5 -= 1667;
                             rr5++;
-                            bpm5.clear();
                             rawRealm.add(new SensorPoint_5_min()
-                                    .setValue(bpm5)
+                                    .setValue(AppUtils.convertListToAvrValue(bpm5))
                                     .setTime(time));
+                            bpm5.clear();
                         } else {
                             bpm5.add(bpm);
                         }
                         if (time60 >= 20000) {
                             time60 -= 20000;
                             rr60++;
-                            bpm60.clear();
                             rawRealm.add(new SensorPoint_1_hour()
-                                    .setValue(bpm60)
+                                    .setValue(AppUtils.convertListToAvrValue(bpm60))
                                     .setTime(time));
+                            bpm60.clear();
                         } else {
                             bpm60.add(bpm);
                         }
@@ -224,13 +225,13 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                     if (time5 > 0) {
                         rr5++;
                         rawRealm.add(new SensorPoint_5_min()
-                                .setValue(bpm5)
+                                .setValue(AppUtils.convertListToAvrValue(bpm5))
                                 .setTime(startTime + prevRrValue * timeOffset));
                     }
                     if (time60 > 0) {
                         rr5++;
                         rawRealm.add(new SensorPoint_1_hour()
-                                .setValue(bpm60)
+                                .setValue(AppUtils.convertListToAvrValue(bpm60))
                                 .setTime(startTime + prevRrValue * timeOffset));
                     }
                     if (!rawRealm.isEmpty()) {
