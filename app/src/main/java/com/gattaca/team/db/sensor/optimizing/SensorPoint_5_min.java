@@ -9,19 +9,19 @@ import io.realm.annotations.RealmClass;
 public class SensorPoint_5_min implements RealmModel {
     @PrimaryKey
     private long time;
-    private double value;
+    private float value;
     private int channel = 0;
 
     public static String getNamedFieldTime() {
-        return SensorPoint_5_min.class.getSimpleName() + ".time";
+        return "time";
     }
 
     public static String getNamedFieldValue() {
-        return SensorPoint_5_min.class.getSimpleName() + ".value";
+        return "value";
     }
 
     public static String getNamedFieldChannel() {
-        return SensorPoint_5_min.class.getSimpleName() + ".channel";
+        return "channel";
     }
 
     public long getTime() {
@@ -33,7 +33,7 @@ public class SensorPoint_5_min implements RealmModel {
         return this;
     }
 
-    public double getValue() {
+    public float getValue() {
         return value;
     }
 

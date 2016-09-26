@@ -7,12 +7,9 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
-import com.gattaca.team.db.sensor.optimizing.SensorPoint_5_min;
-
-import java.util.List;
+import com.gattaca.team.ui.model.impl.BpmModel;
 
 public class Bpm extends View {
     private final DashPathEffect dashPathEffect = new DashPathEffect(new float[]{5, 5}, 0);
@@ -35,8 +32,8 @@ public class Bpm extends View {
         init();
     }
 
-    public void install(List<SensorPoint_5_min> raw) {
-        Log.e("ttt", "" + raw.size());
+    public void install(BpmModel model) {
+        model.print();
     }
 
     @Override

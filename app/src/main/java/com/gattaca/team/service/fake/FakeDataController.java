@@ -198,8 +198,6 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                                     .setValue(AppUtils.convertListToAvrValue(bpm5))
                                     .setTime(time));
                             bpm5.clear();
-                        } else {
-                            bpm5.add(bpm);
                         }
                         if (time60 >= 20000) {
                             time60 -= 20000;
@@ -208,8 +206,6 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                                     .setValue(AppUtils.convertListToAvrValue(bpm60))
                                     .setTime(time));
                             bpm60.clear();
-                        } else {
-                            bpm60.add(bpm);
                         }
 
                         mLine = reader.readLine();
@@ -220,6 +216,9 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                             rawRealm.clear();
                         }
                         prevRrValue = currentRrValue;
+
+                        bpm5.add(bpm);
+                        bpm60.add(bpm);
                     }
 
                     if (time5 > 0) {

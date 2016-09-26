@@ -98,9 +98,11 @@ public final class RealmController {
         realm.commitTransaction();
 
         //Log.d(RealmController.class.getSimpleName(), "size= " + list.size() + " time=" + (System.currentTimeMillis() - time) + " ms");
-        //for (RealmModel item : list) {
-        // Log.d(RealmController.class.getSimpleName(), item.toString());
-        //}
+        /*for (RealmModel item : list) {
+            if(item instanceof SensorPoint_5_min) {
+                Log.d(RealmController.class.getSimpleName(), item.toString());
+            }
+        }*/
     }
 
     public static RealmResults<NotifyEventObject> getAllEvents() {
