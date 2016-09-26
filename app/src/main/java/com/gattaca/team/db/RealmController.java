@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.gattaca.team.db.event.NotifyEventObject;
+import com.gattaca.team.db.sensor.BpmGreen;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.db.sensor.Session;
@@ -78,6 +79,7 @@ public final class RealmController {
         realm.delete(SensorPoint_1_hour.class);
         realm.delete(SensorPoint_5_min.class);
         realm.delete(Session.class);
+        realm.delete(BpmGreen.class);
         realm.commitTransaction();
     }
     public static void save(RealmModel item) {
@@ -116,12 +118,22 @@ public final class RealmController {
     public static RealmResults<Session> getAllSessions() {
         return Realm.getDefaultInstance()
                 .where(Session.class)
-                .findAll();
+                .findAll()
+                .sort(Session.getNamedFieldTimeFinish(), Sort.DESCENDING);
     }
 
     public static RealmResults<SensorPoint_5_min> getStubSessionBpm30() {
         return Realm.getDefaultInstance()
                 .where(SensorPoint_5_min.class)
                 .findAll();
+    }
+
+    public static RealmResults<BpmGreen> getStubSessionBpmGreen(long from, long to) {
+        return Realm.getDefaultInstance()
+                .where(BpmGreen.class)
+                .greaterThan(BpmGreen.getNamedFieldTime(), from)
+                .lessThan(BpmGreen.getNamedFieldTime(), to)
+                .findAll()
+                .sort(BpmGreen.getNamedFieldTime(), Sort.DESCENDING);
     }
 }

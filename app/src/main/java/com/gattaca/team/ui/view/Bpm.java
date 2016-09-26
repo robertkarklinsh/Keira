@@ -23,19 +23,28 @@ public class Bpm extends TextView {
     final int minBPM = 20;
     final int maxBPM = 140;
     private final CornerPathEffect cornerPathEffect = new CornerPathEffect(30);
-    int width = 0, x0 = 0, y0 = 0;
-    int innerRadius = 0;
-    int bpmRadius = 0;
-    int outRadius = 0;
-    int fullRadius = 0;
-    int linesOffset = 0;
-    int pxsPer20Bpm = 0;
-    int pxsPer1Bpm = 0;
     double arc = 0;
-    private Paint mainLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Paint mainRedZonePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Path mTimePath = new Path(), mPointsPath = new Path();
-    private int selectedValue = 666;
+    private int
+            width = 0,
+            x0 = 0,
+            y0 = 0,
+            innerRadius = 0,
+            bpmRadius = 0,
+            outRadius = 0,
+            fullRadius = 0,
+            linesOffset = 0,
+            pxsPer20Bpm = 0,
+            pxsPer1Bpm = 0,
+            selectedValue = 666;
+    private Paint
+            mainLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG),
+            redZone = new Paint(Paint.ANTI_ALIAS_FLAG),
+            greenZone = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    private Path
+            mTimePath = new Path(),
+            mGreenPath = new Path(),
+            mPointsPath = new Path();
     private ArrayList<String> timeSrc = new ArrayList<>();
     private BpmModel model = null;
     private Runnable r = new Runnable() {
@@ -47,23 +56,40 @@ public class Bpm extends TextView {
                 mPointsPath.reset();
                 timeSrc = model.formatTimes(times);
                 final List<Float> data = model.getData();
-                final double a = (double) 360 / data.size();
-                float x, y;
+                double a = (double) 360 / data.size();
                 int idx = 0;
-                double radian;
                 for (float f : data) {
-                    radian = Math.toRadians(idx * a);
-                    x = x0 + (float) ((innerRadius + f * pxsPer1Bpm) * Math.sin(radian));
-                    y = y0 - (float) ((innerRadius + f * pxsPer1Bpm) * Math.cos(radian));
-                    if (mPointsPath.isEmpty()) {
-                        mPointsPath.setLastPoint(x, y);
-                    } else {
-                        mPointsPath.lineTo(x, y);
-                    }
-                    idx++;
+                    setPoint(mPointsPath, math(f, idx++, a));
                 }
+                final Path p1 = new Path(), p2 = new Path();
+                mGreenPath.reset();
+                idx = 0;
+                final List<BpmModel.BpmGreenRegion> greens = model.getGreenData();
+                a = (double) 360 / greens.size();
+                for (BpmModel.BpmGreenRegion greenRegion : greens) {
+                    setPoint(p1, math(greenRegion.getBottom(), idx++, a));
+                    setPoint(p2, math(greenRegion.getTop(), idx++, a));
+                }
+                // mGreenPath.addPath(p1);
+                mGreenPath.addPath(p2);
                 //postInvalidate();
                 setText("" + selectedValue);
+            }
+        }
+
+        private float[] math(float f, final int idx, final double a) {
+            final float[] ret = new float[2];
+            final double radian = Math.toRadians(idx * a);
+            ret[0] = x0 + (float) ((innerRadius + f * pxsPer1Bpm) * Math.sin(radian));
+            ret[1] = y0 - (float) ((innerRadius + f * pxsPer1Bpm) * Math.cos(radian));
+            return ret;
+        }
+
+        private void setPoint(Path p, float... points) {
+            if (p.isEmpty()) {
+                p.setLastPoint(points[0], points[1]);
+            } else {
+                p.lineTo(points[0], points[1]);
             }
         }
     };
@@ -113,15 +139,16 @@ public class Bpm extends TextView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        canvas.drawPath(mGreenPath, greenZone);
         // draw main elements ======================================================================
-        mainRedZonePaint.setStrokeWidth(pxsPer20Bpm);
+        redZone.setStrokeWidth(pxsPer20Bpm);
         mainLinePaint.setPathEffect(null);
-        canvas.drawCircle(x0, y0, fullRadius - outRadius - pxsPer20Bpm / 2, mainRedZonePaint);
-        canvas.drawCircle(x0, y0, innerRadius + pxsPer20Bpm / 2, mainRedZonePaint);
+        canvas.drawCircle(x0, y0, fullRadius - outRadius - pxsPer20Bpm / 2, redZone);
+        canvas.drawCircle(x0, y0, innerRadius + pxsPer20Bpm / 2, redZone);
 
         mainLinePaint.setStyle(Paint.Style.STROKE);
         mainLinePaint.setColor(Color.GRAY);
-        mainLinePaint.setAlpha(100);
+        // mainLinePaint.setAlpha(100);
         mainLinePaint.setStrokeWidth((float) (innerRadius * 0.1));
         canvas.drawCircle(x0, y0, (float) (innerRadius * 0.95), mainLinePaint);
         mainLinePaint.setStrokeWidth(outRadius);
@@ -129,7 +156,7 @@ public class Bpm extends TextView {
 
         mainLinePaint.setStrokeWidth(6);
         mainLinePaint.setColor(Color.WHITE);
-        mainLinePaint.setAlpha(255);
+        // mainLinePaint.setAlpha(255);
         canvas.save();
         for (int i = 0; i < times; i++) {
             canvas.drawLine(x0, linesOffset, x0, linesOffset + outRadius, mainLinePaint);
@@ -160,9 +187,14 @@ public class Bpm extends TextView {
     }
 
     private void init() {
-        mainRedZonePaint.setStyle(Paint.Style.STROKE);
-        mainRedZonePaint.setColor(Color.RED);
-        mainRedZonePaint.setAlpha(50);
+        greenZone.setStyle(Paint.Style.STROKE);
+        greenZone.setColor(Color.GREEN);
+        greenZone.setPathEffect(cornerPathEffect);
+        greenZone.setStrokeWidth(10);
+
+        redZone.setStyle(Paint.Style.STROKE);
+        redZone.setColor(Color.RED);
+        //redZone.setAlpha(50);
 
         mainLinePaint.setTextSize(14 * getResources().getDisplayMetrics().density);
         final Rect r = new Rect();
