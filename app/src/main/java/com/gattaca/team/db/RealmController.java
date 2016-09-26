@@ -7,6 +7,8 @@ import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.db.sensor.Session;
+import com.gattaca.team.db.sensor.optimizing.SensorPoint_1_hour;
+import com.gattaca.team.db.sensor.optimizing.SensorPoint_5_min;
 
 import java.util.List;
 
@@ -73,6 +75,8 @@ public final class RealmController {
         realm.delete(RR.class);
         realm.delete(NotifyEventObject.class);
         realm.delete(SensorPointData.class);
+        realm.delete(SensorPoint_1_hour.class);
+        realm.delete(SensorPoint_5_min.class);
         realm.delete(Session.class);
         realm.commitTransaction();
     }
@@ -110,6 +114,12 @@ public final class RealmController {
     public static RealmResults<Session> getAllSessions() {
         return Realm.getDefaultInstance()
                 .where(Session.class)
+                .findAll();
+    }
+
+    public static RealmResults<SensorPoint_5_min> getStubSessionBpm30() {
+        return Realm.getDefaultInstance()
+                .where(SensorPoint_5_min.class)
                 .findAll();
     }
 }

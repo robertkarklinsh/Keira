@@ -1,34 +1,36 @@
-package com.gattaca.team.db.sensor;
+package com.gattaca.team.db.sensor.optimizing;
 
+
+import java.util.List;
 
 import io.realm.RealmModel;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-public class SensorPointData implements RealmModel {
+public class SensorPoint_5_min implements RealmModel {
     @PrimaryKey
     private long time;
     private double value;
     private int channel = 0;
 
     public static String getNamedFieldTime() {
-        return SensorPointData.class.getSimpleName() + ".time";
+        return SensorPoint_5_min.class.getSimpleName() + ".time";
     }
 
     public static String getNamedFieldValue() {
-        return SensorPointData.class.getSimpleName() + ".value";
+        return SensorPoint_5_min.class.getSimpleName() + ".value";
     }
 
     public static String getNamedFieldChannel() {
-        return SensorPointData.class.getSimpleName() + ".channel";
+        return SensorPoint_5_min.class.getSimpleName() + ".channel";
     }
 
     public long getTime() {
         return time;
     }
 
-    public SensorPointData setTime(long time) {
+    public SensorPoint_5_min setTime(long time) {
         this.time = time;
         return this;
     }
@@ -37,8 +39,11 @@ public class SensorPointData implements RealmModel {
         return value;
     }
 
-    public SensorPointData setValue(double value) {
-        this.value = value;
+    public SensorPoint_5_min setValue(List<Float> value) {
+        for (float bpm : value) {
+            this.value += bpm;
+        }
+        this.value /= value.size();
         return this;
     }
 
@@ -46,12 +51,8 @@ public class SensorPointData implements RealmModel {
         return channel;
     }
 
-    public SensorPointData setChannel(int channel) {
+    public SensorPoint_5_min setChannel(int channel) {
         this.channel = channel;
-        return this;
-    }
-
-    public RealmModel convert() {
         return this;
     }
 

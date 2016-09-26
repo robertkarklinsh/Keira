@@ -6,8 +6,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.gattaca.team.R;
+import com.gattaca.team.db.RealmController;
+import com.gattaca.team.ui.view.Bpm;
 
 public class MonitorBpm extends AppCompatActivity {
+    private Bpm bpmGraph;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +20,13 @@ public class MonitorBpm extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        bpmGraph = (Bpm) findViewById(R.id.bpm);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bpmGraph.install(RealmController.getStubSessionBpm30());
     }
 
     @Override
