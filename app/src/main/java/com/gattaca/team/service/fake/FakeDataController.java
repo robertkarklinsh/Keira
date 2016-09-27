@@ -265,8 +265,8 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                                 .setValueTop(Float.valueOf(splits[97])));
                         rawRealm.add(new BpmRed()
                                 .setTime(tmpTime)
-                                .setValueBottom(Float.valueOf(splits[3]))
-                                .setValueTop(Float.valueOf(splits[99])));
+                                .setValueBottom(Float.valueOf(splits[2]))
+                                .setValueTop(Float.valueOf(splits[100])));
 
                         mLine = reader.readLine();
 

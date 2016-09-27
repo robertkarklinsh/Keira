@@ -16,12 +16,20 @@ public final class BpmModel implements IContainerModel {
     private final List<BpmColorRegion> green = new ArrayList<>();
     private final Random rnd = new Random();
 
+    public int getIntValueByPosition(int position) {
+        return data.get(position).first.intValue();
+    }
+
+    public String getStringValueByPosition(int position) {
+        return "" + getIntValueByPosition(position);
+    }
+
     public void addPoint(float value, long timestump) {
         data.add(new Pair<>(value, timestump));
     }
 
     public void addGreenPoint(float top, float bottom, long timestump) {
-        green.add(new BpmColorRegion(top, bottom + 10 - rnd.nextInt(20), timestump));
+        green.add(new BpmColorRegion(top, bottom, timestump));
     }
 
     public void addRedPoint(float top, float bottom, long timestump) {
