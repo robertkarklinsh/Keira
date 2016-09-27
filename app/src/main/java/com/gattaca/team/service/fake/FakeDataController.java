@@ -12,6 +12,7 @@ import com.gattaca.team.annotation.RRType;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.BpmGreen;
+import com.gattaca.team.db.sensor.BpmRed;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.Session;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
@@ -260,8 +261,12 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         long tmpTime = 30 * DateUtils.SECOND_IN_MILLIS + idx++ * DateUtils.MINUTE_IN_MILLIS;
                         rawRealm.add(new BpmGreen()
                                 .setTime(tmpTime)
-                                .setValueBottom(Float.valueOf(splits[7]))
+                                .setValueBottom(Float.valueOf(splits[6]))
                                 .setValueTop(Float.valueOf(splits[97])));
+                        rawRealm.add(new BpmRed()
+                                .setTime(tmpTime)
+                                .setValueBottom(Float.valueOf(splits[3]))
+                                .setValueTop(Float.valueOf(splits[99])));
 
                         mLine = reader.readLine();
 

@@ -8,7 +8,9 @@ import android.view.MenuItem;
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.sensor.BpmGreen;
+import com.gattaca.team.db.sensor.BpmRed;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_30_min;
+import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.ui.model.impl.BpmModel;
 import com.gattaca.team.ui.view.Bpm;
 
@@ -38,10 +40,16 @@ public class MonitorBpm extends AppCompatActivity {
         }
 
         final List<BpmGreen> green = RealmController.getStubSessionBpmGreen(
-                BpmGreen.createTimeFrom(data.get(0).getTime()),
-                BpmGreen.createTimeFrom(data.get(data.size() - 1).getTime()));
+                AppUtils.createTimeFrom(data.get(0).getTime()),
+                AppUtils.createTimeFrom(data.get(data.size() - 1).getTime()));
         for (BpmGreen item : green) {
             model.addGreenPoint(item.getValueTop(), item.getValueBottom(), item.getTime());
+        }
+        final List<BpmRed> red = RealmController.getStubSessionBpmRed(
+                AppUtils.createTimeFrom(data.get(0).getTime()),
+                AppUtils.createTimeFrom(data.get(data.size() - 1).getTime()));
+        for (BpmRed item : red) {
+            model.addRedPoint(item.getValueTop(), item.getValueBottom(), item.getTime());
         }
         bpmGraph.install(model);
     }

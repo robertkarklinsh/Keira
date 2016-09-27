@@ -32,7 +32,6 @@ public class Bpm extends TextView {
             outRadius = 0,
             fullRadius = 0,
             linesOffset = 0,
-            pxsPer20Bpm = 0,
             pxsPer1Bpm = 0,
             selectedValue = 666;
     private Paint
@@ -42,6 +41,8 @@ public class Bpm extends TextView {
 
     private Path
             mTimePath = new Path(),
+            mRedOutResetPath = new Path(),
+            mRedInPath = new Path(),
             mGreenPath = new Path(),
             mGreenResetPath = new Path(),
             mPointsPath = new Path();
@@ -65,15 +66,29 @@ public class Bpm extends TextView {
                 mGreenPath.rewind();
                 mGreenResetPath.rewind();
                 idx = 0;
-                final List<BpmModel.BpmGreenRegion> greens = model.getGreenData();
+                final List<BpmModel.BpmColorRegion> greens = model.getGreenData();
                 a = (double) 360 / greens.size();
-                for (BpmModel.BpmGreenRegion greenRegion : greens) {
+                for (BpmModel.BpmColorRegion region : greens) {
                     idx++;
-                    setPoint(mGreenResetPath, math(greenRegion.getBottom(), idx, a));
-                    setPoint(mGreenPath, math(greenRegion.getTop(), idx, a));
+                    setPoint(mGreenResetPath, math(region.getBottom(), idx, a));
+                    setPoint(mGreenPath, math(region.getTop(), idx, a));
                 }
                 mGreenResetPath.close();
                 mGreenPath.close();
+
+                mRedOutResetPath.rewind();
+                mRedInPath.rewind();
+                idx = 0;
+                final List<BpmModel.BpmColorRegion> red = model.getRedData();
+                a = (double) 360 / greens.size();
+                for (BpmModel.BpmColorRegion region : red) {
+                    idx++;
+                    setPoint(mRedInPath, math(region.getBottom(), idx, a));
+                    setPoint(mRedOutResetPath, math(region.getTop(), idx, a));
+                }
+                mRedOutResetPath.close();
+                mRedInPath.close();
+
                 //postInvalidate();
                 setText("" + selectedValue);
             }
@@ -129,7 +144,6 @@ public class Bpm extends TextView {
             fullRadius = bpmRadius + innerRadius + outRadius;
             linesOffset = x0 - fullRadius;
             pxsPer1Bpm = bpmRadius / (AppConst.maxBPM - AppConst.minBPM);
-            pxsPer20Bpm = AppConst.minBPM * pxsPer1Bpm;
             arc = 2 * Math.PI * (fullRadius - outRadius) / times;
 
             mTimePath.addCircle(x0, y0, fullRadius - outRadius, Path.Direction.CW);
@@ -141,19 +155,23 @@ public class Bpm extends TextView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        // draw red zones ==========================================================================
+        redZone.setColor(Color.RED);
+        canvas.drawCircle(x0, y0, fullRadius, redZone);
+        redZone.setColor(Color.WHITE);
+        canvas.drawPath(mRedOutResetPath, redZone);
         greenZone.setColor(Color.GREEN);
         canvas.drawPath(mGreenPath, greenZone);
         greenZone.setColor(Color.WHITE);
         canvas.drawPath(mGreenResetPath, greenZone);
+        redZone.setColor(Color.RED);
+        canvas.drawPath(mRedInPath, redZone);
+        redZone.setColor(Color.WHITE);
+        canvas.drawCircle(x0, y0, innerRadius, redZone);
         // draw main elements ======================================================================
-        redZone.setStrokeWidth(pxsPer20Bpm);
         mainLinePaint.setPathEffect(null);
-        canvas.drawCircle(x0, y0, fullRadius - outRadius - pxsPer20Bpm / 2, redZone);
-        canvas.drawCircle(x0, y0, innerRadius + pxsPer20Bpm / 2, redZone);
-
         mainLinePaint.setStyle(Paint.Style.STROKE);
         mainLinePaint.setColor(Color.GRAY);
-        // mainLinePaint.setAlpha(100);
         mainLinePaint.setStrokeWidth((float) (innerRadius * 0.1));
         canvas.drawCircle(x0, y0, (float) (innerRadius * 0.95), mainLinePaint);
         mainLinePaint.setStrokeWidth(outRadius);
@@ -161,7 +179,7 @@ public class Bpm extends TextView {
 
         mainLinePaint.setStrokeWidth(6);
         mainLinePaint.setColor(Color.WHITE);
-        // mainLinePaint.setAlpha(255);
+
         canvas.save();
         for (int i = 0; i < times; i++) {
             canvas.drawLine(x0, linesOffset, x0, linesOffset + outRadius, mainLinePaint);
@@ -196,8 +214,7 @@ public class Bpm extends TextView {
         greenZone.setPathEffect(cornerPathEffect);
         greenZone.setStrokeWidth(5);
 
-        redZone.setStyle(Paint.Style.STROKE);
-        redZone.setColor(Color.RED);
+        redZone.setStyle(Paint.Style.FILL_AND_STROKE);
         //redZone.setAlpha(50);
 
         mainLinePaint.setTextSize(14 * getResources().getDisplayMetrics().density);

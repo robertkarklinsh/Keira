@@ -6,12 +6,11 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-public class BpmGreen implements RealmModel {
+public class BpmRed implements RealmModel {
     @PrimaryKey
     private long time;
     private float valueTop;
     private float valueBottom;
-
 
     public static String getNamedFieldTime() {
         return "time";
@@ -21,7 +20,7 @@ public class BpmGreen implements RealmModel {
         return time;
     }
 
-    public BpmGreen setTime(long time) {
+    public BpmRed setTime(long time) {
         this.time = time;
         return this;
     }
@@ -30,7 +29,7 @@ public class BpmGreen implements RealmModel {
         return valueTop;
     }
 
-    public BpmGreen setValueTop(float valueTop) {
+    public BpmRed setValueTop(float valueTop) {
         this.valueTop = valueTop;
         return this;
     }
@@ -39,7 +38,7 @@ public class BpmGreen implements RealmModel {
         return valueBottom;
     }
 
-    public BpmGreen setValueBottom(float valueBottom) {
+    public BpmRed setValueBottom(float valueBottom) {
         this.valueBottom = valueBottom;
         return this;
     }

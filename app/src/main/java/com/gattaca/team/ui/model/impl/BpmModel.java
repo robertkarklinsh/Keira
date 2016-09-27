@@ -12,7 +12,8 @@ import java.util.Random;
 
 public final class BpmModel implements IContainerModel {
     private final List<Pair<Float, Long>> data = new ArrayList<>();
-    private final List<BpmGreenRegion> green = new ArrayList<>();
+    private final List<BpmColorRegion> red = new ArrayList<>();
+    private final List<BpmColorRegion> green = new ArrayList<>();
     private final Random rnd = new Random();
 
     public void addPoint(float value, long timestump) {
@@ -20,7 +21,11 @@ public final class BpmModel implements IContainerModel {
     }
 
     public void addGreenPoint(float top, float bottom, long timestump) {
-        green.add(new BpmGreenRegion(top, bottom + 10 - rnd.nextInt(20), timestump));
+        green.add(new BpmColorRegion(top, bottom + 10 - rnd.nextInt(20), timestump));
+    }
+
+    public void addRedPoint(float top, float bottom, long timestump) {
+        red.add(new BpmColorRegion(top, bottom, timestump));
     }
 
     public void print() {
@@ -36,8 +41,12 @@ public final class BpmModel implements IContainerModel {
         return list;
     }
 
-    public List<BpmGreenRegion> getGreenData() {
+    public List<BpmColorRegion> getGreenData() {
         return green;
+    }
+
+    public List<BpmColorRegion> getRedData() {
+        return red;
     }
     public List<Float> getData() {
         final List<Float> floats = new ArrayList<>();
@@ -47,12 +56,12 @@ public final class BpmModel implements IContainerModel {
         return floats;
     }
 
-    public static class BpmGreenRegion {
+    public static class BpmColorRegion {
         private final float top;
         private final float bottom;
         private final long time;
 
-        public BpmGreenRegion(final float top, final float bottom, final long time) {
+        public BpmColorRegion(final float top, final float bottom, final long time) {
             this.top = top;
             this.bottom = bottom;
             this.time = time;
