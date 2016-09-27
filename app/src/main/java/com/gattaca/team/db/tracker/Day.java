@@ -1,4 +1,4 @@
-package com.gattaca.bitalinoecgchart.tracker.db;
+package com.gattaca.team.db.tracker;
 
 import io.realm.RealmList;
 import io.realm.RealmModel;

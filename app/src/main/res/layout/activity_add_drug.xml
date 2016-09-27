@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/activity_add_drug"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.gattaca.team.ui.activity.AddDrugActivity">
+
+        <TextView
+            android:id="@+id/add_drag_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Название" />
+
+        <EditText
+            android:id="@+id/add_drug_name_field"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/add_drag_name"
+            android:layout_marginTop="11dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:selectAllOnFocus="true"
+            android:hint="Введите название" />
+
+        <TextView
+            android:id="@+id/add_drug_dose_and_units"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/add_drug_name_field"
+            android:maxLines="1"
+            android:text="Доза и единицы измерения" />
+
+        <EditText
+            android:id="@+id/add_drug_units_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/add_drug_dose_field"
+            android:layout_toEndOf="@+id/add_drug_dose_field"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:selectAllOnFocus="true"
+            android:hint="единицы" />
+
+        <EditText
+            android:id="@+id/add_drug_dose_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/add_drug_dose_and_units"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:inputType="number"
+            android:selectAllOnFocus="true"
+            android:hint="доза" />
+
+        <TextView
+            android:id="@+id/add_drug_time"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/add_drug_dose_field"
+            android:layout_marginTop="10dp"
+            android:maxLines="1"
+            android:text="Время приема" />
+
+
+        <LinearLayout
+            android:id="@+id/add_drug_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/add_drug_time"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"></LinearLayout>
+
+        <Button
+            android:id="@+id/add_drug_add_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/add_drug_container"
+
+            android:layout_marginTop="27dp"
+            android:text="Добавить время" />
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/add_drug_remind_check_box"
+            android:layout_below="@+id/add_drug_remind_check_box"
+            android:layout_marginTop="25dp"
+            android:text="Отмена" />
+
+        <Button
+            android:id="@+id/add_drug_ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/button5"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@+id/add_drug_name_field"
+            android:text="Добавить" />
+
+        <CheckBox
+            android:id="@+id/add_drug_remind_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Напоминать каждый день"
+            android:layout_below="@+id/add_drug_add_time"
+            android:layout_alignParentStart="true" />
+
+
+    </RelativeLayout>
+</ScrollView>

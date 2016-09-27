@@ -11,8 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gattaca.bitalinoecgchart.tracker.ViewHoldersCollection;
-import com.gattaca.bitalinoecgchart.tracker.db.Drug;
-import com.gattaca.bitalinoecgchart.tracker.db.Intake;
+import com.gattaca.team.db.tracker.Drug;
+import com.gattaca.team.db.tracker.Intake;
 import com.gattaca.team.R;
 
 import java.util.Calendar;

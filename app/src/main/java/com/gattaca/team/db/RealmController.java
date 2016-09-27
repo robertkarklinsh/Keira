@@ -3,6 +3,7 @@ package com.gattaca.team.db;
 import android.app.Activity;
 import android.app.Application;
 
+import com.gattaca.team.db.tracker.Week;
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
@@ -10,6 +11,7 @@ import com.gattaca.team.db.sensor.Session;
 import com.gattaca.team.db.sensor.optimizing.SensorPoint_1_hour;
 import com.gattaca.team.db.sensor.optimizing.SensorPoint_5_min;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import io.realm.Realm;
@@ -80,6 +82,7 @@ public final class RealmController {
         realm.delete(Session.class);
         realm.commitTransaction();
     }
+
     public static void save(RealmModel item) {
         // final long time = System.currentTimeMillis();
         final Realm realm = Realm.getDefaultInstance();
@@ -126,6 +129,12 @@ public final class RealmController {
     }
 
     public static Realm getRealm() {
-        return  Realm.getDefaultInstance();
+        return Realm.getDefaultInstance();
+    }
+
+    public static Week getCurrentWeek() {
+        return Realm.getDefaultInstance()
+                .where(Week.class)
+                .equalTo(Week.getNamedFieldWeekNum(), new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR)).findFirst();
     }
 }

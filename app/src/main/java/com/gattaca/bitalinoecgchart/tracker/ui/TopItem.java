@@ -16,7 +16,6 @@ import com.gattaca.team.R;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -36,7 +35,6 @@ public class TopItem extends AbstractItem<TopItem, ViewHoldersCollection.TopView
     ImageView previousSelectedView;
     TopContainer.Day previousSelectedDay;
     ModelDao modelDao;
-    GregorianCalendar calendar = new GregorianCalendar();
 
     public TopItem withTopContainer(TopContainer topContainer) {
         this.topContainer = topContainer;
@@ -78,7 +76,6 @@ public class TopItem extends AbstractItem<TopItem, ViewHoldersCollection.TopView
             ((TextView) item.findViewById(R.id.tracker_custom_tab_text)).setText(topContainer.getDays().get(i).getName());
 
             item.findViewById(R.id.tracker_custom_tab_img).setOnClickListener(new TopItemClickListener(recyclerView, i, topContainer.getDays().get(i)));
-            int currentDay = ModelDao.currentDayOfWeek();
 
             if (i == topContainer.getSelected()) {
                 previousSelected = i;

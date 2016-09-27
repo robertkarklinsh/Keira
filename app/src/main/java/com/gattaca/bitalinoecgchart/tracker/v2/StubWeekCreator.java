@@ -1,12 +1,12 @@
 package com.gattaca.bitalinoecgchart.tracker.v2;
 
-import com.gattaca.bitalinoecgchart.tracker.db.Day;
-import com.gattaca.bitalinoecgchart.tracker.db.Drug;
-import com.gattaca.bitalinoecgchart.tracker.db.Intake;
-import com.gattaca.bitalinoecgchart.tracker.db.Measurement;
-import com.gattaca.bitalinoecgchart.tracker.db.Task;
-import com.gattaca.bitalinoecgchart.tracker.db.TaskAction;
-import com.gattaca.bitalinoecgchart.tracker.db.Week;
+import com.gattaca.team.db.tracker.Day;
+import com.gattaca.team.db.tracker.Drug;
+import com.gattaca.team.db.tracker.Intake;
+import com.gattaca.team.db.tracker.Measurement;
+import com.gattaca.team.db.tracker.Task;
+import com.gattaca.team.db.tracker.TaskAction;
+import com.gattaca.team.db.tracker.Week;
 
 import io.realm.Realm;
 
@@ -25,20 +25,27 @@ public class StubWeekCreator {
     }
 
     public void fillStubWeek() {
-        String[] days = new String[] {"ПН","ВТ","СР","ЧТ","ПТ","СБ","ВС"};
-        for (int i = 0 ; i < 7 ; i ++) {
+        String[] days = new String[]{"ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"};
+        for (int i = 0; i < 7; i++) {
             week.addDay(createDay(days[i], i));
         }
 
     }
 
     private Intake createIntake(Boolean status, int hours, int minutes) {
-        Intake intake = realm.createObject(Intake.class);
+        try {
+            Intake intake = realm.createObject(Intake.class);
 
-        intake.setHours(hours);
-        intake.setMinutes(minutes);
-        intake.setTaken(status);
-        return intake;
+            intake.setHours(hours);
+            intake.setMinutes(minutes);
+            intake.setTaken(status);
+            //TODO REDO!!!!
+            intake.setCreationDate(ModelDao.getTimeInMillis() + hours);
+            return intake;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private TaskAction createTaskAction(Boolean status) {
@@ -52,6 +59,7 @@ public class StubWeekCreator {
         drug.setName(name);
         drug.setDose(dose);
         drug.setUnits(units);
+        drug.setCreationDate(ModelDao.getTimeInMillis());
         for (int i = 0; i < 4; i++) {
             drug.getIntakes().add(createIntake(i < 2, 12 + i * 2, 0));
         }
@@ -78,15 +86,20 @@ public class StubWeekCreator {
     }
 
     private Day createDay(String name, int number) {
-        Day day = realm.createObject(Day.class);
-        day.setName(name);
-        day.setNumber(number);
-        for (int i = 0; i < 3; i ++) {
-            day.getDrugs().add(createDrug("Вазилип " + i, 20 ,"мг" ));
-            day.getTasks().add(createTask("Лежать", 24, "часа"));
-            day.getMeasurements().add(createMeasurment("ЭКГ", 15, "мин"));
+        try {
+            Day day = realm.createObject(Day.class);
+            day.setName(name);
+            day.setNumber(number);
+            for (int i = 0; i < 3; i++) {
+                day.getDrugs().add(createDrug("Вазилип " + i, 20, "мг"));
+                day.getTasks().add(createTask("Лежать", 24, "часа"));
+                day.getMeasurements().add(createMeasurment("ЭКГ", 15, "мин"));
+            }
+            return day;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return day;
+        return null;
     }
 
 

@@ -1,15 +1,17 @@
 package com.gattaca.team.ui.container.impl;
 
 import android.app.Activity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.gattaca.bitalinoecgchart.tracker.data.TopContainer;
-import com.gattaca.bitalinoecgchart.tracker.db.Week;
 import com.gattaca.bitalinoecgchart.tracker.ui.TopItem;
 import com.gattaca.bitalinoecgchart.tracker.v2.ModelDao;
+import com.gattaca.bitalinoecgchart.tracker.v2.StubWeekCreator;
 import com.gattaca.team.R;
+import com.gattaca.team.db.RealmController;
+import com.gattaca.team.db.tracker.Week;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
@@ -55,6 +57,29 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
     @Override
     protected void reDraw() {
+
+        if (getModel() == null ||
+                getModel().getWeek() == null ||
+                getModel().getWeek().getDays() == null ||
+                getModel().getWeek().getDays().size() == 0) {
+            realm = RealmController.getRealm();
+            if (realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR)).findFirst() == null) {
+                realm.executeTransaction((Realm realm) -> {
+                            try {
+                                Week week = realm.createObject(Week.class, new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR));
+                                StubWeekCreator swc = new StubWeekCreator(week, realm);
+                                swc.fillStubWeek();
+                            } catch (Exception e) {
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                );
+            }
+            week = realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR)).findFirst();
+        } else {
+            week = getModel().getWeek();
+        }
+        modelDao.setWeek(week);
         mItemAdapter.clear();
         TopItem topItem = new TopItem()
                 .withModelDao(modelDao).linkToRecycleView(recyclerView)
@@ -66,19 +91,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
     @Override
     public void bindView() {
-//        realm = RealmController.getRealm();
-//        if (realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR)).findFirst() == null) {
-//            realm.executeTransaction((Realm realm) -> {
-//                        try {
-//                            Week week = realm.createObject(Week.class, new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR));
-//                            StubWeekCreator swc = new StubWeekCreator(week, realm);
-//                            swc.fillStubWeek();
-//                        } catch (Exception e) {
-//                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-//                        }
-//                    }
-//            );
-//        }
+
         //TODO: implements
 
         if (calendar == null) {
@@ -86,6 +99,14 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
         }
         int weekNum = calendar.get(Calendar.WEEK_OF_YEAR);
         realm = Realm.getDefaultInstance();
+//        realm.executeTransaction((Realm r) -> {
+//            r.delete(Week.class);
+//            r.delete(Drug.class);
+//            r.delete(Intake.class);
+//            r.delete(Measurement.class);
+//            r.delete(Task.class);
+//            r.delete(TaskAction.class);
+//        });
         week = realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), weekNum).findFirst();
         modelDao = new ModelDao(week);
         RelativeLayout relativeLayout = (RelativeLayout) this.getRootView();
@@ -99,7 +120,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
         recyclerView = rv;
         rv.setLayoutManager(new SnappingLinearLayoutManager(context));
 
-        rv.setItemAnimator(new DefaultItemAnimator());
+//        rv.setItemAnimator(new DefaultItemAnimator());
         rv.setAdapter(mItemAdapter.wrap(mFastAdapter));
 
 

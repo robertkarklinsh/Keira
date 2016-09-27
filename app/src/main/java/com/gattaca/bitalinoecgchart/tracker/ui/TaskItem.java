@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gattaca.bitalinoecgchart.tracker.ViewHoldersCollection;
-import com.gattaca.bitalinoecgchart.tracker.db.Task;
+import com.gattaca.team.db.tracker.Task;
 import com.gattaca.team.R;
 
 import java.util.List;

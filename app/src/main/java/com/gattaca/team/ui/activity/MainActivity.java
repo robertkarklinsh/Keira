@@ -17,9 +17,10 @@ import com.gattaca.team.ui.container.impl.DataBankContainer;
 import com.gattaca.team.ui.container.impl.MonitorContainer;
 import com.gattaca.team.ui.container.impl.NotificationCenterContainer;
 import com.gattaca.team.ui.container.impl.TrackerContainer;
-import com.gattaca.team.ui.model.IListContainerModel;
+import com.gattaca.team.ui.model.IContainerModel;
 import com.gattaca.team.ui.model.impl.DataBankModel;
 import com.gattaca.team.ui.model.impl.NotificationCenterModel;
+import com.gattaca.team.ui.model.impl.TrackerModel;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -110,7 +111,7 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
             //TODO: animate change views
             currentContainer.changeCurrentVisibilityState(true);
         }
-        IListContainerModel model = item.getModelForSubContainer();
+        IContainerModel model = item.getModelForSubContainer();
         switch (item.getMenuItemForOpen()) {
             case Notification:
                 currentContainer = notificationCenterContainer;
@@ -118,6 +119,7 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
                 break;
             case Tracker:
                 currentContainer = trackerContainer;
+                model = new TrackerModel(RealmController.getCurrentWeek());
                 break;
             case Monitor:
                 currentContainer = monitorContainer;
@@ -159,5 +161,10 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
     protected void onDestroy() {
         Realm.getDefaultInstance().close();
         super.onDestroy();
+    }
+
+    @Subscribe
+    public void updateTrackerPercents(int[] percents) {
+
     }
 }

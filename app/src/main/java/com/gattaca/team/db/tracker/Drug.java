@@ -1,4 +1,4 @@
-package com.gattaca.bitalinoecgchart.tracker.db;
+package com.gattaca.team.db.tracker;
 
 import com.gattaca.bitalinoecgchart.tracker.data.ItemType;
 import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
@@ -19,7 +19,13 @@ public class Drug implements RealmModel, TrackerItemContainer {
     //TODO maybe we must unify doses Enum etc;
     private String units;
 
+
+    long creationDate;
     private RealmList<Intake> intakes;
+
+    public void setCreationDate(long creationDate){
+        this.creationDate = creationDate;
+    }
 
     public void setName(String name) {
         this.name = name;

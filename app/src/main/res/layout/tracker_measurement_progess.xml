@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="left"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,12 +20,16 @@
         <ProgressBar
             android:id="@+id/status_progress"
             android:layout_width="match_parent"
-
+            android:layout_marginBottom="10dp"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:layout_height="14dp"
             android:progressDrawable="@android:drawable/progress_horizontal"
             android:indeterminate="false"
             android:indeterminateOnly="false" />
+        <ImageView
+            android:layout_width="40dp"
+            android:id="@+id/tryDrawable"
+            android:layout_height="40dp" />
         <TextView
             android:id="@+id/custom_drug_button_text"
             android:layout_width="wrap_content"
@@ -51,6 +56,8 @@
             android:textColor="#f77a20"
             android:layout_gravity="bottom" />
     </LinearLayout>
+
+
 
 
 </LinearLayout>

@@ -2,15 +2,15 @@ package com.gattaca.bitalinoecgchart.tracker.v2;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.gattaca.bitalinoecgchart.tracker.db.Day;
-import com.gattaca.bitalinoecgchart.tracker.db.Drug;
-import com.gattaca.bitalinoecgchart.tracker.db.Measurement;
-import com.gattaca.bitalinoecgchart.tracker.db.Task;
-import com.gattaca.bitalinoecgchart.tracker.db.Week;
+import com.gattaca.team.db.tracker.Day;
+import com.gattaca.team.db.tracker.Drug;
+import com.gattaca.team.db.tracker.Measurement;
+import com.gattaca.team.db.tracker.Task;
+import com.gattaca.team.db.tracker.Week;
 import com.gattaca.bitalinoecgchart.tracker.ui.DrugItem;
 import com.gattaca.bitalinoecgchart.tracker.ui.HeaderItem;
 import com.gattaca.bitalinoecgchart.tracker.ui.TaskItem;
-import com.gattaca.bitalinoecgchart.tracker.ui.TrackerItem;
+import com.gattaca.bitalinoecgchart.tracker.ui.MeasurementItem;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.ArrayList;
@@ -29,6 +29,10 @@ public class ModelDao {
     }
 
     public ModelDao(Week week) {
+        this.week = week;
+    }
+
+    public void setWeek(Week week) {
         this.week = week;
     }
 
@@ -63,6 +67,9 @@ public class ModelDao {
         return currentDay;
     }
 
+    public static long getTimeInMillis() {
+        return time.getTimeInMillis();
+    }
 
     private String dayModifier(Day day, int currentDay) {
         if (day.getNumber() == currentDay) {
@@ -100,7 +107,7 @@ public class ModelDao {
                 res.add(new DrugItem().withItemContainer(drug));
             }
             for (Measurement measurement : day.getMeasurements()) {
-                res.add(new TrackerItem().withItemContainer(measurement));
+                res.add(new MeasurementItem().withItemContainer(measurement));
             }
             for (Task task : day.getTasks()) {
                 res.add(new TaskItem().withItemContainer(task));

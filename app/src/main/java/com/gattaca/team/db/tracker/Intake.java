@@ -1,4 +1,4 @@
-package com.gattaca.bitalinoecgchart.tracker.db;
+package com.gattaca.team.db.tracker;
 
 import java.util.Locale;
 
@@ -15,6 +15,11 @@ public class Intake implements RealmModel {
     private int hours;
     private int minutes;
 
+    long creationDate;
+
+    public void setCreationDate(long creationDate){
+        this.creationDate = creationDate;
+    }
     public boolean isTaken() {
         return taken;
     }

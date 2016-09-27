@@ -8,15 +8,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gattaca.bitalinoecgchart.tracker.ViewHoldersCollection;
-import com.gattaca.bitalinoecgchart.tracker.db.Measurement;
 import com.gattaca.team.R;
+import com.gattaca.team.db.tracker.Measurement;
 
 import java.util.List;
 
 /**
  * Created by Artem on 23.09.2016.
  */
-public class TrackerItem extends Item {
+public class MeasurementItem extends Item {
     @Override
     void bindCustomView(ViewHoldersCollection.DrugItemViewHolder holder, List payloads) {
         Measurement measurement = (Measurement) itemContainer;
@@ -28,7 +28,9 @@ public class TrackerItem extends Item {
         ((TextView) itemHeader.findViewById(R.id.tracker_item_text_black)).setText(measurement.getBlackText());
         ((TextView) itemHeader.findViewById(R.id.tracker_item_text_gray)).setText(measurement.getGrayText());
         ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(measurement.getIcon());
+
         LinearLayout progress = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_measurement_progess, viewGroup);
+        ((ImageView) progress.findViewById(R.id.tryDrawable)).setImageDrawable(new PressureDrawable());
         itemImages.addView(progress);
 
     }
