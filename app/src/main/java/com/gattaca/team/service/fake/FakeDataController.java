@@ -13,7 +13,6 @@ import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.BpmGreen;
 import com.gattaca.team.db.sensor.RR;
-import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.db.sensor.Session;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_1_hour;
@@ -27,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import io.realm.RealmModel;
@@ -67,7 +67,13 @@ public final class FakeDataController extends HandlerThread implements Handler.C
             case FakeMessage.Start:
                 RealmController.clearAll();
                 final int max = 40000;
-                final long startTime = System.currentTimeMillis() - DateUtils.DAY_IN_MILLIS;
+                final Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.HOUR_OF_DAY, 12);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                cal.set(Calendar.DAY_OF_MONTH, 1);
+                final long startTime = cal.getTimeInMillis();
                 final int timeOffset = 3;
                 final List<RealmModel> rawRealm = new ArrayList<>();
                 final ArrayList<Long> PcTimesAgain = new ArrayList<>();
@@ -82,7 +88,6 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                 BpmPoint_30_min bpmPoint_30_min = null;
 
                 int pc_count_per_session = 0,
-                        pointsCount = 0,
                         idx = 0,
                         currentRrValue,
                         prevRrValue = 0;
@@ -92,7 +97,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                 boolean block = false;
 
                 try {
-                    in = MainApplication.getContext().getAssets().open("session/samples.csv");
+                    /*in = MainApplication.getContext().getAssets().open("session/samples.csv");
                     reader = new BufferedReader(new InputStreamReader(in));
                     mLine = reader.readLine();
 
@@ -113,7 +118,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         }
                     }
                     in.close();
-                    reader.close();
+                    reader.close();*/
 
                     in = MainApplication.getContext().getAssets().open("session/rr.txt");
                     reader = new BufferedReader(new InputStreamReader(in));

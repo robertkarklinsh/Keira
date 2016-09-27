@@ -15,7 +15,7 @@ public class BpmPoint_1_hour implements RealmModel, BpmOptimizing.IBpmOptimizing
     private float value;
     private int channel = 0;
     @Ignore
-    private BpmOptimizing optimizing = new BpmOptimizing(this, GraphPeriod.period_15min);
+    private BpmOptimizing optimizing = new BpmOptimizing(this, GraphPeriod.period_1hour);
 
     public long getTime() {
         return time;

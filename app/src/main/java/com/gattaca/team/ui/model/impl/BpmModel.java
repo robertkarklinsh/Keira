@@ -8,17 +8,19 @@ import com.gattaca.team.ui.view.TimeStump;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public final class BpmModel implements IContainerModel {
     private final List<Pair<Float, Long>> data = new ArrayList<>();
     private final List<BpmGreenRegion> green = new ArrayList<>();
+    private final Random rnd = new Random();
 
     public void addPoint(float value, long timestump) {
         data.add(new Pair<>(value, timestump));
     }
 
     public void addGreenPoint(float top, float bottom, long timestump) {
-        green.add(new BpmGreenRegion(top, bottom, timestump));
+        green.add(new BpmGreenRegion(top, bottom + 10 - rnd.nextInt(20), timestump));
     }
 
     public void print() {

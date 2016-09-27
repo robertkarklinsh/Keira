@@ -43,6 +43,7 @@ public class Bpm extends TextView {
     private Path
             mTimePath = new Path(),
             mGreenPath = new Path(),
+            mGreenResetPath = new Path(),
             mPointsPath = new Path();
     private ArrayList<String> timeSrc = new ArrayList<>();
     private BpmModel model = null;
@@ -52,25 +53,27 @@ public class Bpm extends TextView {
             if (width == 0) {
                 new Handler().postDelayed(this, 100);
             } else {
-                mPointsPath.reset();
+                mPointsPath.rewind();
                 timeSrc = model.formatTimes(times);
                 final List<Float> data = model.getData();
                 double a = (double) 360 / data.size();
                 int idx = 0;
                 for (float f : data) {
-                    setPoint(mPointsPath, math(f, idx++, a));
+                    if (f > AppConst.maxBPM) f = AppConst.maxBPM;
+                    setPoint(mPointsPath, math(f, ++idx, a));
                 }
-                final Path p1 = new Path(), p2 = new Path();
-                mGreenPath.reset();
+                mGreenPath.rewind();
+                mGreenResetPath.rewind();
                 idx = 0;
                 final List<BpmModel.BpmGreenRegion> greens = model.getGreenData();
                 a = (double) 360 / greens.size();
                 for (BpmModel.BpmGreenRegion greenRegion : greens) {
-                    setPoint(p1, math(greenRegion.getBottom(), idx++, a));
-                    setPoint(p2, math(greenRegion.getTop(), idx++, a));
+                    idx++;
+                    setPoint(mGreenResetPath, math(greenRegion.getBottom(), idx, a));
+                    setPoint(mGreenPath, math(greenRegion.getTop(), idx, a));
                 }
-                // mGreenPath.addPath(p1);
-                mGreenPath.addPath(p2);
+                mGreenResetPath.close();
+                mGreenPath.close();
                 //postInvalidate();
                 setText("" + selectedValue);
             }
@@ -138,7 +141,10 @@ public class Bpm extends TextView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        greenZone.setColor(Color.GREEN);
         canvas.drawPath(mGreenPath, greenZone);
+        greenZone.setColor(Color.WHITE);
+        canvas.drawPath(mGreenResetPath, greenZone);
         // draw main elements ======================================================================
         redZone.setStrokeWidth(pxsPer20Bpm);
         mainLinePaint.setPathEffect(null);
@@ -178,7 +184,7 @@ public class Bpm extends TextView {
         canvas.restore();
         //==========================================================================================
         mainLinePaint.setStrokeWidth(8);
-        mainLinePaint.setColor(Color.CYAN);
+        mainLinePaint.setColor(Color.BLACK);
         mainLinePaint.setStyle(Paint.Style.STROKE);
         mainLinePaint.setPathEffect(cornerPathEffect);
         canvas.drawPath(mPointsPath, mainLinePaint);
@@ -186,10 +192,9 @@ public class Bpm extends TextView {
     }
 
     private void init() {
-        greenZone.setStyle(Paint.Style.STROKE);
-        greenZone.setColor(Color.GREEN);
+        greenZone.setStyle(Paint.Style.FILL_AND_STROKE);
         greenZone.setPathEffect(cornerPathEffect);
-        greenZone.setStrokeWidth(10);
+        greenZone.setStrokeWidth(5);
 
         redZone.setStyle(Paint.Style.STROKE);
         redZone.setColor(Color.RED);
@@ -204,6 +209,5 @@ public class Bpm extends TextView {
         setGravity(Gravity.CENTER);
         setTextColor(Color.GRAY);
         setTextSize(20);
-        setAlpha(0.8f);
     }
 }

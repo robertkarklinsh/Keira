@@ -2,6 +2,7 @@ package com.gattaca.team.db;
 
 import android.app.Activity;
 import android.app.Application;
+import android.text.format.DateUtils;
 
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.BpmGreen;
@@ -126,10 +127,13 @@ public final class RealmController {
                 .sort(Session.getNamedFieldTimeFinish(), Sort.DESCENDING);
     }
 
-    public static RealmResults<BpmPoint_5_min> getStubSessionBpm30() {
-        return Realm.getDefaultInstance()
-                .where(BpmPoint_5_min.class)
-                .findAll();
+    public static RealmResults<BpmPoint_30_min> getStubSessionBpm30() {
+        final Realm r = Realm.getDefaultInstance();
+        final BpmPoint_30_min first = r.where(BpmPoint_30_min.class).findFirst();
+        return r.where(BpmPoint_30_min.class)
+                .lessThan(BpmPoint_30_min.getNamedFieldTime(), first.getTime() + 30 * DateUtils.MINUTE_IN_MILLIS)
+                .findAll()
+                .sort(BpmPoint_30_min.getNamedFieldTime(), Sort.ASCENDING);
     }
 
     public static RealmResults<BpmGreen> getStubSessionBpmGreen(long from, long to) {
@@ -138,6 +142,6 @@ public final class RealmController {
                 .greaterThan(BpmGreen.getNamedFieldTime(), from)
                 .lessThan(BpmGreen.getNamedFieldTime(), to)
                 .findAll()
-                .sort(BpmGreen.getNamedFieldTime(), Sort.DESCENDING);
+                .sort(BpmGreen.getNamedFieldTime(), Sort.ASCENDING);
     }
 }

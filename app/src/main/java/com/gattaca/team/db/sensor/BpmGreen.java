@@ -1,6 +1,10 @@
 package com.gattaca.team.db.sensor;
 
 
+import android.text.format.DateUtils;
+
+import java.util.Calendar;
+
 import io.realm.RealmModel;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
@@ -8,16 +12,23 @@ import io.realm.annotations.RealmClass;
 @RealmClass
 public class BpmGreen implements RealmModel {
     @PrimaryKey
-    private long _id = System.currentTimeMillis();
-
     private long time;
-
     private float valueTop;
     private float valueBottom;
 
 
     public static String getNamedFieldTime() {
         return "time";
+    }
+
+    public static long createTimeFrom(final long time) {
+        final Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time);
+        return cal.get(Calendar.HOUR_OF_DAY) * DateUtils.HOUR_IN_MILLIS +
+                cal.get(Calendar.MINUTE) * DateUtils.MINUTE_IN_MILLIS +
+                cal.get(Calendar.SECOND) * DateUtils.SECOND_IN_MILLIS +
+                cal.get(Calendar.MILLISECOND);
+
     }
 
     public long getTime() {
