@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.TextView;
 
+import com.gattaca.team.root.AppConst;
 import com.gattaca.team.ui.model.impl.BpmModel;
 
 import java.util.ArrayList;
@@ -20,8 +21,6 @@ import java.util.List;
 public class Bpm extends TextView {
     private final static int times = 15;
     private static float heightTextPts = 0;
-    final int minBPM = 20;
-    final int maxBPM = 140;
     private final CornerPathEffect cornerPathEffect = new CornerPathEffect(30);
     double arc = 0;
     private int
@@ -126,8 +125,8 @@ public class Bpm extends TextView {
             outRadius = (int) (0.05 * width);
             fullRadius = bpmRadius + innerRadius + outRadius;
             linesOffset = x0 - fullRadius;
-            pxsPer1Bpm = bpmRadius / (maxBPM - minBPM);
-            pxsPer20Bpm = minBPM * pxsPer1Bpm;
+            pxsPer1Bpm = bpmRadius / (AppConst.maxBPM - AppConst.minBPM);
+            pxsPer20Bpm = AppConst.minBPM * pxsPer1Bpm;
             arc = 2 * Math.PI * (fullRadius - outRadius) / times;
 
             mTimePath.addCircle(x0, y0, fullRadius - outRadius, Path.Direction.CW);

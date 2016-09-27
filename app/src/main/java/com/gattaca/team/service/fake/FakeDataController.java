@@ -15,10 +15,11 @@ import com.gattaca.team.db.sensor.BpmGreen;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.db.sensor.Session;
-import com.gattaca.team.db.sensor.optimizing.SensorPoint_1_hour;
-import com.gattaca.team.db.sensor.optimizing.SensorPoint_5_min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_1_hour;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_30_min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
 import com.gattaca.team.prefs.AppPref;
-import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.root.MainApplication;
 
 import java.io.BufferedReader;
@@ -70,13 +71,15 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                 final int timeOffset = 3;
                 final List<RealmModel> rawRealm = new ArrayList<>();
                 final ArrayList<Long> PcTimesAgain = new ArrayList<>();
-                final ArrayList<Float> bpm5 = new ArrayList<>();
-                final ArrayList<Float> bpm60 = new ArrayList<>();
 
                 InputStream in = null;
                 BufferedReader reader = null;
                 String mLine;
                 String[] splits;
+                BpmPoint_1_hour bpmPoint_1_hour = null;
+                BpmPoint_5_min bpmPoint_5_min = null;
+                BpmPoint_15_min bpmPoint_15_min = null;
+                BpmPoint_30_min bpmPoint_30_min = null;
 
                 int pc_count_per_session = 0,
                         pointsCount = 0,
@@ -85,7 +88,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         prevRrValue = 0;
                 long time;
                 float bpm;
-                double timeRR, time5 = 0, time60 = 0;
+                double timeRR;
                 boolean block = false;
 
                 try {
@@ -156,8 +159,6 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         }
                         // Search BPM
                         timeRR = Math.abs(currentRrValue - prevRrValue) * timeOffset;
-                        time5 += timeRR;
-                        time60 += timeRR;
                         bpm = (float) (60000 / timeRR);
 
                         if (bpm < 40) {
@@ -180,19 +181,33 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                                     .setTime(time));
                         }
 
-                        if (time5 >= 1667) {
-                            time5 -= 1667;
-                            rawRealm.add(new SensorPoint_5_min()
-                                    .setValue(AppUtils.convertListToAvrValue(bpm5))
-                                    .setTime(time));
-                            bpm5.clear();
+                        if (bpmPoint_5_min == null) {
+                            bpmPoint_5_min = new BpmPoint_5_min();
                         }
-                        if (time60 >= 20000) {
-                            time60 -= 20000;
-                            rawRealm.add(new SensorPoint_1_hour()
-                                    .setValue(AppUtils.convertListToAvrValue(bpm60))
-                                    .setTime(time));
-                            bpm60.clear();
+                        if (bpmPoint_5_min.addPoint(time, timeRR, bpm)) {
+                            rawRealm.add(bpmPoint_5_min);
+                            bpmPoint_5_min = null;
+                        }
+                        if (bpmPoint_15_min == null) {
+                            bpmPoint_15_min = new BpmPoint_15_min();
+                        }
+                        if (bpmPoint_15_min.addPoint(time, timeRR, bpm)) {
+                            rawRealm.add(bpmPoint_15_min);
+                            bpmPoint_15_min = null;
+                        }
+                        if (bpmPoint_30_min == null) {
+                            bpmPoint_30_min = new BpmPoint_30_min();
+                        }
+                        if (bpmPoint_30_min.addPoint(time, timeRR, bpm)) {
+                            rawRealm.add(bpmPoint_30_min);
+                            bpmPoint_30_min = null;
+                        }
+                        if (bpmPoint_1_hour == null) {
+                            bpmPoint_1_hour = new BpmPoint_1_hour();
+                        }
+                        if (bpmPoint_1_hour.addPoint(time, timeRR, bpm)) {
+                            rawRealm.add(bpmPoint_1_hour);
+                            bpmPoint_1_hour = null;
                         }
 
                         mLine = reader.readLine();
@@ -203,25 +218,30 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                             rawRealm.clear();
                         }
                         prevRrValue = currentRrValue;
-
-                        bpm5.add(bpm);
-                        bpm60.add(bpm);
                     }
 
-                    if (time5 > 0) {
-                        rawRealm.add(new SensorPoint_5_min()
-                                .setValue(AppUtils.convertListToAvrValue(bpm5))
-                                .setTime(startTime + prevRrValue * timeOffset));
+                    time = startTime + prevRrValue * timeOffset;
+
+                    if (bpmPoint_5_min != null) {
+                        bpmPoint_5_min.collapsePoints(time);
+                        rawRealm.add(bpmPoint_5_min);
                     }
-                    if (time60 > 0) {
-                        rawRealm.add(new SensorPoint_1_hour()
-                                .setValue(AppUtils.convertListToAvrValue(bpm60))
-                                .setTime(startTime + prevRrValue * timeOffset));
+                    if (bpmPoint_15_min != null) {
+                        bpmPoint_15_min.collapsePoints(time);
+                        rawRealm.add(bpmPoint_15_min);
                     }
+                    if (bpmPoint_30_min != null) {
+                        bpmPoint_30_min.collapsePoints(time);
+                        rawRealm.add(bpmPoint_30_min);
+                    }
+                    if (bpmPoint_1_hour != null) {
+                        bpmPoint_1_hour.collapsePoints(time);
+                        rawRealm.add(bpmPoint_1_hour);
+                    }
+
                     RealmController.save(new Session()
                             .setTimeStart(startTime)
-                            .setTimeFinish(startTime + pointsCount * timeOffset));
-
+                            .setTimeFinish(time));
 
                     in.close();
                     reader.close();
@@ -232,8 +252,9 @@ public final class FakeDataController extends HandlerThread implements Handler.C
 
                     while (mLine != null) {
                         splits = mLine.split(",");
+                        long tmpTime = 30 * DateUtils.SECOND_IN_MILLIS + idx++ * DateUtils.MINUTE_IN_MILLIS;
                         rawRealm.add(new BpmGreen()
-                                .setTime(30 * DateUtils.SECOND_IN_MILLIS + idx++ * DateUtils.MINUTE_IN_MILLIS)
+                                .setTime(tmpTime)
                                 .setValueBottom(Float.valueOf(splits[7]))
                                 .setValueTop(Float.valueOf(splits[97])));
 

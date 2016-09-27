@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.sensor.BpmGreen;
-import com.gattaca.team.db.sensor.optimizing.SensorPoint_5_min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
 import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.ui.model.impl.BpmModel;
 import com.gattaca.team.ui.view.Bpm;
@@ -35,12 +35,12 @@ public class MonitorBpm extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        final List<SensorPoint_5_min> data = RealmController.getStubSessionBpm30();
+        final List<BpmPoint_5_min> data = RealmController.getStubSessionBpm30();
         final BpmModel model = new BpmModel();
         final int step = 30 / 5; //STUB!
         final ArrayList<Float> tmp = new ArrayList<>(data.size() / step);
         int stepping = 0;
-        for (SensorPoint_5_min item : data) {
+        for (BpmPoint_5_min item : data) {
             tmp.add(item.getValue());
             if (++stepping >= step) {
                 model.addPoint(AppUtils.convertListToAvrValue(tmp), item.getTime());
@@ -54,10 +54,9 @@ public class MonitorBpm extends AppCompatActivity {
 
         final Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(data.get(0).getTime());
-        long from = cal.get(Calendar.HOUR_OF_DAY) * DateUtils.HOUR_IN_MILLIS +
-                cal.get(Calendar.MINUTE) * DateUtils.MINUTE_IN_MILLIS +
-                cal.get(Calendar.SECOND) * DateUtils.SECOND_IN_MILLIS +
-                cal.get(Calendar.MILLISECOND);
+        long from = cal.get(Calendar.HOUR_OF_DAY) * 60 * 60 +
+                cal.get(Calendar.MINUTE) * 60 +
+                cal.get(Calendar.SECOND);
         cal.setTimeInMillis(data.get(data.size() - 1).getTime());
 
         final List<BpmGreen> green = RealmController.getStubSessionBpmGreen(
@@ -71,6 +70,7 @@ public class MonitorBpm extends AppCompatActivity {
         }
         bpmGraph.install(model);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
