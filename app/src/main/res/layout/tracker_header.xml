@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/tracker_header_text"
+        android:layout_weight="4.29"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="Лекарства"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"
+        android:textColor="#000000"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"/>
+
+</LinearLayout>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.text.format.DateUtils;
 
+import com.gattaca.team.db.tracker.Week;
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.BpmGreen;
 import com.gattaca.team.db.sensor.BpmRed;
@@ -15,6 +16,7 @@ import com.gattaca.team.db.sensor.optimizing.BpmPoint_1_hour;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_30_min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import io.realm.Realm;
@@ -88,6 +90,7 @@ public final class RealmController {
         realm.delete(BpmGreen.class);
         realm.commitTransaction();
     }
+
     public static void save(RealmModel item) {
         // final long time = System.currentTimeMillis();
         final Realm realm = Realm.getDefaultInstance();
@@ -153,5 +156,15 @@ public final class RealmController {
                 .lessThan(BpmGreen.getNamedFieldTime(), to)
                 .findAll()
                 .sort(BpmGreen.getNamedFieldTime(), Sort.ASCENDING);
+    }
+
+    public static Realm getRealm() {
+        return Realm.getDefaultInstance();
+    }
+
+    public static Week getCurrentWeek() {
+        return Realm.getDefaultInstance()
+                .where(Week.class)
+                .equalTo(Week.getNamedFieldWeekNum(), new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR)).findFirst();
     }
 }

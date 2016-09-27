@@ -4,6 +4,10 @@
     <item name="navigation_action_2" type="id" />
     <item name="navigation_action_3" type="id" />
     <item name="navigation_action_4" type="id" />
+    <item name="tracker_top" type="id" />
+    <item name="tracker_header" type="id" />
+    <item name="tracker_footer" type="id" />
+    <item name="tracker_item" type="id" />
     <item name="list_item_notify_center" type="id" />
     <item name="list_item_data_bank" type="id" />
 </resources>

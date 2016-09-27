@@ -80,5 +80,8 @@ public final class MainApplication extends Application {
         registerActivityLifecycleCallbacks(activityCallback);
         RealmController.with(this);
         RootSensorListener.getInstance();
+
+
+
     }
 }
