@@ -8,6 +8,7 @@ import android.util.Log;
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.BpmGreen;
 import com.gattaca.team.db.sensor.BpmRed;
+import com.gattaca.team.db.sensor.EmulatedBpm;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.db.sensor.Session;
@@ -91,6 +92,7 @@ public final class RealmController {
         realm.delete(Session.class);
         realm.delete(BpmGreen.class);
         realm.commitTransaction();
+        clearEmulate();
     }
 
     public static void save(RealmModel item) {
@@ -118,6 +120,21 @@ public final class RealmController {
         }*/
     }
 
+    public static void clearEmulate() {
+        Log.e("RealmController", "=== clear emulate data ===");
+        final Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.delete(EmulatedBpm.class);
+        realm.commitTransaction();
+    }
+
+    public static RealmResults<EmulatedBpm> getEmulatedBpm() {
+        return Realm
+                .getDefaultInstance()
+                .where(EmulatedBpm.class)
+                .findAll();
+    }
+
     public static RealmResults<NotifyEventObject> getAllEvents() {
         return Realm
                 .getDefaultInstance()
@@ -131,6 +148,13 @@ public final class RealmController {
                 .where(Session.class)
                 .findAll()
                 .sort(Session.getNamedFieldTimeFinish(), Sort.DESCENDING);
+    }
+
+    public static RealmResults<BpmPoint_5_min> getStubSessionBpm5() {
+        return Realm.getDefaultInstance()
+                .where(BpmPoint_5_min.class)
+                .findAll()
+                .sort(BpmPoint_5_min.getNamedFieldTime(), Sort.ASCENDING);
     }
 
     public static RealmResults<BpmPoint_30_min> getStubSessionBpm30() {

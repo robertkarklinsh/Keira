@@ -22,15 +22,29 @@
         android:layout_height="1dp"
         android:background="@color/colorPrimary" />
 
-    <TextView
-        android:id="@+id/monitor_main_action_pulse"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center_vertical"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:text="@string/monitor_main_action_pulse"
-        android:textSize="20sp" />
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
+        <TextView
+            android:id="@+id/monitor_main_action_pulse"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/monitor_main_bpm_value"
+            android:gravity="center_vertical"
+            android:text="@string/monitor_main_action_pulse"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/monitor_main_bpm_value"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:textSize="20sp" />
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

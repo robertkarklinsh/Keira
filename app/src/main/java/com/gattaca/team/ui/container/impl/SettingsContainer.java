@@ -30,7 +30,13 @@ public final class SettingsContainer extends IContainer<MonitorModel> implements
 
     @Override
     public void onClick(View v) {
-        changeText(!changeState.isSelected());
+        boolean state = !changeState.isSelected();
+        changeText(state);
+        if (state) {
+            RootSensorListener.generateRaw();
+        } else {
+            RootSensorListener.stopRaw();
+        }
     }
 
     void changeText(boolean state) {

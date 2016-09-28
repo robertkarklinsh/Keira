@@ -112,14 +112,21 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                 SensorData sensorData;
                 int tmpLines = 0;
                 try {
-                    in = MainApplication.getContext().getAssets().open("sensor/bitalino.txt");
-                    reader = new BufferedReader(new InputStreamReader(in));
-                    String mLine = reader.readLine();
+                    String mLine = null;
                     int line = 0, sig;
                     String[] splits;
                     final BITalinoFrame[] frames = new BITalinoFrame[FRAMES_COUNT];
 
-                    while (!forceStopAnyProcess && mLine != null) {
+                    while (!forceStopAnyProcess) {
+                        if (mLine == null) {
+                            Log.e(getClass().getSimpleName(), "tries were " + tmpLines);
+                            if (in != null) in.close();
+                            if (reader != null) reader.close();
+                            in = MainApplication.getContext().getAssets().open("sensor/bitalino.txt");
+                            reader = new BufferedReader(new InputStreamReader(in));
+                            mLine = reader.readLine();
+                            line = 0;
+                        }
                         splits = mLine.split("\t");
                         sig = 0;
                         for (String p : splits) {
@@ -166,7 +173,6 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                         }
                     }
                 }
-                Log.e(getClass().getSimpleName(), "tries were " + tmpLines);
                 break;
             case NoConnection:
                 // default state

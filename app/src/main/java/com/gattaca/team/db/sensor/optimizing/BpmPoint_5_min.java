@@ -17,6 +17,10 @@ public class BpmPoint_5_min implements RealmModel, BpmOptimizing.IBpmOptimizing 
     @Ignore
     private BpmOptimizing optimizing = new BpmOptimizing(this, GraphPeriod.period_5min);
 
+    public static String getNamedFieldTime() {
+        return "time";
+    }
+
     public long getTime() {
         return time;
     }

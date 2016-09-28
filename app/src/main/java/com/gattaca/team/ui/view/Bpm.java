@@ -21,7 +21,7 @@ import com.gattaca.team.ui.model.impl.BpmModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bpm extends TextView implements View.OnTouchListener {
+public final class Bpm extends TextView implements View.OnTouchListener {
     private final static int times = 15;
     private static float heightTextPts = 0;
     private final CornerPathEffect cornerPathEffect = new CornerPathEffect(30);
