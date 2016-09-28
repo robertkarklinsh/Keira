@@ -2,6 +2,7 @@ package com.gattaca.team.ui.container.impl;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -13,10 +14,12 @@ import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.Week;
 import com.gattaca.team.root.MainApplication;
+import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.container.MainMenu;
 import com.gattaca.team.ui.model.impl.TrackerModel;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 
@@ -103,13 +106,14 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 //            r.delete(Week.class);
 //            r.delete(Drug.class);
 //            r.delete(Intake.class);
-//            r.delete(Measurement.class);
+//            r.delete(PulseMeasurement.class);
 //            r.delete(Task.class);
 //            r.delete(TaskAction.class);
 //        });
         week = realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), weekNum).findFirst();
         modelDao = new ModelDao(week);
         RelativeLayout relativeLayout = (RelativeLayout) this.getRootView();
+
         if (mFastAdapter == null) {
             mFastAdapter = new FastAdapter();
         }
@@ -122,6 +126,23 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
 //        rv.setItemAnimator(new DefaultItemAnimator());
         rv.setAdapter(mItemAdapter.wrap(mFastAdapter));
+
+
+//        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) relativeLayout.findViewById(R.id.multiple_actions);
+        final FloatingActionButton actionAddDrug = (FloatingActionButton) relativeLayout.findViewById(R.id.tracker_add_drug);
+        actionAddDrug.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.ADT));
+            }
+        });
+        final FloatingActionButton actionAddPressure = (FloatingActionButton) relativeLayout.findViewById(R.id.tracker_add_pressure);
+        actionAddPressure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.APT));
+            }
+        });
 
 
     }

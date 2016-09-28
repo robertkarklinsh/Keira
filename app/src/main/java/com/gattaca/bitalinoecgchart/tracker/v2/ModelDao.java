@@ -4,13 +4,13 @@ import android.support.v7.widget.RecyclerView;
 
 import com.gattaca.team.db.tracker.Day;
 import com.gattaca.team.db.tracker.Drug;
-import com.gattaca.team.db.tracker.Measurement;
+import com.gattaca.team.db.tracker.PulseMeasurement;
 import com.gattaca.team.db.tracker.Task;
 import com.gattaca.team.db.tracker.Week;
 import com.gattaca.bitalinoecgchart.tracker.ui.DrugItem;
 import com.gattaca.bitalinoecgchart.tracker.ui.HeaderItem;
 import com.gattaca.bitalinoecgchart.tracker.ui.TaskItem;
-import com.gattaca.bitalinoecgchart.tracker.ui.MeasurementItem;
+import com.gattaca.bitalinoecgchart.tracker.ui.PulseMeasurementItem;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class ModelDao {
             Day day = week.getDays().get(i);
             res++;
             res += day.getDrugs().size();
-            res += day.getMeasurements().size();
+            res += day.getPulseMeasurements().size();
             res += day.getTasks().size();
         }
         return res;
@@ -90,7 +90,7 @@ public class ModelDao {
             Day day = week.getDays().get(i);
             res++;
             res += day.getDrugs().size();
-            res += day.getMeasurements().size();
+            res += day.getPulseMeasurements().size();
             res += day.getTasks().size();
         }
         return res;
@@ -106,8 +106,8 @@ public class ModelDao {
             for (Drug drug : day.getDrugs()) {
                 res.add(new DrugItem().withItemContainer(drug));
             }
-            for (Measurement measurement : day.getMeasurements()) {
-                res.add(new MeasurementItem().withItemContainer(measurement));
+            for (PulseMeasurement pulseMeasurement : day.getPulseMeasurements()) {
+                res.add(new PulseMeasurementItem().withItemContainer(pulseMeasurement));
             }
             for (Task task : day.getTasks()) {
                 res.add(new TaskItem().withItemContainer(task));

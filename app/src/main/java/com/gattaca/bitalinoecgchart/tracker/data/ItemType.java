@@ -5,6 +5,7 @@ package com.gattaca.bitalinoecgchart.tracker.data;
  */
 public enum ItemType {
     DRUG,
-    MEASUREMENT,
-    TASK
+    PULSE_MEASUREMENT,
+    TASK,
+    PRESSURE_MEASUREMENT
 }

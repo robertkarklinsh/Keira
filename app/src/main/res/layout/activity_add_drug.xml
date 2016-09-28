@@ -95,7 +95,7 @@
             android:text="Добавить время" />
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/add_drug_cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/add_drug_remind_check_box"
@@ -107,7 +107,7 @@
             android:id="@+id/add_drug_ok_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/button5"
+            android:layout_alignTop="@+id/add_drug_cancel_button"
             android:layout_marginStart="12dp"
             android:layout_toEndOf="@+id/add_drug_name_field"
             android:text="Добавить" />

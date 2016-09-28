@@ -58,7 +58,6 @@ public class AddDrugActivity extends AppCompatActivity {
                                                 final Calendar c = Calendar.getInstance();
                                                 hours = c.get(Calendar.HOUR_OF_DAY);
                                                 minutes = c.get(Calendar.MINUTE);
-                                                // Launch Time Picker Dialog
                                                 TimePickerDialog timePickerDialog = new TimePickerDialog(AddDrugActivity.this,
                                                         new TimePickerDialog.OnTimeSetListener() {
                                                             @Override
@@ -67,7 +66,7 @@ public class AddDrugActivity extends AppCompatActivity {
 
                                                                 editText.setText(hourOfDay + ":" + minute);
                                                             }
-                                                        }, hours, minutes, false);
+                                                        }, hours, minutes, true);
                                                 timePickerDialog.show();
                                             }
                                         }
@@ -79,7 +78,7 @@ public class AddDrugActivity extends AppCompatActivity {
 
     List<TimeHolder> times = new ArrayList<>();
     LinearLayout timeHolder;
-
+    CheckBox everyDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +91,10 @@ public class AddDrugActivity extends AppCompatActivity {
         EditText units = (EditText) findViewById(R.id.add_drug_units_field);
         LinearLayout timeHolder = (LinearLayout) findViewById(R.id.add_drug_container);
         this.timeHolder = timeHolder;
-        LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_text_item, null);
+        LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_time_item, null);
         timeHolder.addView(ll);
         times.add(new TimeHolder(ll));
-        CheckBox everyDay = (CheckBox) findViewById(R.id.add_drug_remind_check_box);
+        everyDay = (CheckBox) findViewById(R.id.add_drug_remind_check_box);
 
 
         okButton.setOnClickListener(new View.OnClickListener() {
@@ -139,11 +138,14 @@ public class AddDrugActivity extends AppCompatActivity {
         addDrugBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_text_item, null);
+                LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_time_item, null);
                 timeHolder.addView(ll);
                 times.add(new TimeHolder(ll));
             }
         });
+
+        Button cancelButton = (Button) findViewById((R.id.add_drug_cancel_button));
+        cancelButton.setOnClickListener((View v) -> AddDrugActivity.this.finish());
 
 
     }

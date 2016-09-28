@@ -3,7 +3,7 @@ package com.gattaca.bitalinoecgchart.tracker.v2;
 import com.gattaca.team.db.tracker.Day;
 import com.gattaca.team.db.tracker.Drug;
 import com.gattaca.team.db.tracker.Intake;
-import com.gattaca.team.db.tracker.Measurement;
+import com.gattaca.team.db.tracker.PulseMeasurement;
 import com.gattaca.team.db.tracker.Task;
 import com.gattaca.team.db.tracker.TaskAction;
 import com.gattaca.team.db.tracker.Week;
@@ -77,12 +77,12 @@ public class StubWeekCreator {
         return task;
     }
 
-    private Measurement createMeasurment(String name, int duration, String units) {
-        Measurement measurement = realm.createObject(Measurement.class);
-        measurement.setName(name);
-        measurement.setDuration(duration);
-        measurement.setUnits(units);
-        return measurement;
+    private PulseMeasurement createMeasurment(String name, int duration, String units) {
+        PulseMeasurement pulseMeasurement = realm.createObject(PulseMeasurement.class);
+        pulseMeasurement.setName(name);
+        pulseMeasurement.setDuration(duration);
+        pulseMeasurement.setUnits(units);
+        return pulseMeasurement;
     }
 
     private Day createDay(String name, int number) {
@@ -93,7 +93,7 @@ public class StubWeekCreator {
             for (int i = 0; i < 3; i++) {
                 day.getDrugs().add(createDrug("Вазилип " + i, 20, "мг"));
                 day.getTasks().add(createTask("Лежать", 24, "часа"));
-                day.getMeasurements().add(createMeasurment("ЭКГ", 15, "мин"));
+                day.getPulseMeasurements().add(createMeasurment("ЭКГ", 15, "мин"));
             }
             return day;
         } catch (Exception e) {

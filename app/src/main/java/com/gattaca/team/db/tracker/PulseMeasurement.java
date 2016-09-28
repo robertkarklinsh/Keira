@@ -12,7 +12,7 @@ import io.realm.annotations.RealmClass;
  */
 
 @RealmClass
-public class Measurement implements RealmModel, TrackerItemContainer{
+public class PulseMeasurement implements RealmModel, TrackerItemContainer{
     private boolean completed = false;
     private String name ;
     private int duration;
@@ -52,7 +52,7 @@ public class Measurement implements RealmModel, TrackerItemContainer{
 
     @Override
     public ItemType getType() {
-        return ItemType.PRESSURE_MEASUREMENT;
+        return ItemType.PULSE_MEASUREMENT;
     }
 
     @Override

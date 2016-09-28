@@ -46,7 +46,8 @@
             android:name="io.fabric.ApiKey"
             android:value="560c164e31ab2d572612b57e14498b098b212b11" />
 
-        <activity android:name=".ui.activity.AddDrugActivity"></activity>
+        <activity android:name=".ui.activity.AddDrugActivity" />
+        <activity android:name=".ui.activity.AddPressureActivity"></activity>
     </application>
 
 </manifest>

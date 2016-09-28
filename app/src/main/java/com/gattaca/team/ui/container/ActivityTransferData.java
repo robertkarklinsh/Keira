@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.gattaca.team.ui.activity.AddDrugActivity;
+import com.gattaca.team.ui.activity.AddPressureActivity;
 import com.gattaca.team.ui.activity.MonitorBpm;
 import com.gattaca.team.ui.activity.MonitorEcg;
 
@@ -28,7 +29,8 @@ public final class ActivityTransferData {
     public enum AvailableActivity {
         ECG(MonitorEcg.class),
         BPM(MonitorBpm.class),
-        ADT(AddDrugActivity.class);
+        ADT(AddDrugActivity.class),
+        APT(AddPressureActivity.class);
 
         final private Class cls;
 

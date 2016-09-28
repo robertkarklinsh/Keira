@@ -9,9 +9,18 @@ import io.realm.annotations.RealmClass;
  */
 @RealmClass
 public class Day implements RealmModel {
-    RealmList<Measurement> measurements = new RealmList<>();
+    RealmList<PulseMeasurement> pulseMeasurements = new RealmList<>();
+    RealmList<PressureMeasurement> pressureMeasurements = new RealmList<>();
     RealmList<Drug> drugs = new RealmList<>();
     RealmList<Task> tasks = new RealmList<>();
+
+    public RealmList<PressureMeasurement> getPressureMeasurements() {
+        return pressureMeasurements;
+    }
+
+    public void setPressureMeasurements(RealmList<PressureMeasurement> pressureMeasurements) {
+        this.pressureMeasurements = pressureMeasurements;
+    }
 
     public String getName() {
         return name;
@@ -55,12 +64,12 @@ public class Day implements RealmModel {
         this.number = number;
     }
 
-    public RealmList<Measurement> getMeasurements() {
-        return measurements;
+    public RealmList<PulseMeasurement> getPulseMeasurements() {
+        return pulseMeasurements;
     }
 
-    public void setMeasurements(RealmList<Measurement> measurements) {
-        this.measurements = measurements;
+    public void setPulseMeasurements(RealmList<PulseMeasurement> pulseMeasurements) {
+        this.pulseMeasurements = pulseMeasurements;
     }
 
     public RealmList<Drug> getDrugs() {
@@ -82,7 +91,7 @@ public class Day implements RealmModel {
     public static Day example() {
         Day day = new Day();
         for (int i = 0; i < 3; i ++) {
-            day.measurements.add(new Measurement());
+            day.pulseMeasurements.add(new PulseMeasurement());
             day.tasks.add(new Task());
             day.drugs.add(new Drug());
         }

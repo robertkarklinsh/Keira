@@ -12,14 +12,30 @@ import android.graphics.drawable.Drawable;
  */
 
 public class PressureDrawable extends Drawable {
+
+    int min;
+    int max;
+    int pos;
+
+    public PressureDrawable(int min, int max, int pos) {
+        this.min = min;
+        this.max = max;
+        this.pos = pos;
+    }
+
     @Override
     public void draw(Canvas canvas) {
         Rect rect = getBounds();
 
         Paint paint = new Paint();
-        paint.setARGB(255, 255, 0, 0);
-        float rad = 10;
-        canvas.drawRoundRect((float) rect.left,(float) rect.top, (float)rect.right, (float)rect.bottom, rad, rad , paint);
+        paint.setARGB(255, 21, 165, 153);
+//        float rad = 10;
+//        int centerOfBigCircle = (int)Math.round((double)pos / (double)(max - min));
+//        int readOfBigCircle = 33;
+
+        canvas.drawRect(rect, paint);
+//        canvas.drawCircle();
+
     }
 
     @Override
