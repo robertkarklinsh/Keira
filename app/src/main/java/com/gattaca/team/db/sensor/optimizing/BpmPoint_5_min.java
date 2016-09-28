@@ -54,7 +54,7 @@ public class BpmPoint_5_min implements RealmModel, BpmOptimizing.IBpmOptimizing 
     }
 
     @Override
-    public void collapsePoints(long globalTimeStump) {
-        optimizing.collapsePoints(globalTimeStump);
+    public void collapsePoints() {
+        optimizing.collapsePoints();
     }
 }

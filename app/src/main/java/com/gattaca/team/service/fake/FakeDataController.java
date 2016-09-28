@@ -226,25 +226,25 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         prevRrValue = currentRrValue;
                     }
 
-                    time = startTime + prevRrValue * timeOffset;
 
                     if (bpmPoint_5_min != null) {
-                        bpmPoint_5_min.collapsePoints(time);
+                        bpmPoint_5_min.collapsePoints();
                         rawRealm.add(bpmPoint_5_min);
                     }
                     if (bpmPoint_15_min != null) {
-                        bpmPoint_15_min.collapsePoints(time);
+                        bpmPoint_15_min.collapsePoints();
                         rawRealm.add(bpmPoint_15_min);
                     }
                     if (bpmPoint_30_min != null) {
-                        bpmPoint_30_min.collapsePoints(time);
+                        bpmPoint_30_min.collapsePoints();
                         rawRealm.add(bpmPoint_30_min);
                     }
                     if (bpmPoint_1_hour != null) {
-                        bpmPoint_1_hour.collapsePoints(time);
+                        bpmPoint_1_hour.collapsePoints();
                         rawRealm.add(bpmPoint_1_hour);
                     }
 
+                    time = startTime + prevRrValue * timeOffset;
                     RealmController.save(new Session()
                             .setTimeStart(startTime)
                             .setTimeFinish(time));

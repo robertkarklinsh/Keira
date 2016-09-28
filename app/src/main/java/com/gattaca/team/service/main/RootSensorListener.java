@@ -60,6 +60,11 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         }
     }
 
+    public static void generateBitalinoRaw() {
+        getInstance().bus.register(getInstance());
+        getInstance().serviceConnectionImpl.fakeGeneration();
+    }
+
     public static void generateRaw() {
         getInstance().handler.sendEmptyMessage(What.EmulateData.ordinal());
     }

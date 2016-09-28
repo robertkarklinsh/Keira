@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Bpm extends TextView implements View.OnTouchListener {
-    private final static int pointsInRealTimeMode = 180;
     private final static int times = 15;
     private static float heightTextPts = 0;
     private final CornerPathEffect cornerPathEffect = new CornerPathEffect(30);
@@ -64,7 +63,7 @@ public final class Bpm extends TextView implements View.OnTouchListener {
                 mPointsPath.rewind();
                 timeSrc = model.formatTimes(times);
                 final List<Float> data = model.getData();
-                double a = (double) 360 / (model.isRealTime() ? pointsInRealTimeMode : data.size());
+                double a = (double) 360 / model.getPointsSize();
                 int idx = 0;
                 for (float f : data) {
                     if (f > AppConst.maxBPM) f = AppConst.maxBPM;
@@ -131,7 +130,7 @@ public final class Bpm extends TextView implements View.OnTouchListener {
 
     public void addRealTimePoint(float point, final long time) {
         model.addPoint(point, time);
-        setPoint(mPointsPath, mathBpm(point, model.getData().size(), (double) 360 / pointsInRealTimeMode));
+        setPoint(mPointsPath, mathBpm(point, model.getData().size(), (double) 360 / BpmModel.pointsInRealTimeMode));
 
         if (model.isRealTime() && selectedPosition == model.getData().size() - 2) {
             updatePin(model.getData().size() - 1);
@@ -211,7 +210,7 @@ public final class Bpm extends TextView implements View.OnTouchListener {
             float[] pin = math(
                     pinSize,
                     selectedPosition,
-                    (double) 360 / (model.isRealTime() ? pointsInRealTimeMode : model.getData().size()),
+                    (double) 360 / model.getPointsSize(),
                     1);
             canvas.drawLine(x0, y0, pin[0], pin[1], mainLinePaint);
             mainLinePaint.setStyle(Paint.Style.FILL);
@@ -234,7 +233,7 @@ public final class Bpm extends TextView implements View.OnTouchListener {
             pin = mathBpm(
                     model.getIntValueByPosition(selectedPosition),
                     selectedPosition,
-                    (double) 360 / (model.isRealTime() ? pointsInRealTimeMode : model.getData().size()));
+                    (double) 360 / model.getPointsSize());
             canvas.drawCircle(pin[0], pin[1], (float) (0.01 * width), mainLinePaint);
         }
         super.onDraw(canvas);
@@ -283,7 +282,7 @@ public final class Bpm extends TextView implements View.OnTouchListener {
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getActionMasked() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
-            final double a = (double) 360 / (model.isRealTime() ? pointsInRealTimeMode : model.getData().size());
+            final double a = (double) 360 / model.getPointsSize();
             final float x = event.getX() - x0, y = y0 - event.getY();
             final double b1 = Math.atan(x / y);
             double b = Math.toDegrees(b1);

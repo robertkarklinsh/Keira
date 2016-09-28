@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Random;
 
 public final class BpmModel implements IContainerModel {
+    public final static int pointsInRealTimeMode = 180;
+
     private final List<Pair<Float, Long>> data = new ArrayList<>();
     private final List<BpmColorRegion> red = new ArrayList<>();
     private final List<BpmColorRegion> green = new ArrayList<>();
@@ -21,12 +23,27 @@ public final class BpmModel implements IContainerModel {
         this.isRealTime = isRealTime;
     }
 
+    private static void fill(List<BpmColorRegion> src) {
+        final List<BpmColorRegion> color = new ArrayList<>();
+        for (int i = 0; i < src.size() - 1; i++) {
+            color.add(src.get(i));
+            color.add(BpmColorRegion.merge(src.get(i), src.get(i + 1)));
+        }
+        color.add(src.get(src.size() - 1));
+        src.clear();
+        src.addAll(color);
+    }
+
     public int getIntValueByPosition(int position) {
         return data.get(position).first.intValue();
     }
 
     public String getStringValueByPosition(int position) {
         return "" + getIntValueByPosition(position);
+    }
+
+    public int getPointsSize() {
+        return isRealTime() ? pointsInRealTimeMode : getData().size();
     }
 
     public void addPoint(float value, long timestump) {
@@ -59,6 +76,7 @@ public final class BpmModel implements IContainerModel {
     public List<BpmColorRegion> getRedData() {
         return red;
     }
+
     public List<Float> getData() {
         final List<Float> floats = new ArrayList<>();
         for (Pair<Float, Long> item : this.data) {
@@ -79,15 +97,33 @@ public final class BpmModel implements IContainerModel {
         }
     }
 
+    public BpmModel fillPoints() {
+        if (green.size() < 30) {
+            fill(green);
+        }
+        if (red.size() < 30) {
+            fill(red);
+        }
+        return this;
+    }
+
     public static class BpmColorRegion {
         private final float top;
         private final float bottom;
         private final long time;
 
-        public BpmColorRegion(final float top, final float bottom, final long time) {
+        BpmColorRegion(final float top, final float bottom, final long time) {
             this.top = top;
             this.bottom = bottom;
             this.time = time;
+        }
+
+        static BpmColorRegion merge(BpmColorRegion one, BpmColorRegion two) {
+            Random rnd = new Random();
+            return new BpmColorRegion(
+                    one.top + rnd.nextInt(10) * Math.abs(two.top - one.top) / 2,
+                    one.bottom + rnd.nextInt(10) * Math.abs(two.bottom - one.bottom) / 2,
+                    one.time + Math.abs(two.time - one.time) / 2);
         }
 
         public float getTop() {

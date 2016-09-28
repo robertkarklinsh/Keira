@@ -1,6 +1,8 @@
 package com.gattaca.team.db.sensor.optimizing;
 
 
+import android.util.Pair;
+
 import com.gattaca.team.annotation.GraphPeriod;
 import com.gattaca.team.root.AppUtils;
 
@@ -8,7 +10,7 @@ import java.util.ArrayList;
 
 class BpmOptimizing {
     private final float collapseTime;
-    private final ArrayList<Float> data = new ArrayList<>();
+    private final ArrayList<Pair<Float, Long>> data = new ArrayList<>();
     private final IBpmOptimizing instance;
     private double time = 0;
 
@@ -22,16 +24,21 @@ class BpmOptimizing {
         this.time += time;
         if (this.time > collapseTime) {
             this.time -= collapseTime;
-            collapsePoints(globalTimeStump);
+            collapsePoints();
             b = true;
         }
-        data.add(value);
+        data.add(new Pair<>(value, globalTimeStump));
         return b;
     }
 
-    void collapsePoints(long globalTimeStump) {
-        instance.setValue(AppUtils.convertListToAvrValue(data));
-        instance.setTime(globalTimeStump);
+    void collapsePoints() {
+        float value = 0;
+        for (Pair<Float, Long> a : data) {
+            value += a.first;
+        }
+        value /= data.size();
+        instance.setValue(value);
+        instance.setTime(data.get(0).second);
         data.clear();
     }
 
@@ -42,6 +49,6 @@ class BpmOptimizing {
 
         boolean addPoint(long globalTimeStump, double time, float value);
 
-        void collapsePoints(long globalTimeStump);
+        void collapsePoints();
     }
 }

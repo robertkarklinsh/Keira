@@ -69,7 +69,7 @@ public class MonitorBpm extends AppCompatActivity implements RealmChangeListener
         for (BpmRed item : red) {
             model.addRedPoint(item.getValueTop(), item.getValueBottom(), item.getTime());
         }
-        bpmGraph.install(model);
+        bpmGraph.install(model.fillPoints());
     }
 
     protected void onStop() {
