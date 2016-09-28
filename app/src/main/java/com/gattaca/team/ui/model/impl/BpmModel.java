@@ -1,6 +1,6 @@
 package com.gattaca.team.ui.model.impl;
 
-import android.util.Log;
+import android.text.format.DateUtils;
 import android.util.Pair;
 
 import com.gattaca.team.ui.model.IContainerModel;
@@ -41,15 +41,13 @@ public final class BpmModel implements IContainerModel {
         red.add(new BpmColorRegion(top, bottom, timestump));
     }
 
-    public void print() {
-        Log.e(getClass().getSimpleName(), "" + data.size());
-    }
-
     public ArrayList<String> formatTimes(final int period) {
         final ArrayList<String> list = new ArrayList<>();
-        final long start = data.get(0).second, allTime = data.get(data.size() - 1).second - start;
+        final long
+                start = data.get(0).second,
+                allTime = compileEndTime();
         for (int i = 0; i < period; i++) {
-            list.add(TimeStump.convert(start + (i) * allTime / period, "HH:mm"));
+            list.add(TimeStump.convert(start + (i) * allTime / period, "HH:mm:ss"));
         }
         return list;
     }
@@ -71,6 +69,14 @@ public final class BpmModel implements IContainerModel {
 
     public boolean isRealTime() {
         return isRealTime;
+    }
+
+    public long compileEndTime() {
+        if (isRealTime()) {
+            return 5 * DateUtils.MINUTE_IN_MILLIS;
+        } else {
+            return data.get(data.size() - 1).second - data.get(0).second;
+        }
     }
 
     public static class BpmColorRegion {
