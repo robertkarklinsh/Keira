@@ -8,4 +8,6 @@ public interface IServiceConnection {
     void fakeGeneration();
 
     void stopConnection();
+
+    boolean isInProgress();
 }

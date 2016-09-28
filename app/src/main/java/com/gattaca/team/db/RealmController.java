@@ -3,8 +3,8 @@ package com.gattaca.team.db;
 import android.app.Activity;
 import android.app.Application;
 import android.text.format.DateUtils;
+import android.util.Log;
 
-import com.gattaca.team.db.tracker.Week;
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.BpmGreen;
 import com.gattaca.team.db.sensor.BpmRed;
@@ -15,6 +15,7 @@ import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_1_hour;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_30_min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
+import com.gattaca.team.db.tracker.Week;
 
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -77,6 +78,7 @@ public final class RealmController {
      * ===============================================================================================
      */
     public static void clearAll() {
+        Log.e("RealmController", "=== clear realm data ===");
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.delete(RR.class);

@@ -59,6 +59,10 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         getInstance().serviceConnectionImpl.fakeGeneration();
     }
 
+    public static boolean isInProgress() {
+        return getInstance().serviceConnectionImpl.isInProgress();
+    }
+
     public static void postSensorData(final SensorData data) {
         getInstance().bus.post(data);
     }

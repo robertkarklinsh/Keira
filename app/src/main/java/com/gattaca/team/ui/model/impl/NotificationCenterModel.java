@@ -3,7 +3,7 @@ package com.gattaca.team.ui.model.impl;
 import com.gattaca.team.annotation.NotifyEventTag;
 import com.gattaca.team.annotation.NotifyType;
 import com.gattaca.team.db.event.NotifyEventObject;
-import com.gattaca.team.ui.container.list.NotifyCenterListItem;
+import com.gattaca.team.ui.container.list.item.NotifyCenterListItem;
 import com.gattaca.team.ui.model.IListContainerModel;
 
 import java.util.List;

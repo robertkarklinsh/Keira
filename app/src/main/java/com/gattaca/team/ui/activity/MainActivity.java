@@ -16,6 +16,7 @@ import com.gattaca.team.ui.container.MainMenu;
 import com.gattaca.team.ui.container.impl.DataBankContainer;
 import com.gattaca.team.ui.container.impl.MonitorContainer;
 import com.gattaca.team.ui.container.impl.NotificationCenterContainer;
+import com.gattaca.team.ui.container.impl.SettingsContainer;
 import com.gattaca.team.ui.container.impl.TrackerContainer;
 import com.gattaca.team.ui.model.IContainerModel;
 import com.gattaca.team.ui.model.impl.DataBankModel;
@@ -30,7 +31,13 @@ import com.squareup.otto.Subscribe;
 import io.realm.Realm;
 
 public final class MainActivity extends AppCompatActivity implements Drawer.OnDrawerItemClickListener {
-    private IContainer trackerContainer, notificationCenterContainer, monitorContainer, dataBankContainer, currentContainer;
+    private IContainer
+            trackerContainer,
+            notificationCenterContainer,
+            monitorContainer,
+            dataBankContainer,
+            settingsContainer,
+            currentContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +50,7 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
         notificationCenterContainer = new NotificationCenterContainer(this);
         monitorContainer = new MonitorContainer(this);
         dataBankContainer = new DataBankContainer(this);
+        settingsContainer = new SettingsContainer(this);
 
         final DrawerBuilder drawerBuilder = new DrawerBuilder()
                 .withActivity(this)
@@ -101,14 +109,7 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
      * For open new container from any ui place
      * */
     public void requestChangeToNewContainer(final ContainerTransferData item) {
-        if (currentContainer == null) {
-            //TODO: start state of application. No any animations needed
-            notificationCenterContainer.getRootView().setVisibility(View.GONE);
-            trackerContainer.changeCurrentVisibilityState(true);
-            monitorContainer.changeCurrentVisibilityState(true);
-            dataBankContainer.changeCurrentVisibilityState(true);
-        } else {
-            //TODO: animate change views
+        if (currentContainer != null) {
             currentContainer.changeCurrentVisibilityState(true);
         }
         IContainerModel model = item.getModelForSubContainer();
@@ -128,28 +129,15 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
                 currentContainer = dataBankContainer;
                 model = new DataBankModel(RealmController.getAllSessions());
                 break;
+            case Settings:
+                currentContainer = settingsContainer;
+                break;
         }
         currentContainer.changeCurrentVisibilityState(false);
         getSupportActionBar().setTitle(item.getMenuItemForOpen().getNameId());
         //TODO: stub
         currentContainer.reDraw(model);
         invalidateOptionsMenu();
-        /*final Class requestedModel = currentContainer.getModelClass();
-        if(requestedModel == NotificationCenterModel.class){
-            //TODO: implements
-        }
-        else if(requestedModel == TrackerModel.class){
-            //TODO: implements
-        }
-        else if(requestedModel == MonitorModel.class){
-            //TODO: implements
-        }
-        else if(requestedModel == DataBankModel.class){
-            //TODO: implements
-        }
-        else {
-            //Error case
-        }*/
     }
 
     @Subscribe

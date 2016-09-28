@@ -8,20 +8,19 @@ import com.gattaca.team.R;
 import com.gattaca.team.ui.model.IContainerModel;
 
 public abstract class IContainer<Model extends IContainerModel> {
-    private final Class<Model> modelClass;
     private final View rootView;
-    private Model model;
     protected Context context;
+    private Model model;
 
-    public IContainer(Activity screen, Class<Model> modelClass, final int rootViewId) {
-        this(screen.findViewById(rootViewId), modelClass);
+    public IContainer(Activity screen, final int rootViewId) {
+        this(screen.findViewById(rootViewId));
         this.context = screen;
     }
 
-    protected IContainer(View rootView, Class<Model> modelClass) {
-        this.modelClass = modelClass;
+    private IContainer(View rootView) {
         this.rootView = rootView;
         this.bindView();
+        changeCurrentVisibilityState(true);
     }
 
     protected abstract void bindView();
@@ -33,10 +32,6 @@ public abstract class IContainer<Model extends IContainerModel> {
     }
 
     public void onMenuItemSelected(final int id) {
-    }
-
-    public final Class<Model> getModelClass() {
-        return this.modelClass;
     }
 
     public final void reDraw(Model model) {

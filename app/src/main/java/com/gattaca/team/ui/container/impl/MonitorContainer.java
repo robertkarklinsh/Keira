@@ -11,7 +11,7 @@ import com.gattaca.team.ui.model.impl.MonitorModel;
 
 public final class MonitorContainer extends IContainer<MonitorModel> implements View.OnClickListener {
     public MonitorContainer(final Activity screen) {
-        super(screen, MonitorModel.class, R.id.container_monitor_id);
+        super(screen, R.id.container_monitor_id);
     }
 
     @Override

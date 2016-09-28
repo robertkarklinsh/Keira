@@ -29,4 +29,6 @@
 
     <include layout="@layout/container_notification_center" />
 
+    <include layout="@layout/container_settings" />
+
 </android.support.design.widget.CoordinatorLayout>

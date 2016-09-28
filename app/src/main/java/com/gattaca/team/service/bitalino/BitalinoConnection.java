@@ -38,8 +38,8 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
     private static final double GECG = 1100;
 
     static Bus bus = new Bus(ThreadEnforcer.ANY);
-
     private final Object block = new Object();
+    private State state;
     private Handler handler;
     //private State state;
     private BluetoothSocket sock;
@@ -84,6 +84,13 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
         handler.sendEmptyMessage(State.StopConnection.ordinal());
     }
 
+    @Override
+    public boolean isInProgress() {
+        return this.state != null
+                && this.state != State.NoConnection
+                && this.state != State.StopConnection;
+    }
+
     private synchronized void waitUntilReady() {
         this.handler = new Handler(this.getLooper(), this);
         this.handler.sendEmptyMessage(State.NoConnection.ordinal());
@@ -93,7 +100,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
     @Override
     public boolean handleMessage(Message msg) {
         final Message newState = new Message();
-        final State state = State.values()[msg.what];
+        this.state = State.values()[msg.what];
         Log.d(getClass().getSimpleName(), "new state is " + state);
 
         switch (state) {
