@@ -8,10 +8,12 @@ import android.util.Log;
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.BpmGreen;
 import com.gattaca.team.db.sensor.BpmRed;
-import com.gattaca.team.db.sensor.EmulatedBpm;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.db.sensor.Session;
+import com.gattaca.team.db.sensor.emulate.EmulatedBpm_15Min;
+import com.gattaca.team.db.sensor.emulate.EmulatedBpm_30Min;
+import com.gattaca.team.db.sensor.emulate.EmulatedBpm_5Min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_1_hour;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_30_min;
@@ -124,14 +126,16 @@ public final class RealmController {
         Log.e("RealmController", "=== clear emulate data ===");
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        realm.delete(EmulatedBpm.class);
+        realm.delete(EmulatedBpm_5Min.class);
+        realm.delete(EmulatedBpm_15Min.class);
+        realm.delete(EmulatedBpm_30Min.class);
         realm.commitTransaction();
     }
 
-    public static RealmResults<EmulatedBpm> getEmulatedBpm() {
+    public static RealmResults<EmulatedBpm_5Min> getEmulatedBpm() {
         return Realm
                 .getDefaultInstance()
-                .where(EmulatedBpm.class)
+                .where(EmulatedBpm_5Min.class)
                 .findAll()
                 .sort(NotifyEventObject.getNamedFieldTime(), Sort.DESCENDING);
     }
@@ -156,6 +160,13 @@ public final class RealmController {
                 .where(BpmPoint_5_min.class)
                 .findAll()
                 .sort(BpmPoint_5_min.getNamedFieldTime(), Sort.ASCENDING);
+    }
+
+    public static RealmResults<BpmPoint_15_min> getStubSessionBpm15() {
+        return Realm.getDefaultInstance()
+                .where(BpmPoint_15_min.class)
+                .findAll()
+                .sort(BpmPoint_15_min.getNamedFieldTime(), Sort.ASCENDING);
     }
 
     public static RealmResults<BpmPoint_30_min> getStubSessionBpm30() {

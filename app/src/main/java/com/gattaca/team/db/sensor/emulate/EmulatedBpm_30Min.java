@@ -1,49 +1,46 @@
-package com.gattaca.team.db.sensor.optimizing;
+package com.gattaca.team.db.sensor.emulate;
 
 
-import com.gattaca.team.annotation.GraphPeriod;
+import android.util.Log;
+
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
 
 import io.realm.RealmModel;
-import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-public class BpmPoint_15_min implements RealmModel, BpmOptimizing.IBpmOptimizing {
+public class EmulatedBpm_30Min implements RealmModel {
     @PrimaryKey
     private long time;
     private float value;
     private int channel = 0;
-    @Ignore
-    private BpmOptimizing optimizing = new BpmOptimizing(this, GraphPeriod.period_15min);
 
     public static String getNamedFieldTime() {
         return "time";
     }
+
+    public static EmulatedBpm_30Min createFromBpm(final BpmPoint_5_min src) {
+        final EmulatedBpm_30Min a = new EmulatedBpm_30Min();
+        a.setTime(src.getTime());
+        a.setChannel(src.getChannel());
+        a.setValue(src.getValue());
+        Log.i(a.getClass().getSimpleName(), "Emulated point value=" + a.value);
+        return a;
+    }
+
     public long getTime() {
         return time;
     }
 
-    @Override
     public void setTime(long time) {
         this.time = time;
-    }
-
-    @Override
-    public boolean addPoint(long globalTimeStump, double time, float value) {
-        return optimizing.addPoint(globalTimeStump, time, value);
-    }
-
-    @Override
-    public void collapsePoints() {
-        optimizing.collapsePoints();
     }
 
     public float getValue() {
         return value;
     }
 
-    @Override
     public void setValue(float value) {
         this.value = value;
     }
@@ -52,7 +49,7 @@ public class BpmPoint_15_min implements RealmModel, BpmOptimizing.IBpmOptimizing
         return channel;
     }
 
-    public BpmPoint_15_min setChannel(int channel) {
+    public EmulatedBpm_30Min setChannel(int channel) {
         this.channel = channel;
         return this;
     }

@@ -9,7 +9,7 @@ import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.sensor.BpmGreen;
 import com.gattaca.team.db.sensor.BpmRed;
-import com.gattaca.team.db.sensor.EmulatedBpm;
+import com.gattaca.team.db.sensor.emulate.EmulatedBpm_5Min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_30_min;
 import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.service.main.RootSensorListener;
@@ -21,9 +21,9 @@ import java.util.List;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
-public class MonitorBpm extends AppCompatActivity implements RealmChangeListener<RealmResults<EmulatedBpm>> {
+public class MonitorBpm extends AppCompatActivity implements RealmChangeListener<RealmResults<EmulatedBpm_5Min>> {
     private Bpm bpmGraph;
-    private RealmResults<EmulatedBpm> results;
+    private RealmResults<EmulatedBpm_5Min> results;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class MonitorBpm extends AppCompatActivity implements RealmChangeListener
         if (RootSensorListener.isInProgress()) {
             results = RealmController.getEmulatedBpm();
             results.addChangeListener(this);
-            for (EmulatedBpm item : results) {
+            for (EmulatedBpm_5Min item : results) {
                 model.addPoint(item.getValue(), item.getTime());
             }
             from = results.get(0).getTime();
@@ -90,7 +90,7 @@ public class MonitorBpm extends AppCompatActivity implements RealmChangeListener
     }
 
     @Override
-    public void onChange(RealmResults<EmulatedBpm> element) {
+    public void onChange(RealmResults<EmulatedBpm_5Min> element) {
         bpmGraph.addRealTimePoint(element.get(0).getValue(), element.get(0).getTime());
     }
 }

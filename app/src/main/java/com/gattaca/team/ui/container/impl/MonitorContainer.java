@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
-import com.gattaca.team.db.sensor.EmulatedBpm;
+import com.gattaca.team.db.sensor.emulate.EmulatedBpm_5Min;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.service.main.RootSensorListener;
 import com.gattaca.team.ui.container.ActivityTransferData;
@@ -16,9 +16,9 @@ import com.gattaca.team.ui.view.BpmValue;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
-public final class MonitorContainer extends IContainer<MonitorModel> implements View.OnClickListener, RealmChangeListener<RealmResults<EmulatedBpm>> {
+public final class MonitorContainer extends IContainer<MonitorModel> implements View.OnClickListener, RealmChangeListener<RealmResults<EmulatedBpm_5Min>> {
     private BpmValue bpm;
-    private RealmResults<EmulatedBpm> results;
+    private RealmResults<EmulatedBpm_5Min> results;
 
     public MonitorContainer(final Activity screen) {
         super(screen, R.id.container_monitor_id);
@@ -80,7 +80,7 @@ public final class MonitorContainer extends IContainer<MonitorModel> implements 
     }
 
     @Override
-    public void onChange(RealmResults<EmulatedBpm> element) {
+    public void onChange(RealmResults<EmulatedBpm_5Min> element) {
         bpm.setBpm(element.get(0).getValue());
     }
 }

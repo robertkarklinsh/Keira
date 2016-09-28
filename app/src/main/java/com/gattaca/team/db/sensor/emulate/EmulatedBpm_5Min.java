@@ -1,4 +1,4 @@
-package com.gattaca.team.db.sensor;
+package com.gattaca.team.db.sensor.emulate;
 
 
 import android.util.Log;
@@ -10,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-public class EmulatedBpm implements RealmModel {
+public class EmulatedBpm_5Min implements RealmModel {
     @PrimaryKey
     private long time;
     private float value;
@@ -20,8 +20,8 @@ public class EmulatedBpm implements RealmModel {
         return "time";
     }
 
-    public static EmulatedBpm createFromBpm(final BpmPoint_5_min src) {
-        final EmulatedBpm a = new EmulatedBpm();
+    public static EmulatedBpm_5Min createFromBpm(final BpmPoint_5_min src) {
+        final EmulatedBpm_5Min a = new EmulatedBpm_5Min();
         a.setTime(src.getTime());
         a.setChannel(src.getChannel());
         a.setValue(src.getValue());
@@ -49,7 +49,7 @@ public class EmulatedBpm implements RealmModel {
         return channel;
     }
 
-    public EmulatedBpm setChannel(int channel) {
+    public EmulatedBpm_5Min setChannel(int channel) {
         this.channel = channel;
         return this;
     }

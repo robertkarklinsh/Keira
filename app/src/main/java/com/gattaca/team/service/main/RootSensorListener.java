@@ -10,8 +10,10 @@ import com.gattaca.team.annotation.NotifyType;
 import com.gattaca.team.annotation.RRType;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.event.NotifyEventObject;
-import com.gattaca.team.db.sensor.EmulatedBpm;
 import com.gattaca.team.db.sensor.SensorPointData;
+import com.gattaca.team.db.sensor.emulate.EmulatedBpm_15Min;
+import com.gattaca.team.db.sensor.emulate.EmulatedBpm_5Min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
 import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.root.MainApplication;
@@ -52,7 +54,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     }
 
     public static void stopRaw() {
-        getInstance().emulating = false;
+        getInstance().handler.sendEmptyMessage(What.EmulateDataStop.ordinal());
         getInstance().serviceConnectionImpl.stopConnection();
         try {
             getInstance().bus.unregister(getInstance());
@@ -66,7 +68,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     }
 
     public static void generateRaw() {
-        getInstance().handler.sendEmptyMessage(What.EmulateData.ordinal());
+        getInstance().handler.sendEmptyMessage(What.EmulateDataStart.ordinal());
     }
 
     public static boolean isInProgress() {
@@ -101,6 +103,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
 
     @Override
     public boolean handleMessage(Message msg) {
+        Message m = new Message();
         Log.d(getClass().getSimpleName(), "state is " + What.values()[msg.what]);
         switch (What.values()[msg.what]) {
             case DataTick:
@@ -152,24 +155,46 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                 RealmController.saveList(sensorPointData);
                 MainApplication.uiBusPost(data);
                 break;
-            case EmulateData:
+            case EmulateDataStart:
                 emulating = true;
                 RealmController.clearEmulate();
-                final List<BpmPoint_5_min> fakes = RealmController.getStubSessionBpm5();
-                int idx = 0;
-                while (emulating) {
-                    RealmController.save(EmulatedBpm.createFromBpm(fakes.get(idx)));
-                    if (++idx == fakes.size() - 1) {
-                        idx = 0;
+                m.what = What.EmulateData5.ordinal();
+                m.arg1 = 0;
+                handler.sendMessage(m);
+                m = new Message();
+                m.what = What.EmulateData15.ordinal();
+                m.arg1 = 0;
+                handler.sendMessage(m);
+                break;
+            case EmulateData5:
+                if (emulating) {
+                    final List<BpmPoint_5_min> fakes5 = RealmController.getStubSessionBpm5();
+                    RealmController.save(EmulatedBpm_5Min.createFromBpm(fakes5.get(msg.arg1)));
+                    m.what = msg.what;
+                    m.arg1 = msg.arg1 + 1;
+                    if (m.arg1 == fakes5.size() - 1) {
+                        m.arg1 = 0;
                     }
-                    synchronized (block) {
-                        try {
-                            block.wait((long) AppUtils.getCollapseTimeForPeriod(GraphPeriod.period_5min));
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    handler.sendMessageDelayed(m, (long) AppUtils.getCollapseTimeForPeriod(GraphPeriod.period_5min));
                 }
+                break;
+            case EmulateData15:
+                if (emulating) {
+                    final List<BpmPoint_15_min> fakes15 = RealmController.getStubSessionBpm15();
+                    RealmController.save(EmulatedBpm_15Min.createFromBpm(fakes15.get(msg.arg1)));
+                    m.what = msg.what;
+                    m.arg1 = msg.arg1 + 1;
+                    if (m.arg1 == fakes15.size() - 1) {
+                        m.arg1 = 0;
+                    }
+                    handler.sendMessageDelayed(m, (long) AppUtils.getCollapseTimeForPeriod(GraphPeriod.period_15min));
+                }
+                break;
+            case EmulateDataStop:
+                emulating = false;
+                handler.removeMessages(What.EmulateData5.ordinal());
+                handler.removeMessages(What.EmulateData15.ordinal());
+                handler.removeMessages(What.EmulateData30.ordinal());
                 break;
         }
         return true;
@@ -206,6 +231,10 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     private enum What {
         DataTick,
         DetectPC,
-        EmulateData
+        EmulateDataStop,
+        EmulateDataStart,
+        EmulateData5,
+        EmulateData15,
+        EmulateData30
     }
 }
