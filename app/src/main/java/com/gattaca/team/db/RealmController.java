@@ -2,14 +2,23 @@ package com.gattaca.team.db;
 
 import android.app.Activity;
 import android.app.Application;
+import android.text.format.DateUtils;
+import android.util.Log;
 
-import com.gattaca.team.db.tracker.Week;
 import com.gattaca.team.db.event.NotifyEventObject;
+import com.gattaca.team.db.sensor.BpmGreen;
+import com.gattaca.team.db.sensor.BpmRed;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.db.sensor.Session;
-import com.gattaca.team.db.sensor.optimizing.SensorPoint_1_hour;
-import com.gattaca.team.db.sensor.optimizing.SensorPoint_5_min;
+import com.gattaca.team.db.sensor.emulate.EmulatedBpm_15Min;
+import com.gattaca.team.db.sensor.emulate.EmulatedBpm_30Min;
+import com.gattaca.team.db.sensor.emulate.EmulatedBpm_5Min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_1_hour;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_30_min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
+import com.gattaca.team.db.tracker.Week;
 
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -72,15 +81,20 @@ public final class RealmController {
      * ===============================================================================================
      */
     public static void clearAll() {
+        Log.e("RealmController", "=== clear realm data ===");
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.delete(RR.class);
         realm.delete(NotifyEventObject.class);
         realm.delete(SensorPointData.class);
-        realm.delete(SensorPoint_1_hour.class);
-        realm.delete(SensorPoint_5_min.class);
+        realm.delete(BpmPoint_1_hour.class);
+        realm.delete(BpmPoint_5_min.class);
+        realm.delete(BpmPoint_15_min.class);
+        realm.delete(BpmPoint_30_min.class);
         realm.delete(Session.class);
+        realm.delete(BpmGreen.class);
         realm.commitTransaction();
+        clearEmulate();
     }
 
     public static void save(RealmModel item) {
@@ -102,10 +116,28 @@ public final class RealmController {
 
         //Log.d(RealmController.class.getSimpleName(), "size= " + list.size() + " time=" + (System.currentTimeMillis() - time) + " ms");
         /*for (RealmModel item : list) {
-            if(item instanceof SensorPoint_5_min) {
+            if(item instanceof BpmPoint_5_min) {
                 Log.d(RealmController.class.getSimpleName(), item.toString());
             }
         }*/
+    }
+
+    public static void clearEmulate() {
+        Log.e("RealmController", "=== clear emulate data ===");
+        final Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.delete(EmulatedBpm_5Min.class);
+        realm.delete(EmulatedBpm_15Min.class);
+        realm.delete(EmulatedBpm_30Min.class);
+        realm.commitTransaction();
+    }
+
+    public static RealmResults<EmulatedBpm_5Min> getEmulatedBpm() {
+        return Realm
+                .getDefaultInstance()
+                .where(EmulatedBpm_5Min.class)
+                .findAll()
+                .sort(NotifyEventObject.getNamedFieldTime(), Sort.DESCENDING);
     }
 
     public static RealmResults<NotifyEventObject> getAllEvents() {
@@ -119,13 +151,49 @@ public final class RealmController {
     public static RealmResults<Session> getAllSessions() {
         return Realm.getDefaultInstance()
                 .where(Session.class)
-                .findAll();
+                .findAll()
+                .sort(Session.getNamedFieldTimeFinish(), Sort.DESCENDING);
     }
 
-    public static RealmResults<SensorPoint_5_min> getStubSessionBpm30() {
+    public static RealmResults<BpmPoint_5_min> getStubSessionBpm5() {
         return Realm.getDefaultInstance()
-                .where(SensorPoint_5_min.class)
-                .findAll();
+                .where(BpmPoint_5_min.class)
+                .findAll()
+                .sort(BpmPoint_5_min.getNamedFieldTime(), Sort.ASCENDING);
+    }
+
+    public static RealmResults<BpmPoint_15_min> getStubSessionBpm15() {
+        return Realm.getDefaultInstance()
+                .where(BpmPoint_15_min.class)
+                .findAll()
+                .sort(BpmPoint_15_min.getNamedFieldTime(), Sort.ASCENDING);
+    }
+
+    public static RealmResults<BpmPoint_30_min> getStubSessionBpm30() {
+        final Realm r = Realm.getDefaultInstance();
+        final BpmPoint_30_min first = r.where(BpmPoint_30_min.class).findFirst();
+        return r.where(BpmPoint_30_min.class)
+                .lessThan(BpmPoint_30_min.getNamedFieldTime(), first.getTime() + 30 * DateUtils.MINUTE_IN_MILLIS)
+                .findAll()
+                .sort(BpmPoint_30_min.getNamedFieldTime(), Sort.ASCENDING);
+    }
+
+    public static RealmResults<BpmGreen> getStubSessionBpmGreen(long from, long to) {
+        return Realm.getDefaultInstance()
+                .where(BpmGreen.class)
+                .greaterThan(BpmGreen.getNamedFieldTime(), from)
+                .lessThan(BpmGreen.getNamedFieldTime(), to)
+                .findAll()
+                .sort(BpmGreen.getNamedFieldTime(), Sort.ASCENDING);
+    }
+
+    public static RealmResults<BpmRed> getStubSessionBpmRed(long from, long to) {
+        return Realm.getDefaultInstance()
+                .where(BpmRed.class)
+                .greaterThan(BpmGreen.getNamedFieldTime(), from)
+                .lessThan(BpmGreen.getNamedFieldTime(), to)
+                .findAll()
+                .sort(BpmGreen.getNamedFieldTime(), Sort.ASCENDING);
     }
 
     public static Realm getRealm() {

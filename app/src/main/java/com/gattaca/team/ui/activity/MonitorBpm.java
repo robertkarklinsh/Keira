@@ -7,16 +7,23 @@ import android.view.MenuItem;
 
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
-import com.gattaca.team.db.sensor.optimizing.SensorPoint_5_min;
+import com.gattaca.team.db.sensor.BpmGreen;
+import com.gattaca.team.db.sensor.BpmRed;
+import com.gattaca.team.db.sensor.emulate.EmulatedBpm_5Min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_30_min;
 import com.gattaca.team.root.AppUtils;
+import com.gattaca.team.service.main.RootSensorListener;
 import com.gattaca.team.ui.model.impl.BpmModel;
 import com.gattaca.team.ui.view.Bpm;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class MonitorBpm extends AppCompatActivity {
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
+
+public class MonitorBpm extends AppCompatActivity implements RealmChangeListener<RealmResults<EmulatedBpm_5Min>> {
     private Bpm bpmGraph;
+    private RealmResults<EmulatedBpm_5Min> results;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,24 +39,47 @@ public class MonitorBpm extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        final List<SensorPoint_5_min> data = RealmController.getStubSessionBpm30();
-        final BpmModel model = new BpmModel();
-        final int step = 30 / 5; //STUB!
-        final ArrayList<Float> tmp = new ArrayList<>(data.size() / step);
-        int stepping = 0;
-        for (SensorPoint_5_min item : data) {
-            tmp.add(item.getValue());
-            if (++stepping >= step) {
-                model.addPoint(AppUtils.convertListToAvrValue(tmp), item.getTime());
-                tmp.clear();
-                stepping = 0;
+        final BpmModel model = new BpmModel(RootSensorListener.isInProgress());
+        long from = 0L, to = 0L;
+
+        if (RootSensorListener.isInProgress()) {
+            results = RealmController.getEmulatedBpm();
+            results.addChangeListener(this);
+            for (EmulatedBpm_5Min item : results) {
+                model.addPoint(item.getValue(), item.getTime());
             }
+            from = results.get(0).getTime();
+            to = from + model.compileEndTime();
+        } else {
+            final List<BpmPoint_30_min> data = RealmController.getStubSessionBpm30();
+            for (BpmPoint_30_min item : data) {
+                model.addPoint(item.getValue(), item.getTime());
+            }
+            from = data.get(0).getTime();
+            to = data.get(data.size() - 1).getTime();
         }
-        if (!tmp.isEmpty()) {
-            model.addPoint(AppUtils.convertListToAvrValue(tmp), data.get(data.size() - 1).getTime());
+
+        final List<BpmGreen> green = RealmController.getStubSessionBpmGreen(
+                AppUtils.createTimeFrom(from), AppUtils.createTimeFrom(to));
+        for (BpmGreen item : green) {
+            model.addGreenPoint(item.getValueTop(), item.getValueBottom(), item.getTime());
         }
-        bpmGraph.install(model);
+        final List<BpmRed> red = RealmController.getStubSessionBpmRed(
+                AppUtils.createTimeFrom(from), AppUtils.createTimeFrom(to));
+        for (BpmRed item : red) {
+            model.addRedPoint(item.getValueTop(), item.getValueBottom(), item.getTime());
+        }
+        bpmGraph.install(model.fillPoints());
     }
+
+    protected void onStop() {
+        super.onStop();
+        if (results != null) {
+            results.removeChangeListener(this);
+            results = null;
+        }
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -57,5 +87,10 @@ public class MonitorBpm extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onChange(RealmResults<EmulatedBpm_5Min> element) {
+        bpmGraph.addRealTimePoint(element.get(0).getValue(), element.get(0).getTime());
     }
 }

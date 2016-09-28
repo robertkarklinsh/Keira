@@ -1,4 +1,4 @@
-package com.gattaca.team.ui.container.list;
+package com.gattaca.team.ui.container.list.item;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

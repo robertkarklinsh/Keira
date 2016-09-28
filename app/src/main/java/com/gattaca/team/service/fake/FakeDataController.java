@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.text.format.DateUtils;
-import android.util.Log;
 
 import com.gattaca.team.annotation.FakeMessage;
 import com.gattaca.team.annotation.ModuleName;
@@ -12,13 +11,15 @@ import com.gattaca.team.annotation.NotifyType;
 import com.gattaca.team.annotation.RRType;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.event.NotifyEventObject;
+import com.gattaca.team.db.sensor.BpmGreen;
+import com.gattaca.team.db.sensor.BpmRed;
 import com.gattaca.team.db.sensor.RR;
-import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.db.sensor.Session;
-import com.gattaca.team.db.sensor.optimizing.SensorPoint_1_hour;
-import com.gattaca.team.db.sensor.optimizing.SensorPoint_5_min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_1_hour;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_30_min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
 import com.gattaca.team.prefs.AppPref;
-import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.root.MainApplication;
 
 import java.io.BufferedReader;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import io.realm.RealmModel;
@@ -66,34 +68,37 @@ public final class FakeDataController extends HandlerThread implements Handler.C
             case FakeMessage.Start:
                 RealmController.clearAll();
                 final int max = 40000;
-                final long startTime = System.currentTimeMillis() - DateUtils.DAY_IN_MILLIS;
+                final Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.HOUR_OF_DAY, 12);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                cal.set(Calendar.DAY_OF_MONTH, 1);
+                final long startTime = cal.getTimeInMillis();
                 final int timeOffset = 3;
                 final List<RealmModel> rawRealm = new ArrayList<>();
                 final ArrayList<Long> PcTimesAgain = new ArrayList<>();
-                final ArrayList<Float> bpm5 = new ArrayList<>();
-                final ArrayList<Float> bpm60 = new ArrayList<>();
 
                 InputStream in = null;
                 BufferedReader reader = null;
                 String mLine;
                 String[] splits;
+                BpmPoint_1_hour bpmPoint_1_hour = null;
+                BpmPoint_5_min bpmPoint_5_min = null;
+                BpmPoint_15_min bpmPoint_15_min = null;
+                BpmPoint_30_min bpmPoint_30_min = null;
 
                 int pc_count_per_session = 0,
-                        pointsCount = 0,
-                        ppCounts = 0,
-                        eventPcCounts = 0,
-                        eventBpmCounts = 0,
-                        rr5 = 0,
-                        rr60 = 0,
+                        idx = 0,
                         currentRrValue,
                         prevRrValue = 0;
                 long time;
                 float bpm;
-                double timeRR, time5 = 0, time60 = 0;
+                double timeRR;
                 boolean block = false;
 
                 try {
-                    in = MainApplication.getContext().getAssets().open("session/samples.csv");
+                    /*in = MainApplication.getContext().getAssets().open("session/samples.csv");
                     reader = new BufferedReader(new InputStreamReader(in));
                     mLine = reader.readLine();
 
@@ -114,7 +119,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         }
                     }
                     in.close();
-                    reader.close();
+                    reader.close();*/
 
                     in = MainApplication.getContext().getAssets().open("session/rr.txt");
                     reader = new BufferedReader(new InputStreamReader(in));
@@ -122,7 +127,6 @@ public final class FakeDataController extends HandlerThread implements Handler.C
 
                     while (mLine != null) {
                         splits = mLine.split("\t");
-                        ppCounts++;
                         currentRrValue = Integer.valueOf(splits[0]);
                         time = startTime + currentRrValue * timeOffset;
                         rawRealm.add(new RR()
@@ -135,7 +139,6 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                             PcTimesAgain.add(time);
 
                             if (PcTimesAgain.size() == 3) {
-                                eventPcCounts++;
                                 rawRealm.add(new NotifyEventObject()
                                         .setModuleNameResId(ModuleName.Monitor)
                                         .setEventType(NotifyType.PC_3)
@@ -144,7 +147,6 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                             }
                         } else {
                             if (PcTimesAgain.size() == 2) {
-                                eventPcCounts++;
                                 rawRealm.add(new NotifyEventObject()
                                         .setModuleNameResId(ModuleName.Monitor)
                                         .setEventType(NotifyType.PC_2)
@@ -156,7 +158,6 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         // only 1 event move 30 bits per session
                         if (!block && pc_count_per_session == 31) {
                             block = true;
-                            eventPcCounts++;
                             rawRealm.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.PC_more_limit_per_hour)
@@ -164,26 +165,21 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         }
                         // Search BPM
                         timeRR = Math.abs(currentRrValue - prevRrValue) * timeOffset;
-                        time5 += timeRR;
-                        time60 += timeRR;
                         bpm = (float) (60000 / timeRR);
 
                         if (bpm < 40) {
-                            eventBpmCounts++;
                             rawRealm.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_less_40)
                                     .setCount(bpm)
                                     .setTime(time));
                         } else if (bpm < 45) {
-                            eventBpmCounts++;
                             rawRealm.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_less_50_more_40)
                                     .setCount(bpm)
                                     .setTime(time));
                         } else if (bpm > 120) {
-                            eventBpmCounts++;
                             rawRealm.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.BPM_more_100)
@@ -191,21 +187,33 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                                     .setTime(time));
                         }
 
-                        if (time5 >= 1667) {
-                            time5 -= 1667;
-                            rr5++;
-                            rawRealm.add(new SensorPoint_5_min()
-                                    .setValue(AppUtils.convertListToAvrValue(bpm5))
-                                    .setTime(time));
-                            bpm5.clear();
+                        if (bpmPoint_5_min == null) {
+                            bpmPoint_5_min = new BpmPoint_5_min();
                         }
-                        if (time60 >= 20000) {
-                            time60 -= 20000;
-                            rr60++;
-                            rawRealm.add(new SensorPoint_1_hour()
-                                    .setValue(AppUtils.convertListToAvrValue(bpm60))
-                                    .setTime(time));
-                            bpm60.clear();
+                        if (bpmPoint_5_min.addPoint(time, timeRR, bpm)) {
+                            rawRealm.add(bpmPoint_5_min);
+                            bpmPoint_5_min = null;
+                        }
+                        if (bpmPoint_15_min == null) {
+                            bpmPoint_15_min = new BpmPoint_15_min();
+                        }
+                        if (bpmPoint_15_min.addPoint(time, timeRR, bpm)) {
+                            rawRealm.add(bpmPoint_15_min);
+                            bpmPoint_15_min = null;
+                        }
+                        if (bpmPoint_30_min == null) {
+                            bpmPoint_30_min = new BpmPoint_30_min();
+                        }
+                        if (bpmPoint_30_min.addPoint(time, timeRR, bpm)) {
+                            rawRealm.add(bpmPoint_30_min);
+                            bpmPoint_30_min = null;
+                        }
+                        if (bpmPoint_1_hour == null) {
+                            bpmPoint_1_hour = new BpmPoint_1_hour();
+                        }
+                        if (bpmPoint_1_hour.addPoint(time, timeRR, bpm)) {
+                            rawRealm.add(bpmPoint_1_hour);
+                            bpmPoint_1_hour = null;
                         }
 
                         mLine = reader.readLine();
@@ -216,40 +224,66 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                             rawRealm.clear();
                         }
                         prevRrValue = currentRrValue;
-
-                        bpm5.add(bpm);
-                        bpm60.add(bpm);
                     }
 
-                    if (time5 > 0) {
-                        rr5++;
-                        rawRealm.add(new SensorPoint_5_min()
-                                .setValue(AppUtils.convertListToAvrValue(bpm5))
-                                .setTime(startTime + prevRrValue * timeOffset));
+
+                    if (bpmPoint_5_min != null) {
+                        bpmPoint_5_min.collapsePoints();
+                        rawRealm.add(bpmPoint_5_min);
                     }
-                    if (time60 > 0) {
-                        rr5++;
-                        rawRealm.add(new SensorPoint_1_hour()
-                                .setValue(AppUtils.convertListToAvrValue(bpm60))
-                                .setTime(startTime + prevRrValue * timeOffset));
+                    if (bpmPoint_15_min != null) {
+                        bpmPoint_15_min.collapsePoints();
+                        rawRealm.add(bpmPoint_15_min);
                     }
+                    if (bpmPoint_30_min != null) {
+                        bpmPoint_30_min.collapsePoints();
+                        rawRealm.add(bpmPoint_30_min);
+                    }
+                    if (bpmPoint_1_hour != null) {
+                        bpmPoint_1_hour.collapsePoints();
+                        rawRealm.add(bpmPoint_1_hour);
+                    }
+
+                    time = startTime + prevRrValue * timeOffset;
+                    RealmController.save(new Session()
+                            .setTimeStart(startTime)
+                            .setTimeFinish(time));
+
+                    in.close();
+                    reader.close();
+                    in = MainApplication.getContext().getAssets().open("bpm/healthy_male.csv");
+                    reader = new BufferedReader(new InputStreamReader(in));
+                    reader.readLine();
+                    mLine = reader.readLine();
+
+                    while (mLine != null) {
+                        splits = mLine.split(",");
+                        long tmpTime = 30 * DateUtils.SECOND_IN_MILLIS + idx++ * DateUtils.MINUTE_IN_MILLIS;
+                        rawRealm.add(new BpmGreen()
+                                .setTime(tmpTime)
+                                .setValueBottom(Float.valueOf(splits[6]))
+                                .setValueTop(Float.valueOf(splits[97])));
+                        rawRealm.add(new BpmRed()
+                                .setTime(tmpTime)
+                                .setValueBottom(Float.valueOf(splits[2]))
+                                .setValueTop(Float.valueOf(splits[100])));
+
+                        mLine = reader.readLine();
+
+                        if (rawRealm.size() >= max) {
+                            RealmController.saveList(rawRealm);
+                            rawRealm.clear();
+                        }
+                    }
+
+                    changeState(FakeMessage.Finish);
+                } catch (Exception tx) {
+                    tx.printStackTrace();
+                } finally {
                     if (!rawRealm.isEmpty()) {
                         RealmController.saveList(rawRealm);
                         rawRealm.clear();
                     }
-
-                    RealmController.save(new Session()
-                            .setTimeStart(startTime)
-                            .setTimeFinish(startTime + pointsCount * timeOffset));
-
-                    changeState(FakeMessage.Finish);
-
-                    Log.i(getClass().getSimpleName(), "Sensor data count = " + pointsCount + "\nRR interval data count is " + ppCounts);
-                    Log.i(getClass().getSimpleName(), "Events:\npc count = " + eventPcCounts + "\nbpm count = " + eventBpmCounts);
-                    Log.i(getClass().getSimpleName(), "Clustered:\n5 min = " + rr5 + "\n60 min = " + rr60);
-                } catch (Exception tx) {
-                    tx.printStackTrace();
-                } finally {
                     if (reader != null) {
                         try {
                             reader.close();

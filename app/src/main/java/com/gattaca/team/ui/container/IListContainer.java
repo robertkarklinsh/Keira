@@ -15,8 +15,8 @@ public abstract class IListContainer<Model extends IListContainerModel, ListItem
         extends IContainer<Model> implements FastAdapter.OnClickListener<ListItem> {
     private ItemAdapter<ListItem> itemAdapter;
 
-    public IListContainer(final Activity screen, Class<Model> cls, final int id) {
-        super(screen, cls, id);
+    public IListContainer(final Activity screen, final int id) {
+        super(screen, id);
     }
 
     @Override

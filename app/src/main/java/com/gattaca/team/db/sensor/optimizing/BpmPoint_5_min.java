@@ -1,60 +1,60 @@
 package com.gattaca.team.db.sensor.optimizing;
 
 
+import com.gattaca.team.annotation.GraphPeriod;
+
 import io.realm.RealmModel;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-public class SensorPoint_5_min implements RealmModel {
+public class BpmPoint_5_min implements RealmModel, BpmOptimizing.IBpmOptimizing {
     @PrimaryKey
     private long time;
     private float value;
     private int channel = 0;
+    @Ignore
+    private BpmOptimizing optimizing = new BpmOptimizing(this, GraphPeriod.period_5min);
 
     public static String getNamedFieldTime() {
         return "time";
-    }
-
-    public static String getNamedFieldValue() {
-        return "value";
-    }
-
-    public static String getNamedFieldChannel() {
-        return "channel";
     }
 
     public long getTime() {
         return time;
     }
 
-    public SensorPoint_5_min setTime(long time) {
+    @Override
+    public void setTime(long time) {
         this.time = time;
-        return this;
     }
 
     public float getValue() {
         return value;
     }
 
-    public SensorPoint_5_min setValue(float value) {
+    @Override
+    public void setValue(float value) {
         this.value = value;
-        return this;
     }
 
     public int getChannel() {
         return channel;
     }
 
-    public SensorPoint_5_min setChannel(int channel) {
+    public BpmPoint_5_min setChannel(int channel) {
         this.channel = channel;
         return this;
     }
 
     @Override
-    public String toString() {
-        return getNamedFieldTime() + "=" + getTime() + "\t"
-                + getNamedFieldChannel() + "=" + getChannel() + "\t"
-                + getNamedFieldValue() + "=" + getValue();
+    public boolean addPoint(long globalTimeStump, double time, float value) {
+        return optimizing.addPoint(globalTimeStump, time, value);
+    }
+
+    @Override
+    public void collapsePoints() {
+        optimizing.collapsePoints();
     }
 }

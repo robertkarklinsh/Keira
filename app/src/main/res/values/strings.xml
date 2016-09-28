@@ -5,6 +5,7 @@
     <string name="navigation_item_2">Трекер</string>
     <string name="navigation_item_3">Монитор</string>
     <string name="navigation_item_4">Банк данных</string>
+    <string name="navigation_item_5">Настройки</string>
 
     <!-- MONITOR TEXTS-->
     <string name="monitor_main_action_ecg">ЭКГ</string>
@@ -13,6 +14,10 @@
     <!-- DATA BANK TEXTS-->
     <string name="bank_data_formatted_session_item">Сессия: %1$S - %2$S</string>
 
+    <!-- SETTINGS TEXTS-->
+    <string name="settings_main_session_header">Текущая сессия</string>
+    <string name="settings_main_session_start">Начать генерацию данных</string>
+    <string name="settings_main_session_stop">Остановить генерацию данных</string>
 
     <!-- TOASTS MESSAGES-->
     <string name="toast_not_implemented">В разработке</string>

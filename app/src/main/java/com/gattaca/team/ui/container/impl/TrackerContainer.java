@@ -18,6 +18,7 @@ import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.container.MainMenu;
+import com.gattaca.team.ui.container.list.lm.SnappingLinearLayoutManager;
 import com.gattaca.team.ui.model.impl.TrackerModel;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mikepenz.fastadapter.FastAdapter;
@@ -38,7 +39,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
     Week week;
 
     public TrackerContainer(final Activity screen) {
-        super(screen, TrackerModel.class, R.id.container_tracker_id);
+        super(screen, R.id.container_tracker_id);
     }
 
     @Override

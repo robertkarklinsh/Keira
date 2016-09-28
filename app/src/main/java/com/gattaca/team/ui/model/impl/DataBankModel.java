@@ -1,7 +1,7 @@
 package com.gattaca.team.ui.model.impl;
 
 import com.gattaca.team.db.sensor.Session;
-import com.gattaca.team.ui.container.list.DataBankListItem;
+import com.gattaca.team.ui.container.list.item.DataBankListItem;
 import com.gattaca.team.ui.model.IListContainerModel;
 
 import java.util.List;
