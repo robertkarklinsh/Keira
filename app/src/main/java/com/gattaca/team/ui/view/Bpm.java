@@ -128,6 +128,10 @@ public final class Bpm extends TextView implements View.OnTouchListener {
         new Handler().postDelayed(this.r, 100);
     }
 
+    public void addRealTimePoint(float point) {
+        //TODO: implements
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int w = MeasureSpec.getSize(widthMeasureSpec);

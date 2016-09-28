@@ -1,6 +1,8 @@
 package com.gattaca.team.db.sensor;
 
 
+import android.util.Log;
+
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
 
 import io.realm.RealmModel;
@@ -23,6 +25,7 @@ public class EmulatedBpm implements RealmModel {
         a.setTime(src.getTime());
         a.setChannel(src.getChannel());
         a.setValue(src.getValue());
+        Log.i(a.getClass().getSimpleName(), "Emulated point value=" + a.value);
         return a;
     }
 

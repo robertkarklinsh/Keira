@@ -15,6 +15,11 @@ public final class BpmModel implements IContainerModel {
     private final List<BpmColorRegion> red = new ArrayList<>();
     private final List<BpmColorRegion> green = new ArrayList<>();
     private final Random rnd = new Random();
+    private final boolean isRealTime;
+
+    public BpmModel(boolean isRealTime) {
+        this.isRealTime = isRealTime;
+    }
 
     public int getIntValueByPosition(int position) {
         return data.get(position).first.intValue();
@@ -62,6 +67,10 @@ public final class BpmModel implements IContainerModel {
             floats.add(item.first);
         }
         return floats;
+    }
+
+    public boolean isRealTime() {
+        return isRealTime;
     }
 
     public static class BpmColorRegion {

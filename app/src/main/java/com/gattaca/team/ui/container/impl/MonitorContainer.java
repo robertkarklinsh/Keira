@@ -2,7 +2,6 @@ package com.gattaca.team.ui.container.impl;
 
 import android.app.Activity;
 import android.view.View;
-import android.widget.TextView;
 
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
@@ -12,12 +11,13 @@ import com.gattaca.team.service.main.RootSensorListener;
 import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.model.impl.MonitorModel;
+import com.gattaca.team.ui.view.BpmValue;
 
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 public final class MonitorContainer extends IContainer<MonitorModel> implements View.OnClickListener, RealmChangeListener<RealmResults<EmulatedBpm>> {
-    private TextView bpm;
+    private BpmValue bpm;
     private RealmResults<EmulatedBpm> results;
 
     public MonitorContainer(final Activity screen) {
@@ -41,11 +41,8 @@ public final class MonitorContainer extends IContainer<MonitorModel> implements 
     @Override
     protected void reDraw() {
         if (RootSensorListener.isInProgress()) {
-            bpm.setVisibility(View.VISIBLE);
             results = RealmController.getEmulatedBpm();
             results.addChangeListener(this);
-        } else {
-            bpm.setVisibility(View.GONE);
         }
     }
 
@@ -53,7 +50,7 @@ public final class MonitorContainer extends IContainer<MonitorModel> implements 
     public void bindView() {
         getRootView().findViewById(R.id.monitor_main_action_ecg).setOnClickListener(this);
         getRootView().findViewById(R.id.monitor_main_action_pulse).setOnClickListener(this);
-        bpm = (TextView) getRootView().findViewById(R.id.monitor_main_bpm_value);
+        bpm = (BpmValue) getRootView().findViewById(R.id.monitor_main_bpm_value);
     }
 
     @Override
@@ -84,6 +81,6 @@ public final class MonitorContainer extends IContainer<MonitorModel> implements 
 
     @Override
     public void onChange(RealmResults<EmulatedBpm> element) {
-        bpm.setText("" + (int) element.get(element.size() - 1).getValue());
+        bpm.setBpm(element.get(0).getValue());
     }
 }

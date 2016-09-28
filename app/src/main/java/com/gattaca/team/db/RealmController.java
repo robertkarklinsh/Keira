@@ -132,7 +132,8 @@ public final class RealmController {
         return Realm
                 .getDefaultInstance()
                 .where(EmulatedBpm.class)
-                .findAll();
+                .findAll()
+                .sort(NotifyEventObject.getNamedFieldTime(), Sort.DESCENDING);
     }
 
     public static RealmResults<NotifyEventObject> getAllEvents() {
