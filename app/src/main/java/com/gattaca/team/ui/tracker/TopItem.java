@@ -1,4 +1,4 @@
-package com.gattaca.bitalinoecgchart.tracker.ui;
+package com.gattaca.team.ui.tracker;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,9 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.gattaca.bitalinoecgchart.tracker.ViewHoldersCollection;
-import com.gattaca.bitalinoecgchart.tracker.data.TopContainer;
-import com.gattaca.bitalinoecgchart.tracker.v2.ModelDao;
+import com.gattaca.team.ui.tracker.data.TopContainer;
+import com.gattaca.team.ui.tracker.v2.ModelDao;
 import com.gattaca.team.R;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.utils.ViewHolderFactory;
@@ -90,6 +89,19 @@ public class TopItem extends AbstractItem<TopItem, ViewHoldersCollection.TopView
 
             tabs.addView(item);
         }
+        TextView drugs = (TextView)holder.mView.findViewById(R.id.tracker_top_drugs);
+        TextView tasks = (TextView)holder.mView.findViewById(R.id.tracker_top_tasks);
+        TextView measurements = (TextView)holder.mView.findViewById(R.id.tracker_top_measurments);
+
+        for (TopContainer.Day day : topContainer.getDays()) {
+            if (day.getNum() == ModelDao.currentDayOfWeek()) {
+                drugs.setText(day.getCompletedDrugs() + " из " + day.getDrugCount());
+                tasks.setText(day.getCompletedTasks() + " из " + day.getTasksCount());
+                measurements.setText(day.getCompletedMeasurements() + " из " + day.getMeasurementCount());
+            }
+
+        }
+
     }
 
 

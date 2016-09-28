@@ -1,4 +1,4 @@
-package com.gattaca.bitalinoecgchart.tracker.ui;
+package com.gattaca.team.ui.tracker;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.gattaca.bitalinoecgchart.tracker.ViewHoldersCollection;
+import com.gattaca.team.ui.tracker.v2.ModelDao;
+import com.gattaca.team.R;
 import com.gattaca.team.db.tracker.Drug;
 import com.gattaca.team.db.tracker.Intake;
-import com.gattaca.team.R;
 
 import java.util.Calendar;
 import java.util.List;
@@ -56,7 +56,7 @@ public class DrugItem extends Item {
         drugCircleF.setOnClickListener(new DrugItemClickListener(receptionF,
                 null,
                 (ImageView) drugCircleF.findViewById(R.id.custom_drug_button_img),
-                timeTextView
+                timeTextView,drug
         ));
         itemImages.addView(drugCircleF);
 
@@ -79,7 +79,7 @@ public class DrugItem extends Item {
             );
             drugCircle.setOnClickListener(new DrugItemClickListener(reception, lineImage,
                     (ImageView) drugCircle.findViewById(R.id.custom_drug_button_img),
-                    timeTextView)   );
+                    timeTextView,drug)   );
             itemImages.addView(drugCircle);
         }
     }
@@ -143,12 +143,14 @@ public class DrugItem extends Item {
         private ImageView drugLine;
         private ImageView drugCircle;
         private TextView textView;
+        private Drug drug;
 
-        public DrugItemClickListener(Intake intake, ImageView drugLine, ImageView drugCircle, TextView textView) {
+        public DrugItemClickListener(Intake intake, ImageView drugLine, ImageView drugCircle, TextView textView, Drug drug) {
             this.intake = intake;
             this.drugLine = drugLine;
             this.drugCircle = drugCircle;
             this.textView = textView;
+            this.drug = drug;
         }
 
         @Override
@@ -162,6 +164,15 @@ public class DrugItem extends Item {
             }
             textView.setTextColor(Color.parseColor(
                     chooseTextColor(intake.isTaken(), intake.getHours(), intake.getMinutes())));
+            if (intake.isTaken()) {
+                Realm.getDefaultInstance().executeTransaction((Realm realm) -> {
+                    intake.setHours(ModelDao.getHours());
+                    intake.setMinutes(ModelDao.getMinutes());
+                    drug.recalculateCompleted();
+
+                });
+                textView.setText(String.format("%02d:%02d",intake.getHours(), intake.getMinutes()));
+            }
         }
     }
 

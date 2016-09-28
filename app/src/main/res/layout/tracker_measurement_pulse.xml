@@ -14,7 +14,6 @@
             android:id="@+id/custom_drug_button_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_gravity="center_vertical|left"
             android:text="Обнаружено 1 отклонение"/>
         <ProgressBar
@@ -26,10 +25,6 @@
             android:progressDrawable="@android:drawable/progress_horizontal"
             android:indeterminate="false"
             android:indeterminateOnly="false" />
-        <ImageView
-            android:layout_width="40dp"
-            android:id="@+id/tryDrawable"
-            android:layout_height="40dp" />
         <TextView
             android:id="@+id/custom_drug_button_text"
             android:layout_width="wrap_content"

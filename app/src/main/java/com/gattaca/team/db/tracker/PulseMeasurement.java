@@ -1,7 +1,7 @@
 package com.gattaca.team.db.tracker;
 
-import com.gattaca.bitalinoecgchart.tracker.data.ItemType;
-import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
+import com.gattaca.team.ui.tracker.data.ItemType;
+import com.gattaca.team.ui.tracker.data.TrackerItemContainer;
 import com.gattaca.team.R;
 
 import io.realm.RealmModel;
@@ -52,12 +52,12 @@ public class PulseMeasurement implements RealmModel, TrackerItemContainer{
 
     @Override
     public ItemType getType() {
-        return ItemType.PULSE_MEASUREMENT;
+        return ItemType.PRESSURE_MEASUREMENT;
     }
 
     @Override
     public int getIcon() {
-        return R.drawable.cardiogram_icon;
+        return R.drawable.monitor_icon;
     }
 
     @Override

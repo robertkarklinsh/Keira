@@ -1,8 +1,7 @@
-package com.gattaca.bitalinoecgchart.tracker.ui;
+package com.gattaca.team.ui.tracker;
 
 import android.widget.TextView;
 
-import com.gattaca.bitalinoecgchart.tracker.ViewHoldersCollection;
 import com.gattaca.team.R;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.utils.ViewHolderFactory;

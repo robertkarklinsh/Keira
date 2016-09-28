@@ -1,4 +1,4 @@
-package com.gattaca.bitalinoecgchart.tracker.v2;
+package com.gattaca.team.ui.tracker.v2;
 
 import android.support.v7.widget.RecyclerView;
 
@@ -7,10 +7,10 @@ import com.gattaca.team.db.tracker.Drug;
 import com.gattaca.team.db.tracker.PulseMeasurement;
 import com.gattaca.team.db.tracker.Task;
 import com.gattaca.team.db.tracker.Week;
-import com.gattaca.bitalinoecgchart.tracker.ui.DrugItem;
-import com.gattaca.bitalinoecgchart.tracker.ui.HeaderItem;
-import com.gattaca.bitalinoecgchart.tracker.ui.TaskItem;
-import com.gattaca.bitalinoecgchart.tracker.ui.PulseMeasurementItem;
+import com.gattaca.team.ui.tracker.DrugItem;
+import com.gattaca.team.ui.tracker.HeaderItem;
+import com.gattaca.team.ui.tracker.TaskItem;
+import com.gattaca.team.ui.tracker.PulseMeasurementItem;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.ArrayList;
@@ -69,6 +69,13 @@ public class ModelDao {
 
     public static long getTimeInMillis() {
         return time.getTimeInMillis();
+    }
+
+    public static int getHours(){
+        return time.get(Calendar.HOUR_OF_DAY);
+    }
+    public static int getMinutes(){
+        return time.get(Calendar.MINUTE);
     }
 
     private String dayModifier(Day day, int currentDay) {

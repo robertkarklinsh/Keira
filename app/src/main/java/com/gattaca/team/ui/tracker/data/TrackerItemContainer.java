@@ -1,4 +1,4 @@
-package com.gattaca.bitalinoecgchart.tracker.data;
+package com.gattaca.team.ui.tracker.data;
 
 /**
  * Created by Artem on 28.08.2016.

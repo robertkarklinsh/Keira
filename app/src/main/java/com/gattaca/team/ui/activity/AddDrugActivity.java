@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.gattaca.bitalinoecgchart.tracker.v2.ModelDao;
+import com.gattaca.team.ui.tracker.v2.ModelDao;
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.Day;

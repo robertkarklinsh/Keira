@@ -1,8 +1,9 @@
-package com.gattaca.bitalinoecgchart.tracker.v2;
+package com.gattaca.team.ui.tracker.v2;
 
 import com.gattaca.team.db.tracker.Day;
 import com.gattaca.team.db.tracker.Drug;
 import com.gattaca.team.db.tracker.Intake;
+import com.gattaca.team.db.tracker.PressureMeasurement;
 import com.gattaca.team.db.tracker.PulseMeasurement;
 import com.gattaca.team.db.tracker.Task;
 import com.gattaca.team.db.tracker.TaskAction;
@@ -77,12 +78,24 @@ public class StubWeekCreator {
         return task;
     }
 
-    private PulseMeasurement createMeasurment(String name, int duration, String units) {
+    private PulseMeasurement createPulseMeasurement(String name, int duration, String units) {
         PulseMeasurement pulseMeasurement = realm.createObject(PulseMeasurement.class);
         pulseMeasurement.setName(name);
         pulseMeasurement.setDuration(duration);
         pulseMeasurement.setUnits(units);
         return pulseMeasurement;
+    }
+
+    private PressureMeasurement createPressureMeasurement(String name, int pulse, int sys, int dyas, int hours, int minutes, boolean completed) {
+        PressureMeasurement pressureMeasurement = realm.createObject(PressureMeasurement.class);
+        pressureMeasurement.setName(name);
+        pressureMeasurement.setDiastolic(dyas);
+        pressureMeasurement.setSystolic(sys);
+        pressureMeasurement.setPulse(pulse);
+        pressureMeasurement.setCompleted(completed);
+        pressureMeasurement.setHours(hours);
+        pressureMeasurement.setMinutes(minutes);
+        return pressureMeasurement;
     }
 
     private Day createDay(String name, int number) {
@@ -93,7 +106,8 @@ public class StubWeekCreator {
             for (int i = 0; i < 3; i++) {
                 day.getDrugs().add(createDrug("Вазилип " + i, 20, "мг"));
                 day.getTasks().add(createTask("Лежать", 24, "часа"));
-                day.getPulseMeasurements().add(createMeasurment("ЭКГ", 15, "мин"));
+                day.getPulseMeasurements().add(createPulseMeasurement("Пульс", 15, "мин"));
+                day.getPressureMeasurements().add(createPressureMeasurement("Давление",90,100,100,15,20,false));
             }
             return day;
         } catch (Exception e) {

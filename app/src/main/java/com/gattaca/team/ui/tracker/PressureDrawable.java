@@ -1,4 +1,4 @@
-package com.gattaca.bitalinoecgchart.tracker.ui;
+package com.gattaca.team.ui.tracker;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -1,7 +1,7 @@
 package com.gattaca.team.db.tracker;
 
-import com.gattaca.bitalinoecgchart.tracker.data.ItemType;
-import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
+import com.gattaca.team.ui.tracker.data.ItemType;
+import com.gattaca.team.ui.tracker.data.TrackerItemContainer;
 import com.gattaca.team.R;
 
 import io.realm.RealmModel;

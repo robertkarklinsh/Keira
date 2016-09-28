@@ -6,10 +6,10 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.gattaca.bitalinoecgchart.tracker.data.TopContainer;
-import com.gattaca.bitalinoecgchart.tracker.ui.TopItem;
-import com.gattaca.bitalinoecgchart.tracker.v2.ModelDao;
-import com.gattaca.bitalinoecgchart.tracker.v2.StubWeekCreator;
+import com.gattaca.team.ui.tracker.data.TopContainer;
+import com.gattaca.team.ui.tracker.TopItem;
+import com.gattaca.team.ui.tracker.v2.ModelDao;
+import com.gattaca.team.ui.tracker.v2.StubWeekCreator;
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.Week;

@@ -1,7 +1,7 @@
 package com.gattaca.team.db.tracker;
 
-import com.gattaca.bitalinoecgchart.tracker.data.ItemType;
-import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
+import com.gattaca.team.ui.tracker.data.ItemType;
+import com.gattaca.team.ui.tracker.data.TrackerItemContainer;
 import com.gattaca.team.R;
 
 import io.realm.RealmList;
@@ -43,6 +43,10 @@ public class Drug implements RealmModel, TrackerItemContainer {
         return completed;
     }
 
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
     public String getName() {
         return name;
     }
@@ -77,5 +81,13 @@ public class Drug implements RealmModel, TrackerItemContainer {
     @Override
     public String getGrayText() {
         return getDose() + " " + getUnits();
+    }
+
+    public void recalculateCompleted() {
+        boolean res = true;
+        for(Intake in : intakes){
+            res &= in.isTaken();
+        }
+        this.setCompleted(res);
     }
 }

@@ -1,4 +1,4 @@
-package com.gattaca.bitalinoecgchart.tracker;
+package com.gattaca.team.ui.tracker;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
