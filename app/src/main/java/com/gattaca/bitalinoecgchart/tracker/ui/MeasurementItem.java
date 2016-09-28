@@ -30,7 +30,7 @@ public class MeasurementItem extends Item {
         ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(measurement.getIcon());
 
         LinearLayout progress = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_measurement_progess, viewGroup);
-        ((ImageView) progress.findViewById(R.id.tryDrawable)).setImageDrawable(new PressureDrawable(0,0,0));
+//        ((ImageView) progress.findViewById(R.id.tryDrawable)).setImageDrawable(new PressureDrawable());
         itemImages.addView(progress);
 
     }

@@ -1,0 +1,1185 @@
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+index aee93a8..b0a25ae 100644
+--- a/app/src/main/AndroidManifest.xml
++++ b/app/src/main/AndroidManifest.xml
+@@ -46,7 +46,8 @@
+             android:name="io.fabric.ApiKey"
+             android:value="560c164e31ab2d572612b57e14498b098b212b11" />
+ 
+-        <activity android:name=".ui.activity.AddDrugActivity"></activity>
++        <activity android:name=".ui.activity.AddDrugActivity" />
++        <activity android:name=".ui.activity.AddPressureActivity"></activity>
+     </application>
+ 
+ </manifest>
+\ No newline at end of file
+diff --git a/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/data/ItemType.java b/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/data/ItemType.java
+index 32a129a..a114359 100644
+--- a/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/data/ItemType.java
++++ b/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/data/ItemType.java
+@@ -5,6 +5,7 @@ package com.gattaca.bitalinoecgchart.tracker.data;
+  */
+ public enum ItemType {
+     DRUG,
+-    MEASUREMENT,
+-    TASK
++    PULSE_MEASUREMENT,
++    TASK,
++    PRESSURE_MEASUREMENT
+ }
+diff --git a/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/data/ViewType.java b/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/data/ViewType.java
+deleted file mode 100644
+index 64c6452..0000000
+--- a/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/data/ViewType.java
++++ /dev/null
+@@ -1,16 +0,0 @@
+-package com.gattaca.bitalinoecgchart.tracker.data;
+-
+-/**
+- * Created by Artem on 12.09.2016.
+- */
+-public enum ViewType {
+-    HEADER(0), //0
+-    ITEM(2), // 2
+-    FOOTER(1), //1
+-    TOP(3);
+-    public final int number;
+-
+-    ViewType(int number) {
+-        this.number = number;
+-    }
+-}
+diff --git a/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/ui/PressureDrawable.java b/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/ui/PressureDrawable.java
+index 1a0bca6..9024094 100644
+--- a/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/ui/PressureDrawable.java
++++ b/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/ui/PressureDrawable.java
+@@ -12,14 +12,30 @@ import android.graphics.drawable.Drawable;
+  */
+ 
+ public class PressureDrawable extends Drawable {
++
++    int min;
++    int max;
++    int pos;
++
++    public PressureDrawable(int min, int max, int pos) {
++        this.min = min;
++        this.max = max;
++        this.pos = pos;
++    }
++
+     @Override
+     public void draw(Canvas canvas) {
+         Rect rect = getBounds();
+ 
+         Paint paint = new Paint();
+-        paint.setARGB(255, 255, 0, 0);
+-        float rad = 10;
+-        canvas.drawRoundRect((float) rect.left,(float) rect.top, (float)rect.right, (float)rect.bottom, rad, rad , paint);
++        paint.setARGB(255, 21, 165, 153);
++//        float rad = 10;
++//        int centerOfBigCircle = (int)Math.round((double)pos / (double)(max - min));
++//        int readOfBigCircle = 33;
++
++        canvas.drawRect(rect, paint);
++//        canvas.drawCircle();
++
+     }
+ 
+     @Override
+diff --git a/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/ui/PulseMeasurementItem.java b/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/ui/PulseMeasurementItem.java
+new file mode 100644
+index 0000000..c8f98ec
+--- /dev/null
++++ b/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/ui/PulseMeasurementItem.java
+@@ -0,0 +1,37 @@
++package com.gattaca.bitalinoecgchart.tracker.ui;
++
++import android.content.Context;
++import android.view.LayoutInflater;
++import android.view.ViewGroup;
++import android.widget.ImageView;
++import android.widget.LinearLayout;
++import android.widget.TextView;
++
++import com.gattaca.bitalinoecgchart.tracker.ViewHoldersCollection;
++import com.gattaca.team.R;
++import com.gattaca.team.db.tracker.PulseMeasurement;
++
++import java.util.List;
++
++/**
++ * Created by Artem on 23.09.2016.
++ */
++public class PulseMeasurementItem extends Item {
++    @Override
++    void bindCustomView(ViewHoldersCollection.DrugItemViewHolder holder, List payloads) {
++        PulseMeasurement pulseMeasurement = (PulseMeasurement) itemContainer;
++        ViewGroup viewGroup = (ViewGroup) holder.mView.getParent();
++        Context context = holder.mView.getContext();
++        LinearLayout itemHeader = (LinearLayout) holder.mView.findViewById(R.id.tracker_item_text_holder);
++        LinearLayout itemImages = (LinearLayout) holder.mView.findViewById(R.id.tracker_item_image_holder);
++        itemImages.removeAllViews();
++        ((TextView) itemHeader.findViewById(R.id.tracker_item_text_black)).setText(pulseMeasurement.getBlackText());
++        ((TextView) itemHeader.findViewById(R.id.tracker_item_text_gray)).setText(pulseMeasurement.getGrayText());
++        ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(pulseMeasurement.getIcon());
++
++        LinearLayout progress = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_measurement_pulse, viewGroup);
++        ((ImageView) progress.findViewById(R.id.tryDrawable)).setImageDrawable(new PressureDrawable(0,0,0));
++        itemImages.addView(progress);
++
++    }
++}
+diff --git a/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/v2/ModelDao.java b/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/v2/ModelDao.java
+index 05615bd..ce404a6 100644
+--- a/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/v2/ModelDao.java
++++ b/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/v2/ModelDao.java
+@@ -4,13 +4,13 @@ import android.support.v7.widget.RecyclerView;
+ 
+ import com.gattaca.team.db.tracker.Day;
+ import com.gattaca.team.db.tracker.Drug;
+-import com.gattaca.team.db.tracker.Measurement;
++import com.gattaca.team.db.tracker.PulseMeasurement;
+ import com.gattaca.team.db.tracker.Task;
+ import com.gattaca.team.db.tracker.Week;
+ import com.gattaca.bitalinoecgchart.tracker.ui.DrugItem;
+ import com.gattaca.bitalinoecgchart.tracker.ui.HeaderItem;
+ import com.gattaca.bitalinoecgchart.tracker.ui.TaskItem;
+-import com.gattaca.bitalinoecgchart.tracker.ui.MeasurementItem;
++import com.gattaca.bitalinoecgchart.tracker.ui.PulseMeasurementItem;
+ import com.mikepenz.fastadapter.items.AbstractItem;
+ 
+ import java.util.ArrayList;
+@@ -47,7 +47,7 @@ public class ModelDao {
+             Day day = week.getDays().get(i);
+             res++;
+             res += day.getDrugs().size();
+-            res += day.getMeasurements().size();
++            res += day.getPulseMeasurements().size();
+             res += day.getTasks().size();
+         }
+         return res;
+@@ -90,7 +90,7 @@ public class ModelDao {
+             Day day = week.getDays().get(i);
+             res++;
+             res += day.getDrugs().size();
+-            res += day.getMeasurements().size();
++            res += day.getPulseMeasurements().size();
+             res += day.getTasks().size();
+         }
+         return res;
+@@ -106,8 +106,8 @@ public class ModelDao {
+             for (Drug drug : day.getDrugs()) {
+                 res.add(new DrugItem().withItemContainer(drug));
+             }
+-            for (Measurement measurement : day.getMeasurements()) {
+-                res.add(new MeasurementItem().withItemContainer(measurement));
++            for (PulseMeasurement pulseMeasurement : day.getPulseMeasurements()) {
++                res.add(new PulseMeasurementItem().withItemContainer(pulseMeasurement));
+             }
+             for (Task task : day.getTasks()) {
+                 res.add(new TaskItem().withItemContainer(task));
+diff --git a/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/v2/StubWeekCreator.java b/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/v2/StubWeekCreator.java
+index 602af80..048b3be 100644
+--- a/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/v2/StubWeekCreator.java
++++ b/app/src/main/java/com/gattaca/bitalinoecgchart/tracker/v2/StubWeekCreator.java
+@@ -3,7 +3,7 @@ package com.gattaca.bitalinoecgchart.tracker.v2;
+ import com.gattaca.team.db.tracker.Day;
+ import com.gattaca.team.db.tracker.Drug;
+ import com.gattaca.team.db.tracker.Intake;
+-import com.gattaca.team.db.tracker.Measurement;
++import com.gattaca.team.db.tracker.PulseMeasurement;
+ import com.gattaca.team.db.tracker.Task;
+ import com.gattaca.team.db.tracker.TaskAction;
+ import com.gattaca.team.db.tracker.Week;
+@@ -77,12 +77,12 @@ public class StubWeekCreator {
+         return task;
+     }
+ 
+-    private Measurement createMeasurment(String name, int duration, String units) {
+-        Measurement measurement = realm.createObject(Measurement.class);
+-        measurement.setName(name);
+-        measurement.setDuration(duration);
+-        measurement.setUnits(units);
+-        return measurement;
++    private PulseMeasurement createMeasurment(String name, int duration, String units) {
++        PulseMeasurement pulseMeasurement = realm.createObject(PulseMeasurement.class);
++        pulseMeasurement.setName(name);
++        pulseMeasurement.setDuration(duration);
++        pulseMeasurement.setUnits(units);
++        return pulseMeasurement;
+     }
+ 
+     private Day createDay(String name, int number) {
+@@ -93,7 +93,7 @@ public class StubWeekCreator {
+             for (int i = 0; i < 3; i++) {
+                 day.getDrugs().add(createDrug("Вазилип " + i, 20, "мг"));
+                 day.getTasks().add(createTask("Лежать", 24, "часа"));
+-                day.getMeasurements().add(createMeasurment("ЭКГ", 15, "мин"));
++                day.getPulseMeasurements().add(createMeasurment("ЭКГ", 15, "мин"));
+             }
+             return day;
+         } catch (Exception e) {
+diff --git a/app/src/main/java/com/gattaca/team/db/tracker/Day.java b/app/src/main/java/com/gattaca/team/db/tracker/Day.java
+index 10dc1cc..ca2a40f 100644
+--- a/app/src/main/java/com/gattaca/team/db/tracker/Day.java
++++ b/app/src/main/java/com/gattaca/team/db/tracker/Day.java
+@@ -9,10 +9,19 @@ import io.realm.annotations.RealmClass;
+  */
+ @RealmClass
+ public class Day implements RealmModel {
+-    RealmList<Measurement> measurements = new RealmList<>();
++    RealmList<PulseMeasurement> pulseMeasurements = new RealmList<>();
++    RealmList<PressureMeasurement> pressureMeasurements = new RealmList<>();
+     RealmList<Drug> drugs = new RealmList<>();
+     RealmList<Task> tasks = new RealmList<>();
+ 
++    public RealmList<PressureMeasurement> getPressureMeasurements() {
++        return pressureMeasurements;
++    }
++
++    public void setPressureMeasurements(RealmList<PressureMeasurement> pressureMeasurements) {
++        this.pressureMeasurements = pressureMeasurements;
++    }
++
+     public String getName() {
+         return name;
+     }
+@@ -55,12 +64,12 @@ public class Day implements RealmModel {
+         this.number = number;
+     }
+ 
+-    public RealmList<Measurement> getMeasurements() {
+-        return measurements;
++    public RealmList<PulseMeasurement> getPulseMeasurements() {
++        return pulseMeasurements;
+     }
+ 
+-    public void setMeasurements(RealmList<Measurement> measurements) {
+-        this.measurements = measurements;
++    public void setPulseMeasurements(RealmList<PulseMeasurement> pulseMeasurements) {
++        this.pulseMeasurements = pulseMeasurements;
+     }
+ 
+     public RealmList<Drug> getDrugs() {
+@@ -82,7 +91,7 @@ public class Day implements RealmModel {
+     public static Day example() {
+         Day day = new Day();
+         for (int i = 0; i < 3; i ++) {
+-            day.measurements.add(new Measurement());
++            day.pulseMeasurements.add(new PulseMeasurement());
+             day.tasks.add(new Task());
+             day.drugs.add(new Drug());
+         }
+diff --git a/app/src/main/java/com/gattaca/team/db/tracker/PressureMeasurement.java b/app/src/main/java/com/gattaca/team/db/tracker/PressureMeasurement.java
+new file mode 100644
+index 0000000..96c2f44
+--- /dev/null
++++ b/app/src/main/java/com/gattaca/team/db/tracker/PressureMeasurement.java
+@@ -0,0 +1,103 @@
++package com.gattaca.team.db.tracker;
++
++import com.gattaca.bitalinoecgchart.tracker.data.ItemType;
++import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
++import com.gattaca.team.R;
++
++import io.realm.RealmModel;
++import io.realm.annotations.RealmClass;
++
++/**
++ * Created by Artem on 12.09.2016.
++ */
++
++@RealmClass
++public class PressureMeasurement implements RealmModel, TrackerItemContainer{
++    private boolean completed = false;
++    private String name ;
++    private int hours;
++    private int minutes;
++
++    private int pulse;
++    private int systolic;
++    private int diastolic;
++
++    public int getHours() {
++        return hours;
++    }
++
++    public void setHours(int hours) {
++        this.hours = hours;
++    }
++
++    public int getMinutes() {
++        return minutes;
++    }
++
++    public void setMinutes(int minutes) {
++        this.minutes = minutes;
++    }
++
++    public int getPulse() {
++        return pulse;
++    }
++
++    public void setPulse(int pulse) {
++        this.pulse = pulse;
++    }
++
++    public int getSystolic() {
++        return systolic;
++    }
++
++    public void setSystolic(int systolic) {
++        this.systolic = systolic;
++    }
++
++    public int getDiastolic() {
++        return diastolic;
++    }
++
++    public void setDiastolic(int diastolic) {
++        this.diastolic = diastolic;
++    }
++
++    public String getName() {
++        return name;
++    }
++
++
++
++    public void setCompleted(boolean completed) {
++        this.completed = completed;
++    }
++
++    public void setName(String name) {
++        this.name = name;
++    }
++
++
++    public boolean isCompleted() {
++        return completed;
++    }
++
++    @Override
++    public ItemType getType() {
++        return ItemType.PULSE_MEASUREMENT;
++    }
++
++    @Override
++    public int getIcon() {
++        return R.drawable.monitor_icon;
++    }
++
++    @Override
++    public String getBlackText() {
++        return name;
++    }
++
++    @Override
++    public String getGrayText() {
++        return "";
++    }
++}
+diff --git a/app/src/main/java/com/gattaca/team/db/tracker/PulseMeasurement.java b/app/src/main/java/com/gattaca/team/db/tracker/PulseMeasurement.java
+new file mode 100644
+index 0000000..8239b3a
+--- /dev/null
++++ b/app/src/main/java/com/gattaca/team/db/tracker/PulseMeasurement.java
+@@ -0,0 +1,72 @@
++package com.gattaca.team.db.tracker;
++
++import com.gattaca.bitalinoecgchart.tracker.data.ItemType;
++import com.gattaca.bitalinoecgchart.tracker.data.TrackerItemContainer;
++import com.gattaca.team.R;
++
++import io.realm.RealmModel;
++import io.realm.annotations.RealmClass;
++
++/**
++ * Created by Artem on 12.09.2016.
++ */
++
++@RealmClass
++public class PulseMeasurement implements RealmModel, TrackerItemContainer{
++    private boolean completed = false;
++    private String name ;
++    private int duration;
++    private String units;
++
++    public String getName() {
++        return name;
++    }
++
++    public int getDuration() {
++        return duration;
++    }
++
++    public String getUnits() {
++        return units;
++    }
++
++    public void setCompleted(boolean completed) {
++        this.completed = completed;
++    }
++
++    public void setName(String name) {
++        this.name = name;
++    }
++
++    public void setDuration(int duration) {
++        this.duration = duration;
++    }
++
++    public void setUnits(String units) {
++        this.units = units;
++    }
++
++    public boolean isCompleted() {
++        return completed;
++    }
++
++    @Override
++    public ItemType getType() {
++        return ItemType.PULSE_MEASUREMENT;
++    }
++
++    @Override
++    public int getIcon() {
++        return R.drawable.monitor_icon;
++    }
++
++    @Override
++    public String getBlackText() {
++        return name;
++    }
++
++    @Override
++    public String getGrayText() {
++        return duration + " " + units;
++    }
++}
+diff --git a/app/src/main/java/com/gattaca/team/ui/activity/AddDrugActivity.java b/app/src/main/java/com/gattaca/team/ui/activity/AddDrugActivity.java
+index a8b322d..d8936f5 100644
+--- a/app/src/main/java/com/gattaca/team/ui/activity/AddDrugActivity.java
++++ b/app/src/main/java/com/gattaca/team/ui/activity/AddDrugActivity.java
+@@ -58,7 +58,6 @@ public class AddDrugActivity extends AppCompatActivity {
+                                                 final Calendar c = Calendar.getInstance();
+                                                 hours = c.get(Calendar.HOUR_OF_DAY);
+                                                 minutes = c.get(Calendar.MINUTE);
+-                                                // Launch Time Picker Dialog
+                                                 TimePickerDialog timePickerDialog = new TimePickerDialog(AddDrugActivity.this,
+                                                         new TimePickerDialog.OnTimeSetListener() {
+                                                             @Override
+@@ -67,7 +66,7 @@ public class AddDrugActivity extends AppCompatActivity {
+ 
+                                                                 editText.setText(hourOfDay + ":" + minute);
+                                                             }
+-                                                        }, hours, minutes, false);
++                                                        }, hours, minutes, true);
+                                                 timePickerDialog.show();
+                                             }
+                                         }
+@@ -79,7 +78,7 @@ public class AddDrugActivity extends AppCompatActivity {
+ 
+     List<TimeHolder> times = new ArrayList<>();
+     LinearLayout timeHolder;
+-
++    CheckBox everyDay;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+@@ -92,10 +91,10 @@ public class AddDrugActivity extends AppCompatActivity {
+         EditText units = (EditText) findViewById(R.id.add_drug_units_field);
+         LinearLayout timeHolder = (LinearLayout) findViewById(R.id.add_drug_container);
+         this.timeHolder = timeHolder;
+-        LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_text_item, null);
++        LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_time_item, null);
+         timeHolder.addView(ll);
+         times.add(new TimeHolder(ll));
+-        CheckBox everyDay = (CheckBox) findViewById(R.id.add_drug_remind_check_box);
++        everyDay = (CheckBox) findViewById(R.id.add_drug_remind_check_box);
+ 
+ 
+         okButton.setOnClickListener(new View.OnClickListener() {
+@@ -139,12 +138,15 @@ public class AddDrugActivity extends AppCompatActivity {
+         addDrugBtn.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+-                LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_text_item, null);
++                LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_time_item, null);
+                 timeHolder.addView(ll);
+                 times.add(new TimeHolder(ll));
+             }
+         });
+ 
++        Button cancelButton = (Button) findViewById((R.id.add_drug_cancel_button));
++        cancelButton.setOnClickListener((View v) -> AddDrugActivity.this.finish());
++
+ 
+     }
+ 
+diff --git a/app/src/main/java/com/gattaca/team/ui/activity/AddPressureActivity.java b/app/src/main/java/com/gattaca/team/ui/activity/AddPressureActivity.java
+new file mode 100644
+index 0000000..455cf8c
+--- /dev/null
++++ b/app/src/main/java/com/gattaca/team/ui/activity/AddPressureActivity.java
+@@ -0,0 +1,137 @@
++package com.gattaca.team.ui.activity;
++
++import android.app.TimePickerDialog;
++import android.os.Bundle;
++import android.support.v7.app.AppCompatActivity;
++import android.view.View;
++import android.widget.Button;
++import android.widget.CheckBox;
++import android.widget.EditText;
++import android.widget.ImageView;
++import android.widget.TextView;
++import android.widget.TimePicker;
++
++import com.gattaca.team.R;
++
++import java.util.ArrayList;
++import java.util.Calendar;
++import java.util.GregorianCalendar;
++import java.util.List;
++import java.util.Locale;
++
++public class AddPressureActivity extends AppCompatActivity {
++
++
++    private static GregorianCalendar calendar = new GregorianCalendar();
++    private Holder holder;
++
++    Boolean isReminder = false;
++
++    class Holder {
++
++        ImageView stateButton;
++
++
++        List<View> reminded = new ArrayList<>();
++        List<View> justAdd = new ArrayList<>();
++        int hours;
++        int minutes;
++
++        public Holder(EditText timeField,
++                      TextView systolic,
++                      EditText systolicField,
++                      TextView dyastolic,
++                      EditText dyastloicField,
++                      TextView pulse,
++                      EditText pulseField,
++                      ImageView stateButton,
++                      CheckBox remindEveryDay) {
++
++            this.stateButton = stateButton;
++
++            justAdd.add(systolic);
++            justAdd.add(systolicField);
++            justAdd.add(dyastolic);
++            justAdd.add(dyastloicField);
++            justAdd.add(pulse);
++            justAdd.add(pulseField);
++            reminded.add(remindEveryDay);
++
++
++            hours = calendar.get(Calendar.HOUR);
++            minutes = calendar.get(Calendar.MINUTE);
++
++            timeField.setText(String.format(Locale.ROOT, "%02d:%02d", hours, minutes));
++            timeField.setOnClickListener((View v) -> {
++                        // Get Current Time
++                        final Calendar c = Calendar.getInstance();
++                        hours = c.get(Calendar.HOUR_OF_DAY);
++                        minutes = c.get(Calendar.MINUTE);
++                        // Launch Time Picker Dialog
++                        TimePickerDialog timePickerDialog = new TimePickerDialog(AddPressureActivity.this,
++                                new TimePickerDialog.OnTimeSetListener() {
++                                    @Override
++                                    public void onTimeSet(TimePicker view, int hourOfDay,
++                                                          int minute) {
++                                        timeField.setText(hourOfDay + ":" + minute);
++                                        hours = hourOfDay;
++                                        minutes = minute;
++                                    }
++                                }, hours, minutes, true);
++                        timePickerDialog.show();
++                    }
++            );
++
++            stateButton.setOnClickListener((View v) -> {
++                isReminder = !isReminder;
++                ((ImageView) v).setImageResource(isReminder ? R.drawable.fucking_alarm : R.drawable.fucking_perncil);
++                if (isReminder) {
++                    setInvisible(justAdd);
++                    setVisible(reminded);
++                } else {
++                    setVisible(justAdd);
++                    setInvisible(reminded);
++                }
++
++            });
++
++        }
++
++        private void setInvisible(List<View> list) {
++            for (View v : list) {
++                v.setVisibility(View.GONE);
++            }
++        }
++
++        private void setVisible(List<View> list) {
++            for (View v : list) {
++                v.setVisibility(View.VISIBLE);
++            }
++        }
++
++    }
++
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_add_pressure);
++
++        Button cancel = (Button) findViewById(R.id.add_pressure_cancel);
++        Button ok = (Button) findViewById(R.id.add_pressure_ok);
++        EditText timeField = (EditText) findViewById(R.id.add_pressure_time_field);
++
++        TextView systolic = (TextView) findViewById(R.id.add_pressure_systolic);
++        EditText systolicField = (EditText) findViewById(R.id.add_pressure_systolic_field);
++        TextView dyastolic = (TextView) findViewById(R.id.add_pressure_dyastolic);
++        EditText dyastolicField = (EditText) findViewById(R.id.add_pressure_dyastolic_field);
++        ImageView stateButton = (ImageView) findViewById(R.id.add_pressure_state);
++        CheckBox everyDayReminder = (CheckBox) findViewById(R.id.add_pressure_every_day_reminder);
++        TextView pulse = (TextView) findViewById(R.id.add_pressure_pulse);
++        EditText pulseField = (EditText) findViewById(R.id.add_pressure_pulse_field);
++        holder = new Holder(timeField, systolic, systolicField, dyastolic, dyastolicField, pulse, pulseField, stateButton, everyDayReminder);
++        cancel.setOnClickListener((View v) -> AddPressureActivity.this.finish());
++
++
++    }
++}
+diff --git a/app/src/main/java/com/gattaca/team/ui/container/ActivityTransferData.java b/app/src/main/java/com/gattaca/team/ui/container/ActivityTransferData.java
+index dca5e36..fa42db4 100644
+--- a/app/src/main/java/com/gattaca/team/ui/container/ActivityTransferData.java
++++ b/app/src/main/java/com/gattaca/team/ui/container/ActivityTransferData.java
+@@ -4,6 +4,7 @@ import android.app.Activity;
+ import android.content.Intent;
+ 
+ import com.gattaca.team.ui.activity.AddDrugActivity;
++import com.gattaca.team.ui.activity.AddPressureActivity;
+ import com.gattaca.team.ui.activity.MonitorBpm;
+ import com.gattaca.team.ui.activity.MonitorEcg;
+ 
+@@ -28,7 +29,8 @@ public final class ActivityTransferData {
+     public enum AvailableActivity {
+         ECG(MonitorEcg.class),
+         BPM(MonitorBpm.class),
+-        ADT(AddDrugActivity.class);
++        ADT(AddDrugActivity.class),
++        APT(AddPressureActivity.class);
+ 
+         final private Class cls;
+ 
+diff --git a/app/src/main/java/com/gattaca/team/ui/container/impl/TrackerContainer.java b/app/src/main/java/com/gattaca/team/ui/container/impl/TrackerContainer.java
+index b54300b..c2dd2ab 100644
+--- a/app/src/main/java/com/gattaca/team/ui/container/impl/TrackerContainer.java
++++ b/app/src/main/java/com/gattaca/team/ui/container/impl/TrackerContainer.java
+@@ -2,6 +2,7 @@ package com.gattaca.team.ui.container.impl;
+ 
+ import android.app.Activity;
+ import android.support.v7.widget.RecyclerView;
++import android.view.View;
+ import android.widget.RelativeLayout;
+ import android.widget.Toast;
+ 
+@@ -13,10 +14,12 @@ import com.gattaca.team.R;
+ import com.gattaca.team.db.RealmController;
+ import com.gattaca.team.db.tracker.Week;
+ import com.gattaca.team.root.MainApplication;
++import com.gattaca.team.ui.container.ActivityTransferData;
+ import com.gattaca.team.ui.container.ContainerTransferData;
+ import com.gattaca.team.ui.container.IContainer;
+ import com.gattaca.team.ui.container.MainMenu;
+ import com.gattaca.team.ui.model.impl.TrackerModel;
++import com.getbase.floatingactionbutton.FloatingActionButton;
+ import com.mikepenz.fastadapter.FastAdapter;
+ import com.mikepenz.fastadapter.adapters.ItemAdapter;
+ 
+@@ -103,13 +106,14 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
+ //            r.delete(Week.class);
+ //            r.delete(Drug.class);
+ //            r.delete(Intake.class);
+-//            r.delete(Measurement.class);
++//            r.delete(PulseMeasurement.class);
+ //            r.delete(Task.class);
+ //            r.delete(TaskAction.class);
+ //        });
+         week = realm.where(Week.class).equalTo(Week.getNamedFieldWeekNum(), weekNum).findFirst();
+         modelDao = new ModelDao(week);
+         RelativeLayout relativeLayout = (RelativeLayout) this.getRootView();
++
+         if (mFastAdapter == null) {
+             mFastAdapter = new FastAdapter();
+         }
+@@ -124,6 +128,23 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
+         rv.setAdapter(mItemAdapter.wrap(mFastAdapter));
+ 
+ 
++//        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) relativeLayout.findViewById(R.id.multiple_actions);
++        final FloatingActionButton actionAddDrug = (FloatingActionButton) relativeLayout.findViewById(R.id.tracker_add_drug);
++        actionAddDrug.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.ADT));
++            }
++        });
++        final FloatingActionButton actionAddPressure = (FloatingActionButton) relativeLayout.findViewById(R.id.tracker_add_pressure);
++        actionAddPressure.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.APT));
++            }
++        });
++
++
+     }
+ 
+ 
+diff --git a/app/src/main/res/drawable/fab_label_background.xml b/app/src/main/res/drawable/fab_label_background.xml
+new file mode 100644
+index 0000000..0d8c05b
+--- /dev/null
++++ b/app/src/main/res/drawable/fab_label_background.xml
+@@ -0,0 +1,11 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <solid android:color="@color/black_semi_transparent"/>
++    <padding
++        android:left="16dp"
++        android:top="4dp"
++        android:right="16dp"
++        android:bottom="4dp"/>
++    <corners
++        android:radius="2dp"/>
++</shape>
+\ No newline at end of file
+diff --git a/app/src/main/res/drawable/fucking_alarm.png b/app/src/main/res/drawable/fucking_alarm.png
+new file mode 100644
+index 0000000..cfa760a
+Binary files /dev/null and b/app/src/main/res/drawable/fucking_alarm.png differ
+diff --git a/app/src/main/res/drawable/fucking_perncil.png b/app/src/main/res/drawable/fucking_perncil.png
+new file mode 100644
+index 0000000..29734d3
+Binary files /dev/null and b/app/src/main/res/drawable/fucking_perncil.png differ
+diff --git a/app/src/main/res/layout/activity_add_drug.xml b/app/src/main/res/layout/activity_add_drug.xml
+index 6e56e1b..cbc8c4b 100644
+--- a/app/src/main/res/layout/activity_add_drug.xml
++++ b/app/src/main/res/layout/activity_add_drug.xml
+@@ -95,7 +95,7 @@
+             android:text="Добавить время" />
+ 
+         <Button
+-            android:id="@+id/button5"
++            android:id="@+id/add_drug_cancel_button"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignStart="@+id/add_drug_remind_check_box"
+@@ -107,7 +107,7 @@
+             android:id="@+id/add_drug_ok_button"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+-            android:layout_alignTop="@+id/button5"
++            android:layout_alignTop="@+id/add_drug_cancel_button"
+             android:layout_marginStart="12dp"
+             android:layout_toEndOf="@+id/add_drug_name_field"
+             android:text="Добавить" />
+diff --git a/app/src/main/res/layout/activity_add_pressure.xml b/app/src/main/res/layout/activity_add_pressure.xml
+new file mode 100644
+index 0000000..6f2947b
+--- /dev/null
++++ b/app/src/main/res/layout/activity_add_pressure.xml
+@@ -0,0 +1,129 @@
++<?xml version="1.0" encoding="utf-8"?>
++
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/activity_add_pressure"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:paddingBottom="@dimen/activity_vertical_margin"
++    android:paddingLeft="@dimen/activity_horizontal_margin"
++    android:paddingRight="@dimen/activity_horizontal_margin"
++    android:paddingTop="@dimen/activity_vertical_margin"
++    tools:context="com.gattaca.team.ui.activity.AddPressureActivity">
++
++    <TextView
++        android:text="Время"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_alignParentTop="true"
++        android:layout_alignParentStart="true"
++        android:layout_marginTop="13dp"
++        android:id="@+id/add_pressure_time" />
++
++    <EditText
++        android:text="12:00"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_below="@+id/add_pressure_time"
++        android:layout_alignParentStart="true"
++        android:focusable="false"
++        android:layout_marginTop="26dp"
++        android:id="@+id/add_pressure_time_field" />
++
++    <TextView
++        android:text="Систолическое"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++
++        android:layout_below="@+id/add_pressure_time"
++        android:layout_alignParentStart="true"
++        android:layout_marginTop="100dp"
++        android:id="@+id/add_pressure_systolic" />
++
++    <TextView
++        android:text="Диастолическое"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_below="@+id/add_pressure_systolic"
++        android:layout_alignParentStart="true"
++        android:layout_marginTop="17dp"
++        android:id="@+id/add_pressure_dyastolic" />
++
++    <EditText
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:inputType="number"
++        android:ems="10"
++        android:layout_below="@+id/add_pressure_systolic_field"
++        android:layout_alignParentEnd="true"
++        android:layout_marginEnd="10dp"
++        android:id="@+id/add_pressure_dyastolic_field"
++        android:hint="120" />
++
++    <EditText
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:inputType="number"
++        android:ems="10"
++        android:id="@+id/add_pressure_systolic_field"
++        android:layout_above="@+id/add_pressure_dyastolic"
++        android:layout_alignStart="@+id/add_pressure_dyastolic_field"
++        android:hint="120" />
++
++    <Button
++        android:text="Отмена"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginBottom="15dp"
++        android:id="@+id/add_pressure_cancel"
++        android:layout_alignParentBottom="true"
++        android:layout_alignParentStart="true" />
++
++    <ImageView
++        android:layout_width="30dp"
++        android:layout_height="30dp"
++        android:src="@drawable/fucking_alarm"
++        android:layout_alignTop="@+id/add_pressure_time"
++        android:layout_alignParentEnd="true"
++        android:layout_marginEnd="14dp"
++        android:id="@+id/add_pressure_state" />
++
++    <Button
++        android:text="ОК"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:id="@+id/add_pressure_ok"
++        android:layout_alignBaseline="@+id/add_pressure_cancel"
++        android:layout_alignBottom="@+id/add_pressure_cancel"
++        android:layout_alignEnd="@+id/add_pressure_state" />
++
++    <CheckBox
++        android:text="Напоминать каждый день"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_below="@+id/add_pressure_time_field"
++        android:layout_alignParentStart="true"
++        android:visibility="gone"
++        android:id="@+id/add_pressure_every_day_reminder" />
++
++    <TextView
++        android:text="Пульс"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_below="@+id/add_pressure_dyastolic_field"
++        android:layout_alignParentStart="true"
++        android:layout_marginTop="15dp"
++        android:id="@+id/add_pressure_pulse" />
++
++    <EditText
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:inputType="number"
++        android:ems="10"
++        android:layout_below="@+id/add_pressure_dyastolic_field"
++        android:layout_alignEnd="@+id/add_pressure_dyastolic_field"
++        android:id="@+id/add_pressure_pulse_field"
++        android:hint="90" />
++
++
++</RelativeLayout>
+diff --git a/app/src/main/res/layout/activity_test_expand_tabs.xml b/app/src/main/res/layout/activity_test_expand_tabs.xml
+deleted file mode 100644
+index 38ee4b2..0000000
+--- a/app/src/main/res/layout/activity_test_expand_tabs.xml
++++ /dev/null
+@@ -1,14 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+-    xmlns:tools="http://schemas.android.com/tools"
+-    android:layout_width="match_parent"
+-    android:layout_height="match_parent">
+-    <android.support.v7.widget.RecyclerView
+-        android:id="@+id/my_recycler_view"
+-        android:scrollbars="vertical"
+-        android:layout_width="match_parent"
+-        android:layout_height="match_parent"
+-        android:layout_alignParentStart="true" />
+-
+-
+-</RelativeLayout>
+diff --git a/app/src/main/res/layout/add_drug_add_time_item.xml b/app/src/main/res/layout/add_drug_add_time_item.xml
+new file mode 100644
+index 0000000..42b8853
+--- /dev/null
++++ b/app/src/main/res/layout/add_drug_add_time_item.xml
+@@ -0,0 +1,25 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:orientation="horizontal" android:layout_width="match_parent"
++    android:layout_height="wrap_content">
++
++    <TextView
++        android:id="@+id/add_drug_time_field"
++        android:layout_width="0dp"
++        android:layout_height="20dp"
++        android:gravity="center"
++        android:text="12:00"
++        android:clickable="true"
++        android:layout_weight="1">
++    </TextView>
++
++    <Button
++        android:text="Удалить"
++        android:layout_width="0dp"
++        android:maxLines="1"
++        android:layout_height="wrap_content"
++        android:id="@+id/remove_drug_button"
++        android:layout_weight="1" />
++
++
++</LinearLayout>
+\ No newline at end of file
+diff --git a/app/src/main/res/layout/container_tracker.xml b/app/src/main/res/layout/container_tracker.xml
+index 4f05d85..510699d 100644
+--- a/app/src/main/res/layout/container_tracker.xml
++++ b/app/src/main/res/layout/container_tracker.xml
+@@ -2,6 +2,7 @@
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
++    xmlns:fab="http://schemas.android.com/apk/res-auto"
+     android:id="@+id/container_tracker_id"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+@@ -16,6 +17,39 @@
+         android:layout_height="match_parent"
+         android:layout_alignParentStart="true" />
+ 
++    <com.getbase.floatingactionbutton.FloatingActionsMenu
++        android:id="@+id/multiple_actions"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_alignParentBottom="true"
++        android:layout_alignParentRight="true"
++        android:layout_alignParentEnd="true"
++        fab:fab_addButtonColorNormal="@color/white"
++        fab:fab_addButtonColorPressed="@color/white_pressed"
++        fab:fab_addButtonPlusIconColor="@color/half_black"
++        fab:fab_labelStyle="@style/menu_labels_style"
++        android:layout_marginBottom="16dp"
++        android:layout_marginRight="16dp"
++        android:layout_marginEnd="16dp">
++
++        <com.getbase.floatingactionbutton.FloatingActionButton
++            android:id="@+id/tracker_add_drug"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            fab:fab_colorNormal="@color/white"
++            fab:fab_title="Добавить лекарство"
++
++            fab:fab_colorPressed="@color/white_pressed"/>
++
++        <com.getbase.floatingactionbutton.FloatingActionButton
++            android:id="@+id/tracker_add_pressure"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            fab:fab_colorNormal="@color/white"
++            fab:fab_title="Добавить давление"
++            fab:fab_colorPressed="@color/white_pressed"/>
++
++    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+     <!--<TextView-->
+         <!--android:layout_width="match_parent"-->
+         <!--android:layout_height="match_parent"-->
+diff --git a/app/src/main/res/layout/tracker_header.xml b/app/src/main/res/layout/tracker_header.xml
+index d86fbf6..d2be0e5 100644
+--- a/app/src/main/res/layout/tracker_header.xml
++++ b/app/src/main/res/layout/tracker_header.xml
+@@ -3,16 +3,35 @@
+     android:layout_width="match_parent"
+     android:layout_height="40dp"
+     android:orientation="horizontal">
++
+     <TextView
+         android:id="@+id/tracker_header_text"
+-        android:layout_weight="4.29"
+         android:layout_width="0dp"
+         android:layout_height="match_parent"
+-        android:text="Лекарства"
+-        android:textStyle="bold"
++        android:layout_gravity="center_vertical"
+         android:layout_marginLeft="10dp"
+-        android:textColor="#000000"
++        android:layout_weight="4.29"
+         android:gravity="center_vertical"
+-        android:layout_gravity="center_vertical"/>
++        android:text="Лекарства"
++        android:textColor="#000000"
++        android:textStyle="bold" />
++
++    <ImageView
++        android:id="@+id/tracket_header_clock"
++        android:layout_height="18dp"
++        android:layout_width="18dp"
++        android:layout_marginTop="10dp"
++        android:background="@drawable/fucking_alarm"
++        android:visibility="gone"
++        />
++    <TextView
++        android:id="@+id/tracket_header_time"
++        android:layout_height="match_parent"
++        android:layout_width="wrap_content"
++        android:text="15:00"
++        android:layout_marginTop="10dp"
++        android:visibility="gone"
++        />
++
+ 
+ </LinearLayout>
+\ No newline at end of file
+diff --git a/app/src/main/res/layout/tracker_measurement_pulse.xml b/app/src/main/res/layout/tracker_measurement_pulse.xml
+new file mode 100644
+index 0000000..4548fd5
+--- /dev/null
++++ b/app/src/main/res/layout/tracker_measurement_pulse.xml
+@@ -0,0 +1,63 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    android:gravity="left"
++    android:orientation="vertical">
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:orientation="vertical">
++        <TextView
++            android:id="@+id/custom_drug_button_header"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++
++            android:layout_gravity="center_vertical|left"
++            android:text="Обнаружено 1 отклонение"/>
++        <ProgressBar
++            android:id="@+id/status_progress"
++            android:layout_width="match_parent"
++            android:layout_marginBottom="10dp"
++            android:paddingRight="@dimen/activity_horizontal_margin"
++            android:layout_height="14dp"
++            android:progressDrawable="@android:drawable/progress_horizontal"
++            android:indeterminate="false"
++            android:indeterminateOnly="false" />
++        <ImageView
++            android:layout_width="40dp"
++            android:id="@+id/tryDrawable"
++            android:layout_height="40dp" />
++        <TextView
++            android:id="@+id/custom_drug_button_text"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:layout_marginRight="@dimen/activity_horizontal_margin"
++            android:layout_gravity="center_vertical|right"
++            android:text="в 2873 ударах"/>
++    </LinearLayout>
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:orientation="horizontal">
++        <ImageView
++            android:layout_width="20dp"
++            android:layout_height="15dp"
++            android:src="@drawable/monitor_icon"/>
++        <TextView
++            android:layout_marginLeft="10dp"
++            android:layout_width="wrap_content"
++            android:gravity="bottom"
++            android:layout_height="wrap_content"
++            android:text = "ПЕРЕЙТИ В МОНИТОР"
++            android:textColor="#f77a20"
++            android:layout_gravity="bottom" />
++    </LinearLayout>
++
++
++
++
++</LinearLayout>
+\ No newline at end of file
+diff --git a/app/src/main/res/values/colors.xml b/app/src/main/res/values/colors.xml
+index 3975e91..d3b99d5 100644
+--- a/app/src/main/res/values/colors.xml
++++ b/app/src/main/res/values/colors.xml
+@@ -5,4 +5,13 @@
+     <color name="colorAccent">#FF4081</color>
+     <color name="green">#18b6a9</color>
+     <color name="red">#f77a20</color>
++    <color name="black_semi_transparent">#B2000000</color>
++    <color name="background">#e5e5e5</color>
++    <color name="half_black">#808080</color>
++    <color name="white">#fafafa</color>
++    <color name="white_pressed">#f1f1f1</color>
++    <color name="pink">#e91e63</color>
++    <color name="pink_pressed">#ec407a</color>
++    <color name="blue_semi_transparent">#805677fc</color>
++    <color name="blue_semi_transparent_pressed">#80738ffe</color>
+ </resources>
+diff --git a/app/src/main/res/values/styles.xml b/app/src/main/res/values/styles.xml
+index 64806ed..982db93 100644
+--- a/app/src/main/res/values/styles.xml
++++ b/app/src/main/res/values/styles.xml
+@@ -18,4 +18,9 @@
+ 
+     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+ 
++
++    <style name="menu_labels_style">
++        <item name="android:background">@drawable/fab_label_background</item>
++        <item name="android:textColor">@color/white</item>
++    </style>
+ </resources>
