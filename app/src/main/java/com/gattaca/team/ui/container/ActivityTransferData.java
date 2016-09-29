@@ -9,6 +9,8 @@ import com.gattaca.team.ui.activity.MonitorBpm;
 import com.gattaca.team.ui.activity.MonitorEcg;
 
 public final class ActivityTransferData {
+    private final static String key = "ActivityTransferData.key";
+    private final static String type = "ActivityTransferData.type";
     final private AvailableActivity launchActivity;
     //TODO: change to sub activity model
     final private Object bindData;
@@ -22,8 +24,26 @@ public final class ActivityTransferData {
         this.bindData = bindData;
     }
 
+    public static Object getBindData(final Intent i) {
+        Object a = null;
+        if (i.hasExtra(type)) {
+            final String typeObject = i.getStringExtra(type);
+            //TODO: extends cases here!
+            if (typeObject.equals(Integer.class.getSimpleName())) {
+                a = i.getIntExtra(key, -1);
+            }
+        }
+        return a;
+    }
+
     public void launchRequestedActivity(final Activity activity) {
-        activity.startActivity(new Intent(activity, launchActivity.getCls()));
+        final Intent i = new Intent(activity, launchActivity.getCls());
+        //TODO: extends cases here!
+        if (bindData instanceof Integer) {
+            i.putExtra(type, bindData.getClass().getSimpleName());
+            i.putExtra(key, (int) bindData);
+        }
+        activity.startActivity(i);
     }
 
     public enum AvailableActivity {

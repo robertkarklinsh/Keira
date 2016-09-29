@@ -33,6 +33,7 @@ import java.util.List;
 import io.realm.RealmModel;
 
 public final class FakeDataController extends HandlerThread implements Handler.Callback {
+    public static final int timeOffset = 3;
     private static FakeDataController instance;
     private Handler handler;
 
@@ -75,7 +76,6 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                 cal.set(Calendar.MILLISECOND, 0);
                 cal.set(Calendar.DAY_OF_MONTH, 1);
                 final long startTime = cal.getTimeInMillis();
-                final int timeOffset = 3;
                 final List<RealmModel> rawRealm = new ArrayList<>();
                 final ArrayList<Long> PcTimesAgain = new ArrayList<>();
 
@@ -89,6 +89,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                 BpmPoint_30_min bpmPoint_30_min = null;
 
                 int pc_count_per_session = 0,
+                        pointsCount = 0,
                         idx = 0,
                         currentRrValue,
                         prevRrValue = 0;
@@ -97,17 +98,18 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                 double timeRR;
                 boolean block = false;
 
-                try {
-                    /*in = MainApplication.getContext().getAssets().open("session/samples.csv");
+                try {/*
+                    in = MainApplication.getContext().getAssets().open("session/samples.csv");
                     reader = new BufferedReader(new InputStreamReader(in));
                     mLine = reader.readLine();
 
                     while (mLine != null) {
                         splits = mLine.split(",");
                         pointsCount++;
-                        for (int i = 1; i < splits.length; i++) {
+                        for (int i = 1; i < 2; i++) {
                             rawRealm.add(new SensorPointData()
-                                    .setChannel(i - 1)
+                                    //.setChannel(i - 1)
+                                    .setSample(pointsCount)
                                     .setTime(startTime + pointsCount * timeOffset)
                                     .setValue(Double.valueOf(splits[i])));
                         }
@@ -119,8 +121,8 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         }
                     }
                     in.close();
-                    reader.close();*/
-
+                    reader.close();
+*/
                     in = MainApplication.getContext().getAssets().open("session/rr.txt");
                     reader = new BufferedReader(new InputStreamReader(in));
                     mLine = reader.readLine();
