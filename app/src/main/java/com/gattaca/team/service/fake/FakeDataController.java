@@ -14,7 +14,6 @@ import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.BpmGreen;
 import com.gattaca.team.db.sensor.BpmRed;
 import com.gattaca.team.db.sensor.RR;
-import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.db.sensor.Session;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_1_hour;
@@ -99,7 +98,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                 double timeRR;
                 boolean block = false;
 
-                try {
+                try {/*
                     in = MainApplication.getContext().getAssets().open("session/samples.csv");
                     reader = new BufferedReader(new InputStreamReader(in));
                     mLine = reader.readLine();
@@ -123,7 +122,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                     }
                     in.close();
                     reader.close();
-
+*/
                     in = MainApplication.getContext().getAssets().open("session/rr.txt");
                     reader = new BufferedReader(new InputStreamReader(in));
                     mLine = reader.readLine();

@@ -22,7 +22,7 @@ public class EmulatedBpm_15Min implements RealmModel {
 
     public static EmulatedBpm_15Min createFromBpm(final BpmPoint_15_min src) {
         final EmulatedBpm_15Min a = new EmulatedBpm_15Min();
-        a.setTime(src.getTime());
+        a.setTime(System.currentTimeMillis());
         a.setChannel(src.getChannel());
         a.setValue(src.getValue());
         Log.i(a.getClass().getSimpleName(), "Emulated point value=" + a.value);

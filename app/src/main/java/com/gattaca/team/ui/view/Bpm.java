@@ -9,6 +9,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -124,11 +125,12 @@ public final class Bpm extends TextView implements View.OnTouchListener {
     }
 
     public void install(BpmModel model) {
+        Log.d(getClass().getSimpleName(), "set new model data");
         this.model = model;
         new Handler().postDelayed(this.r, 100);
     }
 
-    public void addRealTimePoint(float point, final long time) {
+    public boolean addRealTimePoint(float point, final long time) {
         model.addPoint(point, time);
         setPoint(mPointsPath, mathBpm(point, model.getData().size(), (double) 360 / BpmModel.pointsInRealTimeMode));
 
@@ -137,6 +139,7 @@ public final class Bpm extends TextView implements View.OnTouchListener {
         } else {
             invalidate();
         }
+        return model.getData().size() == BpmModel.pointsInRealTimeMode;
     }
 
     @Override

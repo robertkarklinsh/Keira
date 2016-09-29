@@ -3,7 +3,6 @@ package com.gattaca.team.service.main;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.util.Log;
 
 import com.gattaca.team.annotation.GraphPeriod;
 import com.gattaca.team.annotation.NotifyType;
@@ -104,7 +103,6 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     @Override
     public boolean handleMessage(Message msg) {
         Message m = new Message();
-        Log.d(getClass().getSimpleName(), "state is " + What.values()[msg.what]);
         switch (What.values()[msg.what]) {
             case DataTick:
                 SensorData.FormattedSensorItem item;

@@ -35,7 +35,7 @@ public final class BpmModel implements IContainerModel {
     }
 
     public int getIntValueByPosition(int position) {
-        return data.get(position).first.intValue();
+        return data.get(position >= data.size() ? data.size() - 1 : position).first.intValue();
     }
 
     public String getStringValueByPosition(int position) {
