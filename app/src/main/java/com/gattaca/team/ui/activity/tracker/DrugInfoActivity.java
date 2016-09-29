@@ -17,6 +17,7 @@ import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.Day;
 import com.gattaca.team.db.tracker.Drug;
 import com.gattaca.team.db.tracker.Intake;
+import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
 
 import java.util.ArrayList;
@@ -83,6 +84,8 @@ public class DrugInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int drugId = (int) ActivityTransferData.getBindData(getIntent());
+        Drug drug = Realm.getDefaultInstance().where(Drug.class).equalTo("primaryKey", drugId).findFirst();
         times = new ArrayList<>();
         setContentView(R.layout.activity_drug_info);
         Button okButton = (Button) findViewById(R.id.add_drug_ok_button);
@@ -91,9 +94,19 @@ public class DrugInfoActivity extends AppCompatActivity {
         EditText units = (EditText) findViewById(R.id.add_drug_units_field);
         LinearLayout timeHolder = (LinearLayout) findViewById(R.id.add_drug_container);
         this.timeHolder = timeHolder;
-        LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_time_item, null);
-        timeHolder.addView(ll);
-        times.add(new DrugInfoActivity.TimeHolder(ll));
+        if (drug != null) {
+            name.setText(drug.getName());
+            dose.setText(drug.getDose());
+            units.setText(drug.getUnits());
+            for (Intake intake : drug.getIntakes()) {
+                LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_time_item, null);
+                timeHolder.addView(ll);
+                TimeHolder th = new DrugInfoActivity.TimeHolder(ll);
+                th.hours = intake.getHours();
+                th.minutes = intake.getMinutes();
+                times.add(th);
+            }
+        }
 
 
         okButton.setOnClickListener(new View.OnClickListener() {
