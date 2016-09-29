@@ -98,28 +98,17 @@ public final class RealmController {
     }
 
     public static void save(RealmModel item) {
-        // final long time = System.currentTimeMillis();
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(item);
         realm.commitTransaction();
-
-        //  Log.d(RealmController.class.getSimpleName(), "time=" + (System.currentTimeMillis() - time) + " ms");
     }
 
     public static void saveList(List<? extends RealmModel> list) {
-        //final long time = System.currentTimeMillis();
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(list);
         realm.commitTransaction();
-
-        //Log.d(RealmController.class.getSimpleName(), "size= " + list.size() + " time=" + (System.currentTimeMillis() - time) + " ms");
-        /*for (RealmModel item : list) {
-            if(item instanceof BpmPoint_5_min) {
-                Log.d(RealmController.class.getSimpleName(), item.toString());
-            }
-        }*/
     }
 
     public static void clearEmulate() {
@@ -136,6 +125,14 @@ public final class RealmController {
         return Realm
                 .getDefaultInstance()
                 .where(EmulatedBpm_5Min.class)
+                .findAll()
+                .sort(NotifyEventObject.getNamedFieldTime(), Sort.DESCENDING);
+    }
+
+    public static RealmResults<EmulatedBpm_15Min> getEmulated15Bpm() {
+        return Realm
+                .getDefaultInstance()
+                .where(EmulatedBpm_15Min.class)
                 .findAll()
                 .sort(NotifyEventObject.getNamedFieldTime(), Sort.DESCENDING);
     }
@@ -194,6 +191,13 @@ public final class RealmController {
                 .lessThan(BpmGreen.getNamedFieldTime(), to)
                 .findAll()
                 .sort(BpmGreen.getNamedFieldTime(), Sort.ASCENDING);
+    }
+
+    public static SensorPointData getStubSensorPoint(int sample) {
+        return Realm.getDefaultInstance()
+                .where(SensorPointData.class)
+                .equalTo(SensorPointData.getNamedFieldSample(), sample)
+                .findFirst();
     }
 
     public static Realm getRealm() {

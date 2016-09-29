@@ -21,6 +21,7 @@ import com.gattaca.team.service.IServiceConnection;
 import com.gattaca.team.service.analysis.PanTompkins;
 import com.gattaca.team.service.bitalino.BitalinoConnection;
 import com.gattaca.team.service.events.NotifyEvent;
+import com.gattaca.team.service.fake.FakeDataController;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
@@ -62,13 +63,12 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         }
     }
 
-    public static void generateBitalinoRaw() {
-        getInstance().bus.register(getInstance());
-        getInstance().serviceConnectionImpl.fakeGeneration();
-    }
-
     public static void generateRaw() {
         getInstance().handler.sendEmptyMessage(What.EmulateDataStart.ordinal());
+    }
+
+    public static void generateRaw2() {
+        getInstance().handler.sendEmptyMessage(What.EmulateDataPanTomkinsStart.ordinal());
     }
 
     public static boolean isInProgress() {
@@ -107,7 +107,6 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         Log.d(getClass().getSimpleName(), "state is " + What.values()[msg.what]);
         switch (What.values()[msg.what]) {
             case DataTick:
-                //@RRType String RRtype;
                 SensorData.FormattedSensorItem item;
                 final SensorData data = SensorData.class.cast(msg.obj);
                 final List<SensorPointData> sensorPointData = new ArrayList<>();
@@ -115,45 +114,28 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                 do {
                     for (int i = 0; i < data.getMaxChannelCount(); i++) {
                         item = data.getItem(i);
-                        algoritms[i].next(item.getValue(), item.getTime());
+                        doAlgorithm(i, item.getValue(), item.getTime());
                         item.setNewValue(algoritms[i].y[3]); // FIXME: y[3] - is it correct ?
                         sensorPointData.add(new SensorPointData()
                                 .setChannel(i)
                                 .setTime(item.getTime())
                                 .setValue(algoritms[i].y[3]));
-
-
-                        //FIXME: it's not work!!!
-                        /*if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
-                            RRtype = checkQRS(PanTompkins.QRS.qrsCurrent);
-                            long time = PanTompkins.QRS.qrsCurrent.rTimestamp - PanTompkins.QRS.qrsPrevious.rTimestamp;
-                            if (time >= 40 && time <= 130) {
-                                RealmController.save(new RR()
-                                        .setType(RRtype)
-                                        .setTime(PanTompkins.QRS.qrsCurrent.rTimestamp));
-                                Log.e(getClass().getSimpleName(), "save RR type=" + RRtype + "\ttime=" + PanTompkins.QRS.qrsCurrent.rTimestamp);
-                            } else {
-                                Log.e(getClass().getSimpleName(), "skip from " + time);
-                            }
-                            *//*if (!RRtype.equals(RRType.N)) {
-                                if (algoritms[i].countPC.size() == 2) {
-                                    generateEvent(NotifyType.PC_3, algoritms[i].countPC);
-                                    algoritms[i].countPC.clear();
-                                } else {
-                                    algoritms[i].countPC.add(PanTompkins.QRS.qrsCurrent);
-                                }
-                            } else {
-                                if (algoritms[i].countPC.size() == 2) {
-                                    generateEvent(NotifyType.PC_2, algoritms[i].countPC);
-                                }
-                                algoritms[i].countPC.clear();
-                            }*//*
-                            PanTompkins.QRS.qrsCurrent.segState = PanTompkins.QRS.SegmentationStatus.PROCESSED;
-                        }*/
                     }
                 } while (data.nextCursor());
                 RealmController.saveList(sensorPointData);
                 MainApplication.uiBusPost(data);
+                break;
+            case EmulateDataPanTomkinsStart:
+                m.what = What.EmulateDataPanTomkinsStart.ordinal();
+                SensorPointData point = RealmController.getStubSensorPoint(msg.arg1);
+                if (point == null) {
+                    point = RealmController.getStubSensorPoint(0);
+                    m.arg1 = 0;
+                } else {
+                    m.arg1 = msg.arg1 + 1;
+                }
+                doAlgorithm(point.getChannel(), point.getValue(), point.getTime());
+                handler.sendMessageDelayed(m, FakeDataController.timeOffset);
                 break;
             case EmulateDataStart:
                 emulating = true;
@@ -195,6 +177,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                 handler.removeMessages(What.EmulateData5.ordinal());
                 handler.removeMessages(What.EmulateData15.ordinal());
                 handler.removeMessages(What.EmulateData30.ordinal());
+                handler.removeMessages(What.EmulateDataPanTomkinsStart.ordinal());
                 break;
         }
         return true;
@@ -228,11 +211,44 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         }
     }
 
+    private void doAlgorithm(final int channel, double value, long time) {
+        //@RRType String RRtype;
+        algoritms[channel].next(value, time);
+        //FIXME: it's not work!!!
+        /*if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
+            RRtype = checkQRS(PanTompkins.QRS.qrsCurrent);
+            long time = PanTompkins.QRS.qrsCurrent.rTimestamp - PanTompkins.QRS.qrsPrevious.rTimestamp;
+            if (time >= 40 && time <= 130) {
+                RealmController.save(new RR()
+                        .setType(RRtype)
+                        .setTime(PanTompkins.QRS.qrsCurrent.rTimestamp));
+                Log.e(getClass().getSimpleName(), "save RR type=" + RRtype + "\ttime=" + PanTompkins.QRS.qrsCurrent.rTimestamp);
+            } else {
+                Log.e(getClass().getSimpleName(), "skip from " + time);
+            }
+            *//*if (!RRtype.equals(RRType.N)) {
+                if (algoritms[i].countPC.size() == 2) {
+                    generateEvent(NotifyType.PC_3, algoritms[i].countPC);
+                    algoritms[i].countPC.clear();
+                } else {
+                    algoritms[i].countPC.add(PanTompkins.QRS.qrsCurrent);
+                }
+            } else {
+                if (algoritms[i].countPC.size() == 2) {
+                    generateEvent(NotifyType.PC_2, algoritms[i].countPC);
+                }
+                algoritms[i].countPC.clear();
+            }*//*
+            PanTompkins.QRS.qrsCurrent.segState = PanTompkins.QRS.SegmentationStatus.PROCESSED;
+        }*/
+    }
+
     private enum What {
         DataTick,
         DetectPC,
         EmulateDataStop,
         EmulateDataStart,
+        EmulateDataPanTomkinsStart,
         EmulateData5,
         EmulateData15,
         EmulateData30
