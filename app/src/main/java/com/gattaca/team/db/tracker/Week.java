@@ -22,6 +22,10 @@ public class Week implements RealmModel {
         this.weekNumber = weekNumber;
     }
 
+    public int getWeekNumber() {
+        return weekNumber;
+    }
+
     public static String getNamedFieldWeekNum() {
         return "weekNumber";
     }

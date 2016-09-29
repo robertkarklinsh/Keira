@@ -78,6 +78,10 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
     protected void onResume() {
         super.onResume();
         currentContainer.changeCurrentVisibilityState(false);
+        if (currentContainer == trackerContainer) {
+            currentContainer.reDraw(null);
+        }
+
     }
 
     @Override
@@ -151,8 +155,5 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
         super.onDestroy();
     }
 
-    @Subscribe
-    public void updateTrackerPercents(int[] percents) {
 
-    }
 }

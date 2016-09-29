@@ -99,7 +99,7 @@ public class PressureMeasurement implements RealmModel, TrackerItemContainer{
 
     @Override
     public int getIcon() {
-        return R.drawable.monitor_icon;
+        return R.drawable.cardiogram_icon;
     }
 
     @Override

@@ -6,10 +6,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.gattaca.team.ui.tracker.data.TopContainer;
-import com.gattaca.team.ui.tracker.TopItem;
-import com.gattaca.team.ui.tracker.v2.ModelDao;
-import com.gattaca.team.ui.tracker.v2.StubWeekCreator;
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.Week;
@@ -20,6 +16,10 @@ import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.container.MainMenu;
 import com.gattaca.team.ui.container.list.lm.SnappingLinearLayoutManager;
 import com.gattaca.team.ui.model.impl.TrackerModel;
+import com.gattaca.team.ui.tracker.data.TopContainer;
+import com.gattaca.team.ui.tracker.ui.TopItem;
+import com.gattaca.team.ui.tracker.v2.ModelDao;
+import com.gattaca.team.ui.tracker.v2.StubWeekCreator;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
@@ -105,9 +105,11 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
         realm = Realm.getDefaultInstance();
 //        realm.executeTransaction((Realm r) -> {
 //            r.delete(Week.class);
+//            r.delete(Day.class);
 //            r.delete(Drug.class);
 //            r.delete(Intake.class);
 //            r.delete(PulseMeasurement.class);
+//            r.delete(PressureMeasurement.class);
 //            r.delete(Task.class);
 //            r.delete(TaskAction.class);
 //        });

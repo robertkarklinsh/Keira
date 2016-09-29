@@ -1,7 +1,8 @@
-package com.gattaca.team.ui.tracker;
+package com.gattaca.team.ui.tracker.ui;
 
 import android.support.v7.widget.RecyclerView;
 
+import com.gattaca.team.ui.tracker.ViewHoldersCollection;
 import com.gattaca.team.ui.tracker.data.TrackerItemContainer;
 import com.gattaca.team.R;
 import com.mikepenz.fastadapter.items.AbstractItem;

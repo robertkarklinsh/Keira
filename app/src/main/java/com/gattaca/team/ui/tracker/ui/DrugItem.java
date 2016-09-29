@@ -1,4 +1,4 @@
-package com.gattaca.team.ui.tracker;
+package com.gattaca.team.ui.tracker.ui;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,12 +10,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.gattaca.team.ui.tracker.v2.ModelDao;
 import com.gattaca.team.R;
 import com.gattaca.team.db.tracker.Drug;
 import com.gattaca.team.db.tracker.Intake;
+import com.gattaca.team.root.MainApplication;
+import com.gattaca.team.ui.container.ActivityTransferData;
+import com.gattaca.team.ui.tracker.ViewHoldersCollection;
+import com.gattaca.team.ui.tracker.v2.ModelDao;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
@@ -33,6 +37,7 @@ public class DrugItem extends Item {
     void bindCustomView(ViewHoldersCollection.DrugItemViewHolder holder, List payloads) {
        Drug drug = (Drug) itemContainer;
         ViewGroup viewGroup = (ViewGroup) holder.mView.getParent();
+        holder.mView.setOnClickListener(new DrugAllClickListener(drug));
         Context context = holder.mView.getContext();
         LinearLayout itemHeader = (LinearLayout) holder.mView.findViewById(R.id.tracker_item_text_holder);
         LinearLayout itemImages = (LinearLayout) holder.mView.findViewById(R.id.tracker_item_image_holder);
@@ -42,7 +47,10 @@ public class DrugItem extends Item {
         ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(drug.getIcon());
 
         List<Intake> receptions = drug.getIntakes();
-
+        Realm.getDefaultInstance().executeTransaction((Realm r) ->
+        Collections.sort(receptions, (Intake lhs, Intake rhs) ->
+            lhs.getHours()*60 + lhs.getMinutes() - rhs.getHours()*60 - rhs.getMinutes()
+        ));
         Intake receptionF = receptions.get(0);
         LinearLayout drugCircleF = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_drug_circle, viewGroup);
 
@@ -173,6 +181,20 @@ public class DrugItem extends Item {
                 });
                 textView.setText(String.format("%02d:%02d",intake.getHours(), intake.getMinutes()));
             }
+        }
+    }
+
+    private class DrugAllClickListener implements View.OnClickListener {
+
+        Drug drug;
+
+        public DrugAllClickListener(Drug drug) {
+            this.drug = drug;
+        }
+
+        @Override
+        public void onClick(View v) {
+            MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.DRUG_INFO, drug.getPrimaryKey()));
         }
     }
 

@@ -6,12 +6,11 @@
 
     <LinearLayout
         android:id="@+id/tracker_item_text_holder"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="13dp">
-
         <ImageView
             android:id="@+id/tracker_item_text_icon"
             android:layout_width="16dp"
@@ -20,7 +19,6 @@
             android:gravity="center_vertical"
             android:layout_margin="10dp"
             android:src="@drawable/pills_icon" />
-
         <TextView
             android:id="@+id/tracker_item_text_black"
             android:layout_width="wrap_content"
@@ -39,6 +37,22 @@
             android:gravity="center_vertical"
             android:text="20 мг"
             android:textColor="#9e9e9e" />
+
+        <ImageView
+            android:id="@+id/tracker_item_pressure_clock"
+            android:layout_height="12dp"
+            android:layout_marginLeft="203dp"
+            android:background="@drawable/small_clock"
+            android:layout_width="12dp"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tracker_item_pressure_time"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_width="37dp"
+            android:textColor="#757575"
+            android:textSize="10sp"
+            android:text="15:00"/>
     </LinearLayout>
 
     <LinearLayout
@@ -49,8 +63,8 @@
         android:orientation="horizontal"
         android:layout_marginBottom="30dp"
         android:weightSum="1">
-
     </LinearLayout>
+
 
 
 </LinearLayout>

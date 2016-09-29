@@ -4,13 +4,15 @@ import android.support.v7.widget.RecyclerView;
 
 import com.gattaca.team.db.tracker.Day;
 import com.gattaca.team.db.tracker.Drug;
+import com.gattaca.team.db.tracker.PressureMeasurement;
 import com.gattaca.team.db.tracker.PulseMeasurement;
 import com.gattaca.team.db.tracker.Task;
 import com.gattaca.team.db.tracker.Week;
-import com.gattaca.team.ui.tracker.DrugItem;
-import com.gattaca.team.ui.tracker.HeaderItem;
-import com.gattaca.team.ui.tracker.TaskItem;
-import com.gattaca.team.ui.tracker.PulseMeasurementItem;
+import com.gattaca.team.ui.tracker.ui.DrugItem;
+import com.gattaca.team.ui.tracker.ui.HeaderItem;
+import com.gattaca.team.ui.tracker.ui.PressureMeasurementItem;
+import com.gattaca.team.ui.tracker.ui.TaskItem;
+import com.gattaca.team.ui.tracker.ui.PulseMeasurementItem;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.ArrayList;
@@ -99,6 +101,7 @@ public class ModelDao {
             res += day.getDrugs().size();
             res += day.getPulseMeasurements().size();
             res += day.getTasks().size();
+            res += day.getPressureMeasurements().size();
         }
         return res;
     }
@@ -118,6 +121,9 @@ public class ModelDao {
             }
             for (Task task : day.getTasks()) {
                 res.add(new TaskItem().withItemContainer(task));
+            }
+            for(PressureMeasurement pressureMeasurement: day.getPressureMeasurements()) {
+                res.add(new PressureMeasurementItem().withItemContainer(pressureMeasurement));
             }
         }
         return res;

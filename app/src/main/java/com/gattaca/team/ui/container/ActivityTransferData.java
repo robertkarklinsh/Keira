@@ -7,6 +7,7 @@ import com.gattaca.team.ui.activity.tracker.AddDrugActivity;
 import com.gattaca.team.ui.activity.tracker.AddPressureActivity;
 import com.gattaca.team.ui.activity.MonitorBpm;
 import com.gattaca.team.ui.activity.MonitorEcg;
+import com.gattaca.team.ui.activity.tracker.DrugInfoActivity;
 
 public final class ActivityTransferData {
     private final static String key = "ActivityTransferData.key";
@@ -29,8 +30,8 @@ public final class ActivityTransferData {
         if (i.hasExtra(type)) {
             final String typeObject = i.getStringExtra(type);
             //TODO: extends cases here!
-            if (typeObject.equals(Integer.class.getSimpleName())) {
-                a = i.getIntExtra(key, -1);
+            if (typeObject.equals(Long.class.getSimpleName())) {
+                a = i.getLongExtra(key, -1);
             }
         }
         return a;
@@ -39,9 +40,9 @@ public final class ActivityTransferData {
     public void launchRequestedActivity(final Activity activity) {
         final Intent i = new Intent(activity, launchActivity.getCls());
         //TODO: extends cases here!
-        if (bindData instanceof Integer) {
+        if (bindData instanceof Long) {
             i.putExtra(type, bindData.getClass().getSimpleName());
-            i.putExtra(key, (int) bindData);
+            i.putExtra(key, (long) bindData);
         }
         activity.startActivity(i);
     }
@@ -50,7 +51,8 @@ public final class ActivityTransferData {
         ECG(MonitorEcg.class),
         BPM(MonitorBpm.class),
         ADT(AddDrugActivity.class),
-        APT(AddPressureActivity.class);
+        APT(AddPressureActivity.class),
+        DRUG_INFO(DrugInfoActivity.class);
 
         final private Class cls;
 

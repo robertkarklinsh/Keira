@@ -107,10 +107,9 @@
             android:id="@+id/add_drug_ok_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/add_drug_cancel_button"
-            android:layout_marginStart="12dp"
-            android:layout_toEndOf="@+id/add_drug_name_field"
-            android:text="Добавить" />
+            android:text="Сохранить"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
 
         <!--<CheckBox-->
             <!--android:id="@+id/add_drug_remind_check_box"-->

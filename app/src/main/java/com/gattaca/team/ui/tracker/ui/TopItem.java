@@ -1,4 +1,4 @@
-package com.gattaca.team.ui.tracker;
+package com.gattaca.team.ui.tracker.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.gattaca.team.ui.tracker.ViewHoldersCollection;
 import com.gattaca.team.ui.tracker.data.TopContainer;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
 import com.gattaca.team.R;

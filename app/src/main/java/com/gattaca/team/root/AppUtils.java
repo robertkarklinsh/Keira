@@ -6,8 +6,6 @@ import com.gattaca.team.annotation.GraphPeriod;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public final class AppUtils {
 
@@ -55,5 +53,17 @@ public final class AppUtils {
             number = 0;
             return currentTime;
         }
+    }
+
+    public static int generateUniqueDayId(int day, int week) {
+        int year = calendar.get(Calendar.YEAR);
+        return year*1000 + week * 7 + day;
+    }
+
+    public static int getCurrentHour() {
+        return calendar.get(Calendar.HOUR_OF_DAY);
+    }
+    public static int getCurrentMinute() {
+        return calendar.get(Calendar.MINUTE);
     }
 }

@@ -1,4 +1,4 @@
-package com.gattaca.team.ui.tracker;
+package com.gattaca.team.ui.tracker.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,13 +9,14 @@ import android.widget.TextView;
 
 import com.gattaca.team.R;
 import com.gattaca.team.db.tracker.PulseMeasurement;
+import com.gattaca.team.ui.tracker.ViewHoldersCollection;
 
 import java.util.List;
 
 /**
  * Created by Artem on 23.09.2016.
  */
-public class PressureMeasurementItem extends Item {
+public class PulseMeasurementItem extends Item {
     @Override
     void bindCustomView(ViewHoldersCollection.DrugItemViewHolder holder, List payloads) {
         PulseMeasurement pulseMeasurement = (PulseMeasurement) itemContainer;
@@ -28,7 +29,7 @@ public class PressureMeasurementItem extends Item {
         ((TextView) itemHeader.findViewById(R.id.tracker_item_text_gray)).setText(pulseMeasurement.getGrayText());
         ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(pulseMeasurement.getIcon());
 
-        LinearLayout progress = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_measurement_progess, viewGroup);
+        LinearLayout progress = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_measurement_pulse, viewGroup);
 //        ((ImageView) progress.findViewById(R.id.tryDrawable)).setImageDrawable(new PressureDrawable(0,0,0));
         itemImages.addView(progress);
 

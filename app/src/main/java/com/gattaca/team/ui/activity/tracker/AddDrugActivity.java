@@ -115,12 +115,11 @@ public class AddDrugActivity extends AppCompatActivity {
                 for (Day day : RealmController.getCurrentWeek().getDays()) {
                     if (day.getNumber() == ModelDao.currentDayOfWeek() ||
                             (checkBox.isChecked() && day.getNumber() > ModelDao.currentDayOfWeek())) {
-                        Drug drug = realm.createObject(Drug.class);
+                        Drug drug = realm.createObject(Drug.class,AppUtils.generateUniqueId());
                         drug.setName(name.getText().toString());
                         drug.setUnits(units.getText().toString());
                         drug.setDose(Integer.parseInt(dose.getText().toString()));
-                        drug.setCreationDate(ModelDao.getTimeInMillis() + drug.getDose());
-                        drug.setPrimaryKey(AppUtils.generateUniqueId());
+                        drug.setCreationDate(ModelDao.getTimeInMillis());
                         for (TimeHolder holder : times) {
                             Intake intake = realm.createObject(Intake.class);
                             intake.setTaken(false);

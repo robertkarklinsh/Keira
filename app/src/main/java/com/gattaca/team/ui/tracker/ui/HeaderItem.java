@@ -1,8 +1,9 @@
-package com.gattaca.team.ui.tracker;
+package com.gattaca.team.ui.tracker.ui;
 
 import android.widget.TextView;
 
 import com.gattaca.team.R;
+import com.gattaca.team.ui.tracker.ViewHoldersCollection;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
