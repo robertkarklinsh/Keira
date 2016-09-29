@@ -6,6 +6,7 @@ import com.gattaca.team.R;
 
 import io.realm.RealmList;
 import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 /**
@@ -13,6 +14,8 @@ import io.realm.annotations.RealmClass;
  */
 @RealmClass
 public class Drug implements RealmModel, TrackerItemContainer {
+    @PrimaryKey
+    private long primaryKey;
     private boolean completed = false;
     private String name;
     private int dose;
@@ -22,6 +25,14 @@ public class Drug implements RealmModel, TrackerItemContainer {
 
     long creationDate;
     private RealmList<Intake> intakes;
+
+    public long getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(long primaryKey) {
+        this.primaryKey = primaryKey;
+    }
 
     public void setCreationDate(long creationDate){
         this.creationDate = creationDate;

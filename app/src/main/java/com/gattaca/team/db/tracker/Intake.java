@@ -3,6 +3,7 @@ package com.gattaca.team.db.tracker;
 import java.util.Locale;
 
 import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 /**
@@ -11,11 +12,22 @@ import io.realm.annotations.RealmClass;
 
 @RealmClass
 public class Intake implements RealmModel {
+    @PrimaryKey
+    private long primaryKey;
+
     private boolean taken;
     private int hours;
     private int minutes;
 
     long creationDate;
+
+    public long getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(long primaryKey) {
+        this.primaryKey = primaryKey;
+    }
 
     public void setCreationDate(long creationDate){
         this.creationDate = creationDate;

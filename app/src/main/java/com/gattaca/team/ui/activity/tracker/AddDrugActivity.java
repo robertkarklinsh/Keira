@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
@@ -119,12 +120,14 @@ public class AddDrugActivity extends AppCompatActivity {
                         drug.setUnits(units.getText().toString());
                         drug.setDose(Integer.parseInt(dose.getText().toString()));
                         drug.setCreationDate(ModelDao.getTimeInMillis() + drug.getDose());
+                        drug.setPrimaryKey(AppUtils.generateUniqueId());
                         for (TimeHolder holder : times) {
                             Intake intake = realm.createObject(Intake.class);
                             intake.setTaken(false);
                             intake.setHours(holder.hours);
                             intake.setMinutes(holder.minutes);
                             intake.setCreationDate(ModelDao.getTimeInMillis() + holder.hours);
+                            intake.setPrimaryKey(AppUtils.generateUniqueId());
                             drug.getIntakes().add(intake);
                         }
                         day.getDrugs().add(drug);

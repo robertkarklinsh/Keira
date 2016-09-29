@@ -6,8 +6,18 @@ import com.gattaca.team.annotation.GraphPeriod;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public final class AppUtils {
+
+    static long time;
+    static long number = 0;
+    static Calendar calendar = Calendar.getInstance();
+
+    static {
+        time = calendar.getTimeInMillis() * 100;
+    }
 
     public static float convertListToAvrValue(List<Float> values) {
         float value = 0;
@@ -31,5 +41,19 @@ public final class AppUtils {
                 cal.get(Calendar.SECOND) * DateUtils.SECOND_IN_MILLIS +
                 cal.get(Calendar.MILLISECOND);
 
+    }
+
+    public static long generateUniqueId() {
+        long currentTime = calendar.getTimeInMillis() * 100;
+        long res;
+        if (currentTime == time) {
+            res = currentTime + number;
+            number ++;
+            return res;
+        } else {
+            time = currentTime;
+            number = 0;
+            return currentTime;
+        }
     }
 }

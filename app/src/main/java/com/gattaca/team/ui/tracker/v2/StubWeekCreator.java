@@ -8,6 +8,9 @@ import com.gattaca.team.db.tracker.PulseMeasurement;
 import com.gattaca.team.db.tracker.Task;
 import com.gattaca.team.db.tracker.TaskAction;
 import com.gattaca.team.db.tracker.Week;
+import com.gattaca.team.root.AppUtils;
+
+import java.util.Calendar;
 
 import io.realm.Realm;
 
@@ -42,6 +45,7 @@ public class StubWeekCreator {
             intake.setTaken(status);
             //TODO REDO!!!!
             intake.setCreationDate(ModelDao.getTimeInMillis() + hours);
+            intake.setPrimaryKey(AppUtils.generateUniqueId());
             return intake;
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,6 +56,7 @@ public class StubWeekCreator {
     private TaskAction createTaskAction(Boolean status) {
         TaskAction taskAction = realm.createObject(TaskAction.class);
         taskAction.setCompleted(status);
+        taskAction.setPrimaryKey(AppUtils.generateUniqueId());
         return taskAction;
     }
 
@@ -61,6 +66,7 @@ public class StubWeekCreator {
         drug.setDose(dose);
         drug.setUnits(units);
         drug.setCreationDate(ModelDao.getTimeInMillis());
+        drug.setPrimaryKey(AppUtils.generateUniqueId());
         for (int i = 0; i < 4; i++) {
             drug.getIntakes().add(createIntake(i < 2, 12 + i * 2, 0));
         }
@@ -72,6 +78,7 @@ public class StubWeekCreator {
         task.setName(name);
         task.setUnits(units);
         task.setTime(time);
+        task.setPrimaryKey(AppUtils.generateUniqueId());
         for (int i = 0; i < 2; i++) {
             task.getActions().add(createTaskAction(i % 2 == 0));
         }
@@ -83,6 +90,7 @@ public class StubWeekCreator {
         pulseMeasurement.setName(name);
         pulseMeasurement.setDuration(duration);
         pulseMeasurement.setUnits(units);
+        pulseMeasurement.setPrimaryKey(AppUtils.generateUniqueId());
         return pulseMeasurement;
     }
 
@@ -103,6 +111,7 @@ public class StubWeekCreator {
             Day day = realm.createObject(Day.class);
             day.setName(name);
             day.setNumber(number);
+            day.setYearDayOfTheYear(Calendar.getInstance().get(Calendar.YEAR) * 1000 + Calendar.getInstance().get(Calendar.DAY_OF_YEAR));
             for (int i = 0; i < 3; i++) {
                 day.getDrugs().add(createDrug("Вазилип " + i, 20, "мг"));
                 day.getTasks().add(createTask("Лежать", 24, "часа"));

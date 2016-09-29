@@ -15,6 +15,7 @@ import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.Day;
 import com.gattaca.team.db.tracker.PressureMeasurement;
+import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
 
 import java.util.ArrayList;
@@ -156,6 +157,7 @@ public class AddPressureActivity extends AppCompatActivity {
                         pm.setHours(holder.getHours());
                         pm.setMinutes(holder.getMinutes());
                         pm.setCompleted(false);
+                        pm.setPrimaryKey(AppUtils.generateUniqueId());
                         day.getPressureMeasurements().add(pm);
                     }
                 }
@@ -170,6 +172,7 @@ public class AddPressureActivity extends AppCompatActivity {
                         pm.setSystolic(Integer.parseInt(edtToStr(systolicField)));
                         pm.setDiastolic(Integer.parseInt(edtToStr(dyastolicField)));
                         pm.setPulse(Integer.parseInt(edtToStr(pulseField)));
+                        pm.setPrimaryKey(AppUtils.generateUniqueId());
                         day.getPressureMeasurements().add(pm);
                     }
 

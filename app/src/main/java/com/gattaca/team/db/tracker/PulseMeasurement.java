@@ -5,6 +5,7 @@ import com.gattaca.team.ui.tracker.data.TrackerItemContainer;
 import com.gattaca.team.R;
 
 import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 /**
@@ -17,6 +18,16 @@ public class PulseMeasurement implements RealmModel, TrackerItemContainer{
     private String name ;
     private int duration;
     private String units;
+
+    @PrimaryKey
+    private long primaryKey;
+    public long getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(long primaryKey) {
+        this.primaryKey = primaryKey;
+    }
 
     public String getName() {
         return name;

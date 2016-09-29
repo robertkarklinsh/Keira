@@ -6,6 +6,7 @@ import com.gattaca.team.R;
 
 import io.realm.RealmList;
 import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 /**
@@ -16,6 +17,16 @@ public class Task implements RealmModel, TrackerItemContainer{
     String name;
     int time;
     String units;
+
+    @PrimaryKey
+    private long primaryKey;
+    public long getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(long primaryKey) {
+        this.primaryKey = primaryKey;
+    }
 
     public String getName() {
         return name;

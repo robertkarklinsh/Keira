@@ -5,6 +5,7 @@ import com.gattaca.team.ui.tracker.data.TrackerItemContainer;
 import com.gattaca.team.R;
 
 import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 /**
@@ -21,6 +22,16 @@ public class PressureMeasurement implements RealmModel, TrackerItemContainer{
     private int pulse;
     private int systolic;
     private int diastolic;
+
+    @PrimaryKey
+    private long primaryKey;
+    public long getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(long primaryKey) {
+        this.primaryKey = primaryKey;
+    }
 
     public int getHours() {
         return hours;
