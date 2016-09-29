@@ -1,6 +1,7 @@
 package com.gattaca.team.ui.activity.tracker;
 
 import android.app.TimePickerDialog;
+import android.support.annotation.IntegerRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.Day;
 import com.gattaca.team.db.tracker.Drug;
 import com.gattaca.team.db.tracker.Intake;
+import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
 
@@ -25,6 +27,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class DrugInfoActivity extends AppCompatActivity {
 
@@ -32,13 +35,15 @@ public class DrugInfoActivity extends AppCompatActivity {
         LinearLayout linearLayout;
         Button button;
         TextView editText;
+        Intake intake;
         int hours = 12;
         int minutes = 00;
 
-        public TimeHolder(LinearLayout linearLayout) {
+        public TimeHolder(LinearLayout linearLayout, Intake intake) {
             this.linearLayout = linearLayout;
             this.button = (Button) linearLayout.findViewById(R.id.remove_drug_button);
             this.editText = (TextView) linearLayout.findViewById(R.id.add_drug_time_field);
+            this.intake = intake;
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -48,6 +53,11 @@ public class DrugInfoActivity extends AppCompatActivity {
                         return;
                     }
                     timeHolder.removeView(linearLayout);
+                    Realm.getDefaultInstance().executeTransaction((Realm realm) -> {
+                        RealmResults<Intake> res = realm.where(Intake.class).equalTo("primaryKey",intake.getPrimaryKey()).findAll();
+                        res.deleteAllFromRealm();
+
+                    });
                     times.remove(DrugInfoActivity.TimeHolder.this);
 
                 }
@@ -101,7 +111,7 @@ public class DrugInfoActivity extends AppCompatActivity {
             for (Intake intake : drug.getIntakes()) {
                 LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_time_item, null);
                 timeHolder.addView(ll);
-                TimeHolder th = new DrugInfoActivity.TimeHolder(ll);
+                TimeHolder th = new DrugInfoActivity.TimeHolder(ll,intake);
                 th.hours = intake.getHours();
                 th.minutes = intake.getMinutes();
                 times.add(th);
@@ -122,25 +132,10 @@ public class DrugInfoActivity extends AppCompatActivity {
                 }
                 Realm realm = RealmController.getRealm();
                 realm.beginTransaction();
-//                for (Day day : RealmController.getCurrentWeek().getDays()) {
-//                    if (day.getNumber() == ModelDao.currentDayOfWeek() ||
-//                            (checkBox.isChecked() && day.getNumber() > ModelDao.currentDayOfWeek())) {
-//                        Drug drug = realm.createObject(Drug.class);
-//                        drug.setName(name.getText().toString());
-//                        drug.setUnits(units.getText().toString());
-//                        drug.setDose(Integer.parseInt(dose.getText().toString()));
-//                        drug.setCreationDate(ModelDao.getTimeInMillis() + drug.getDose());
-//                        for (DrugInfoActivity.TimeHolder holder : times) {
-//                            Intake intake = realm.createObject(Intake.class);
-//                            intake.setTaken(false);
-//                            intake.setHours(holder.hours);
-//                            intake.setMinutes(holder.minutes);
-//                            intake.setCreationDate(ModelDao.getTimeInMillis() + holder.hours);
-//                            drug.getIntakes().add(intake);
-//                        }
-//                        day.getDrugs().add(drug);
-//                    }
-//                }
+                drug.setName(edtToStr(name));
+                drug.setDose(Integer.parseInt(edtToStr(dose)));
+                drug.setUnits(edtToStr(units));
+//                for ()
                 realm.commitTransaction();
                 DrugInfoActivity.this.finish();
             }
@@ -152,7 +147,9 @@ public class DrugInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_time_item, null);
                 timeHolder.addView(ll);
-                times.add(new DrugInfoActivity.TimeHolder(ll));
+                Intake intake = new Intake();
+                intake.setPrimaryKey(AppUtils.generateUniqueId());
+                times.add(new DrugInfoActivity.TimeHolder(ll, intake));
             }
         });
 
