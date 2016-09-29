@@ -9,4 +9,8 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+
+    <dimen name="pressureBar_background_radius">7dp</dimen>
+    <dimen name="pressureBar_pin_radius">16dp</dimen>
+    <dimen name="pressureBar_offset">25dp</dimen>
 </resources>

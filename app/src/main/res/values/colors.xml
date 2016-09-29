@@ -14,4 +14,12 @@
     <color name="blue_semi_transparent_pressed">#80738ffe</color>
     <color name="green">#18b6a9</color>
     <color name="red">#f77a20</color>
+
+    <color name="pressure_colorRedMain">#dd3c30</color>
+    <color name="pressure_colorRedLow">#d93722</color>
+    <color name="pressure_colorOrangeMain">#e06f1d</color>
+    <color name="pressure_colorOrangeLow">#f77a20</color>
+    <color name="pressure_colorGreenMain">#18b6a9</color>
+    <color name="pressure_colorGreenLow">#15a599</color>
+    <color name="pressure_colorGray">#eeeeee</color>
 </resources>

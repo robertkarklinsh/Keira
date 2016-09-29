@@ -22,11 +22,28 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <TextView
+    <Button
+        android:id="@+id/random"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="ECG"
-        android:textSize="20sp" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
+        android:text="rerandom" />
 
+    <com.gattaca.team.ui.view.PressureBar
+        android:id="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="100dp"
+        app:type="systolic" />
+
+    <com.gattaca.team.ui.view.PressureBar
+        android:id="@+id/bar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="125dp"
+        app:type="diastolic" />
 </android.support.design.widget.CoordinatorLayout>
