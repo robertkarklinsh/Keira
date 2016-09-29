@@ -12,12 +12,18 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.gattaca.team.R;
+import com.gattaca.team.db.RealmController;
+import com.gattaca.team.db.tracker.Day;
+import com.gattaca.team.db.tracker.PressureMeasurement;
+import com.gattaca.team.ui.tracker.v2.ModelDao;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+
+import io.realm.Realm;
 
 public class AddPressureActivity extends AppCompatActivity {
 
@@ -109,6 +115,13 @@ public class AddPressureActivity extends AppCompatActivity {
             }
         }
 
+        public int getHours() {
+            return hours;
+        }
+
+        public int getMinutes() {
+            return minutes;
+        }
     }
 
 
@@ -132,6 +145,42 @@ public class AddPressureActivity extends AppCompatActivity {
         holder = new Holder(timeField, systolic, systolicField, dyastolic, dyastolicField, pulse, pulseField, stateButton, everyDayReminder);
         cancel.setOnClickListener((View v) -> AddPressureActivity.this.finish());
 
+        ok.setOnClickListener((View v) -> {
+            Realm realm = RealmController.getRealm();
+            realm.beginTransaction();
+            if (isReminder) {
+                for (Day day : RealmController.getCurrentWeek().getDays()) {
+                    if (day.getNumber() == ModelDao.currentDayOfWeek() ||
+                            (everyDayReminder.isChecked() && day.getNumber() > ModelDao.currentDayOfWeek())) {
+                        PressureMeasurement pm = realm.createObject(PressureMeasurement.class);
+                        pm.setHours(holder.getHours());
+                        pm.setMinutes(holder.getMinutes());
+                        pm.setCompleted(false);
+                        day.getPressureMeasurements().add(pm);
+                    }
+                }
+                AddPressureActivity.this.finish();
+            } else {
+                for(Day day : RealmController.getCurrentWeek().getDays()) {
+                    if (day.getNumber() == ModelDao.currentDayOfWeek()) {
+                        PressureMeasurement pm = realm.createObject(PressureMeasurement.class);
+                        pm.setHours(holder.getHours());
+                        pm.setMinutes(holder.getMinutes());
+                        pm.setCompleted(true);
+                        pm.setSystolic(Integer.parseInt(edtToStr(systolicField)));
+                        pm.setDiastolic(Integer.parseInt(edtToStr(dyastolicField)));
+                        pm.setPulse(Integer.parseInt(edtToStr(pulseField)));
+                        day.getPressureMeasurements().add(pm);
+                    }
 
+                }
+            }
+            realm.commitTransaction();
+        });
+
+
+    }
+    static String edtToStr(EditText editText) {
+        return editText.getText().toString();
     }
 }

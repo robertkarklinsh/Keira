@@ -92,6 +92,7 @@ public class AddDrugActivity extends AppCompatActivity {
         LinearLayout timeHolder = (LinearLayout) findViewById(R.id.add_drug_container);
         this.timeHolder = timeHolder;
         LinearLayout ll = (LinearLayout) getLayoutInflater().inflate(R.layout.add_drug_add_time_item, null);
+        CheckBox checkBox = (CheckBox) findViewById(R.id.add_drug_remind_check_box);
         timeHolder.addView(ll);
         times.add(new TimeHolder(ll));
         everyDay = (CheckBox) findViewById(R.id.add_drug_remind_check_box);
@@ -111,8 +112,8 @@ public class AddDrugActivity extends AppCompatActivity {
                 Realm realm = RealmController.getRealm();
                 realm.beginTransaction();
                 for (Day day : RealmController.getCurrentWeek().getDays()) {
-
-                    if (day.getNumber() >= ModelDao.currentDayOfWeek()) {
+                    if (day.getNumber() == ModelDao.currentDayOfWeek() ||
+                            (checkBox.isChecked() && day.getNumber() > ModelDao.currentDayOfWeek())) {
                         Drug drug = realm.createObject(Drug.class);
                         drug.setName(name.getText().toString());
                         drug.setUnits(units.getText().toString());
