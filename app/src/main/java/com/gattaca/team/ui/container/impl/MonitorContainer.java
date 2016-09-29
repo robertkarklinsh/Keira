@@ -71,7 +71,7 @@ public final class MonitorContainer extends IContainer<MonitorModel> implements 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.monitor_main_action_ecg:
-                MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.ADT));
+                MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.ECG));
                 break;
             case R.id.monitor_main_action_pulse:
                 MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.BPM));
