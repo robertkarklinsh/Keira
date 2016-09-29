@@ -1,4 +1,4 @@
-package com.gattaca.team.ui.activity;
+package com.gattaca.team.ui.activity.tracker;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;

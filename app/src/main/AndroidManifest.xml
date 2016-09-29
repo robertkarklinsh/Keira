@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".root.MainApplication"
@@ -48,9 +48,12 @@
             android:name="io.fabric.ApiKey"
             android:value="560c164e31ab2d572612b57e14498b098b212b11" />
 
-        <activity android:name=".ui.activity.AddDrugActivity" />
-        <activity android:name=".ui.activity.AddPressureActivity"></activity>
+        <activity android:name=".ui.activity.tracker.AddDrugActivity" />
+        <activity android:name=".ui.activity.tracker.AddPressureActivity" />
+
         <receiver android:name=".service.tracker.TimeNotification" />
+
+        <activity android:name=".ui.activity.tracker.DrugInfoActivity"></activity>
     </application>
 
 </manifest>

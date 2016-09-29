@@ -98,8 +98,8 @@
             android:id="@+id/add_drug_cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/add_drug_remind_check_box"
-            android:layout_below="@+id/add_drug_remind_check_box"
+            android:layout_alignStart="@+id/add_drug_add_time"
+            android:layout_below="@+id/add_drug_add_time"
             android:layout_marginTop="25dp"
             android:text="Отмена" />
 
@@ -112,14 +112,14 @@
             android:layout_toEndOf="@+id/add_drug_name_field"
             android:text="Добавить" />
 
-        <CheckBox
-            android:id="@+id/add_drug_remind_check_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Напоминать каждый день"
-            android:layout_below="@+id/add_drug_add_time"
-            android:layout_alignParentStart="true" />
+        <!--<CheckBox-->
+            <!--android:id="@+id/add_drug_remind_check_box"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="12dp"-->
+            <!--android:text="Напоминать каждый день"-->
+            <!--android:layout_below="@+id/add_drug_add_time"-->
+            <!--android:layout_alignParentStart="true" />-->
 
 
     </RelativeLayout>

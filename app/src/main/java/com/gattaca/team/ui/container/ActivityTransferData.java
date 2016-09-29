@@ -3,8 +3,8 @@ package com.gattaca.team.ui.container;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.gattaca.team.ui.activity.AddDrugActivity;
-import com.gattaca.team.ui.activity.AddPressureActivity;
+import com.gattaca.team.ui.activity.tracker.AddDrugActivity;
+import com.gattaca.team.ui.activity.tracker.AddPressureActivity;
 import com.gattaca.team.ui.activity.MonitorBpm;
 import com.gattaca.team.ui.activity.MonitorEcg;
 
