@@ -12,17 +12,20 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.gattaca.team.root.AppUtils;
-import com.gattaca.team.ui.tracker.v2.ModelDao;
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.Day;
 import com.gattaca.team.db.tracker.Drug;
 import com.gattaca.team.db.tracker.Intake;
+import com.gattaca.team.root.AppUtils;
+import com.gattaca.team.service.tracker.TimeNotification;
+import com.gattaca.team.ui.tracker.v2.ModelDao;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.Realm;
 
@@ -39,6 +42,9 @@ public class AddDrugActivity extends AppCompatActivity {
             this.linearLayout = linearLayout;
             this.button = (Button) linearLayout.findViewById(R.id.remove_drug_button);
             this.editText = (TextView) linearLayout.findViewById(R.id.add_drug_time_field);
+            hours = AppUtils.getCurrentHour();
+            minutes = AppUtils.getCurrentMinute();
+            editText.setText(String.format(Locale.ROOT,"%02d:%02d",hours,minutes));
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -56,18 +62,16 @@ public class AddDrugActivity extends AppCompatActivity {
                                             @Override
                                             public void onClick(View v) {
                                                 // Get Current Time
-                                                final Calendar c = Calendar.getInstance();
-                                                hours = c.get(Calendar.HOUR_OF_DAY);
-                                                minutes = c.get(Calendar.MINUTE);
                                                 TimePickerDialog timePickerDialog = new TimePickerDialog(AddDrugActivity.this,
                                                         new TimePickerDialog.OnTimeSetListener() {
                                                             @Override
                                                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                                                   int minute) {
-
+                                                                hours = hourOfDay;
+                                                                minutes = minute;
                                                                 editText.setText(hourOfDay + ":" + minute);
                                                             }
-                                                        }, hours, minutes, true);
+                                                        }, AppUtils.getCurrentHour(), AppUtils.getCurrentMinute(), true);
                                                 timePickerDialog.show();
                                             }
                                         }
@@ -115,7 +119,7 @@ public class AddDrugActivity extends AppCompatActivity {
                 for (Day day : RealmController.getCurrentWeek().getDays()) {
                     if (day.getNumber() == ModelDao.currentDayOfWeek() ||
                             (checkBox.isChecked() && day.getNumber() > ModelDao.currentDayOfWeek())) {
-                        Drug drug = realm.createObject(Drug.class,AppUtils.generateUniqueId());
+                        Drug drug = realm.createObject(Drug.class, AppUtils.generateUniqueId());
                         drug.setName(name.getText().toString());
                         drug.setUnits(units.getText().toString());
                         drug.setDose(Integer.parseInt(dose.getText().toString()));
@@ -128,6 +132,12 @@ public class AddDrugActivity extends AppCompatActivity {
                             intake.setCreationDate(ModelDao.getTimeInMillis() + holder.hours);
                             intake.setPrimaryKey(AppUtils.generateUniqueId());
                             drug.getIntakes().add(intake);
+                            GregorianCalendar gr = new GregorianCalendar();
+                            gr.set(Calendar.HOUR_OF_DAY, intake.getHours());
+                            gr.set(Calendar.MINUTE, intake.getMinutes());
+                            gr.set(Calendar.SECOND,0);
+                            gr.add(Calendar.DAY_OF_MONTH, day.getNumber() - ModelDao.currentDayOfWeek());
+                            TimeNotification.setAlarm(getApplicationContext(), gr.getTimeInMillis(), "intake", intake.getPrimaryKey());
                         }
                         day.getDrugs().add(drug);
                     }

@@ -35,7 +35,7 @@ public class DrugItem extends Item {
 
     @Override
     void bindCustomView(ViewHoldersCollection.DrugItemViewHolder holder, List payloads) {
-       Drug drug = (Drug) itemContainer;
+        Drug drug = (Drug) itemContainer;
         ViewGroup viewGroup = (ViewGroup) holder.mView.getParent();
         holder.mView.setOnClickListener(new DrugAllClickListener(drug));
         Context context = holder.mView.getContext();
@@ -48,9 +48,9 @@ public class DrugItem extends Item {
 
         List<Intake> receptions = drug.getIntakes();
         Realm.getDefaultInstance().executeTransaction((Realm r) ->
-        Collections.sort(receptions, (Intake lhs, Intake rhs) ->
-            lhs.getHours()*60 + lhs.getMinutes() - rhs.getHours()*60 - rhs.getMinutes()
-        ));
+                Collections.sort(receptions, (Intake lhs, Intake rhs) ->
+                        lhs.getHours() * 60 + lhs.getMinutes() - rhs.getHours() * 60 - rhs.getMinutes()
+                ));
         Intake receptionF = receptions.get(0);
         LinearLayout drugCircleF = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_drug_circle, viewGroup);
 
@@ -64,7 +64,7 @@ public class DrugItem extends Item {
         drugCircleF.setOnClickListener(new DrugItemClickListener(receptionF,
                 null,
                 (ImageView) drugCircleF.findViewById(R.id.custom_drug_button_img),
-                timeTextView,drug
+                timeTextView, drug
         ));
         itemImages.addView(drugCircleF);
 
@@ -87,7 +87,7 @@ public class DrugItem extends Item {
             );
             drugCircle.setOnClickListener(new DrugItemClickListener(reception, lineImage,
                     (ImageView) drugCircle.findViewById(R.id.custom_drug_button_img),
-                    timeTextView,drug)   );
+                    timeTextView, drug));
             itemImages.addView(drugCircle);
         }
     }
@@ -163,23 +163,27 @@ public class DrugItem extends Item {
 
         @Override
         public void onClick(View view) {
-            Realm.getDefaultInstance().executeTransaction((Realm realm) -> intake.setTaken(!intake.isTaken()));
-            drugCircle.setImageResource(
-                    chooseDrugCircle(intake.isTaken(), intake.getHours(), intake.getMinutes()));
-            if (drugLine != null) {
-                drugLine.setBackground(
-                        chooseDrugLine(intake.isTaken(), intake.getHours(), intake.getMinutes(), view.getContext()));
-            }
-            textView.setTextColor(Color.parseColor(
-                    chooseTextColor(intake.isTaken(), intake.getHours(), intake.getMinutes())));
             if (intake.isTaken()) {
-                Realm.getDefaultInstance().executeTransaction((Realm realm) -> {
-                    intake.setHours(ModelDao.getHours());
-                    intake.setMinutes(ModelDao.getMinutes());
-                    drug.recalculateCompleted();
+                MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.DRUG_INFO, drug.getPrimaryKey()));
+            } else {
+                Realm.getDefaultInstance().executeTransaction((Realm realm) -> intake.setTaken(!intake.isTaken()));
+                drugCircle.setImageResource(
+                        chooseDrugCircle(intake.isTaken(), intake.getHours(), intake.getMinutes()));
+                if (drugLine != null) {
+                    drugLine.setBackground(
+                            chooseDrugLine(intake.isTaken(), intake.getHours(), intake.getMinutes(), view.getContext()));
+                }
+                textView.setTextColor(Color.parseColor(
+                        chooseTextColor(intake.isTaken(), intake.getHours(), intake.getMinutes())));
+                if (intake.isTaken()) {
+                    Realm.getDefaultInstance().executeTransaction((Realm realm) -> {
+                        intake.setHours(ModelDao.getHours());
+                        intake.setMinutes(ModelDao.getMinutes());
+                        drug.recalculateCompleted();
 
-                });
-                textView.setText(String.format("%02d:%02d",intake.getHours(), intake.getMinutes()));
+                    });
+                    textView.setText(String.format("%02d:%02d", intake.getHours(), intake.getMinutes()));
+                }
             }
         }
     }

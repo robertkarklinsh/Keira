@@ -127,7 +127,6 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
         recyclerView = rv;
         rv.setLayoutManager(new SnappingLinearLayoutManager(context));
 
-//        rv.setItemAnimator(new DefaultItemAnimator());
         rv.setAdapter(mItemAdapter.wrap(mFastAdapter));
 
 
@@ -144,6 +143,16 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
             @Override
             public void onClick(View view) {
                 MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.APT));
+            }
+        });
+
+        final FloatingActionButton actionAddPulse = (FloatingActionButton) relativeLayout.findViewById(R.id.tracker_add_pulse);
+        actionAddPulse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //ADD item to model then redraw
+                //tracker measurmet pulse layout
+                TrackerContainer.this.reDraw();
             }
         });
 

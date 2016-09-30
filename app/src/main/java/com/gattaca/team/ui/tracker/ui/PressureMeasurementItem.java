@@ -41,8 +41,8 @@ public class PressureMeasurementItem extends Item {
         LinearLayout progress;
         if (pressureMeasurement.isCompleted()) {
             progress = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_measurement_pressure_filled, viewGroup);
-            PressureBar systolic = (PressureBar) progress.findViewById(R.id.systolic);
-            PressureBar diastolic = (PressureBar) progress.findViewById(R.id.diastolic);
+            PressureBar systolic = (PressureBar) progress.findViewById(R.id.tracker_pressure_systolic);
+            PressureBar diastolic = (PressureBar) progress.findViewById(R.id.tracker_pressure_diastolic);
             systolic.setValue(pressureMeasurement.getSystolic());
             diastolic.setValue(pressureMeasurement.getDiastolic());
         } else {

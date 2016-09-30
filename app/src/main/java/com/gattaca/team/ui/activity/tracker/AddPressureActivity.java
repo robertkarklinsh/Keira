@@ -161,7 +161,7 @@ public class AddPressureActivity extends AppCompatActivity {
                         day.getPressureMeasurements().add(pm);
                     }
                 }
-                AddPressureActivity.this.finish();
+
             } else {
                 for(Day day : RealmController.getCurrentWeek().getDays()) {
                     if (day.getNumber() == ModelDao.currentDayOfWeek()) {
@@ -169,6 +169,7 @@ public class AddPressureActivity extends AppCompatActivity {
                         pm.setHours(holder.getHours());
                         pm.setMinutes(holder.getMinutes());
                         pm.setCompleted(true);
+                        pm.setName("Давление");
                         pm.setSystolic(Integer.parseInt(edtToStr(systolicField)));
                         pm.setDiastolic(Integer.parseInt(edtToStr(dyastolicField)));
                         pm.setPulse(Integer.parseInt(edtToStr(pulseField)));
@@ -179,6 +180,7 @@ public class AddPressureActivity extends AppCompatActivity {
                 }
             }
             realm.commitTransaction();
+            AddPressureActivity.this.finish();
         });
 
 

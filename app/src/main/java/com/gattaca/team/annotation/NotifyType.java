@@ -24,7 +24,8 @@ import java.lang.annotation.RetentionPolicy;
         NotifyType.AD_more_180,
         NotifyType.AD_trouble,
         NotifyType.AD_again_less_140_90,
-        NotifyType.AD_again_more_140_90})
+        NotifyType.AD_again_more_140_90,
+        NotifyType.Tracker_reminder})
 @Retention(RetentionPolicy.SOURCE)
 public @interface NotifyType {
     int PC_Period_5_min = 0;
@@ -49,4 +50,5 @@ public @interface NotifyType {
     int AD_trouble = AD_more_180 + 1;
     int AD_again_less_140_90 = AD_trouble + 1;
     int AD_again_more_140_90 = AD_again_less_140_90 + 1;
+    int Tracker_reminder = AD_again_more_140_90 + 1;
 }
