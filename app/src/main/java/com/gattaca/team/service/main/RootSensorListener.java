@@ -43,7 +43,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         final int[] simpleRates = serviceConnectionImpl.getChannelsBitRate();
         algoritms = new PanTompkins[simpleRates.length];
         for (int i = 0; i < simpleRates.length; i++) {
-            algoritms[i] = new PanTompkins(360);
+            algoritms[i] = new PanTompkins(100);
         }
         start();
         waitUntilReady();
@@ -69,6 +69,11 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
 
     public static void generateRaw2() {
         getInstance().handler.sendEmptyMessage(What.EmulateDataPanTomkinsStart.ordinal());
+    }
+
+    public static void generateBitalinoRaw() {
+        getInstance().bus.register(getInstance());
+        getInstance().serviceConnectionImpl.fakeGeneration();
     }
 
     public static boolean isInProgress() {
@@ -211,7 +216,6 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     }
 
     private void doAlgorithm(final int channel, double value, long time) {
-        //@RRType String RRtype;
         algoritms[channel].next(value, time);
         //FIXME: it's not work!!!
         if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
