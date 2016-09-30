@@ -28,8 +28,10 @@ public final class TrackerMeasureListItem
     @Override
     public void bindView(ViewHolder viewHolder, List payloads) {
         super.bindView(viewHolder, payloads);
-        viewHolder.timeLine.setValue(DateUtils.SECOND_IN_MILLIS * 290);
-        viewHolder.progress.setValue(DateUtils.SECOND_IN_MILLIS * 290);
+//        viewHolder.timeLine.setValue(DateUtils.SECOND_IN_MILLIS * 290);
+//        viewHolder.progress.setValue(DateUtils.SECOND_IN_MILLIS * 290);
+        viewHolder.timeLine.setValue(DateUtils.SECOND_IN_MILLIS *0);
+        viewHolder.progress.setValue(DateUtils.SECOND_IN_MILLIS *0);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

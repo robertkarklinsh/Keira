@@ -1,7 +1,9 @@
 package com.gattaca.team.ui.container.impl;
 
 import android.app.Activity;
+import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -9,11 +11,13 @@ import android.widget.Toast;
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.Week;
+import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.container.MainMenu;
+import com.gattaca.team.ui.container.list.item.TrackerMeasureListItem;
 import com.gattaca.team.ui.container.list.lm.SnappingLinearLayoutManager;
 import com.gattaca.team.ui.model.impl.TrackerModel;
 import com.gattaca.team.ui.tracker.data.TopContainer;
@@ -37,6 +41,11 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
     Realm realm;
     GregorianCalendar calendar = new GregorianCalendar();
     Week week;
+    private CountDownTimer timer = null;
+
+    Boolean session = false;
+
+
 
     public TrackerContainer(final Activity screen) {
         super(screen, R.id.container_tracker_id);
@@ -152,6 +161,33 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
             public void onClick(View view) {
                 //ADD item to model then redraw
                 //tracker measurmet pulse layout
+                if (!session) {
+
+                    timer = new CountDownTimer(DateUtils.MINUTE_IN_MILLIS, DateUtils.SECOND_IN_MILLIS) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            AppUtils.postToBus(1);
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            timer.cancel(); timer = null;
+                        }
+                    };
+                    session = true;
+                    timer.start();
+                    modelDao.setTmli(new TrackerMeasureListItem());
+                    actionAddPulse.setTitle("Удалить пульс");
+
+                } else {
+                    session = false;
+                    if (timer != null) {
+                        timer.cancel();
+                    }
+                    timer = null;
+                    modelDao.setTmli(null);
+                    actionAddPulse.setTitle("Добавить пульс");
+                }
                 TrackerContainer.this.reDraw();
             }
         });

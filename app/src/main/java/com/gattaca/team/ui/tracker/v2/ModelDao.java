@@ -7,6 +7,7 @@ import com.gattaca.team.db.tracker.Drug;
 import com.gattaca.team.db.tracker.PressureMeasurement;
 import com.gattaca.team.db.tracker.Task;
 import com.gattaca.team.db.tracker.Week;
+import com.gattaca.team.ui.container.list.item.TrackerMeasureListItem;
 import com.gattaca.team.ui.tracker.ui.DrugItem;
 import com.gattaca.team.ui.tracker.ui.HeaderItem;
 import com.gattaca.team.ui.tracker.ui.PressureMeasurementItem;
@@ -25,6 +26,17 @@ public class ModelDao {
     private static final String TODAY = "СЕГОДНЯ";
     private static final String YESTERDAY = "ВЧЕРА";
 
+    //TODO very dirty
+    TrackerMeasureListItem tmli = null;
+
+    public TrackerMeasureListItem getTmli() {
+        return tmli;
+    }
+
+    public void setTmli(TrackerMeasureListItem tmli) {
+        this.tmli = tmli;
+    }
+
     public ModelDao() {
     }
 
@@ -42,6 +54,7 @@ public class ModelDao {
 
     public int getCount() {
         int res = 0;
+        if (tmli != null) {res ++;}
         int currentDay = currentDayOfWeek();
         for (int i = currentDay; i >= 0; i--) {
             Day day = week.getDays().get(i);
@@ -111,6 +124,9 @@ public class ModelDao {
         for (int i = currentDay; i >= 0; i--) {
             Day day = week.getDays().get(i);
             res.add(new HeaderItem().withName(dayModifier(day, currentDay)));
+            if (tmli != null && i == currentDay) {
+                res.add(tmli);
+            }
             for (Drug drug : day.getDrugs()) {
                 res.add(new DrugItem().withItemContainer(drug));
             }
