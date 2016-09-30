@@ -3,12 +3,14 @@ package com.gattaca.team.service.main;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.util.Log;
 
 import com.gattaca.team.annotation.GraphPeriod;
 import com.gattaca.team.annotation.NotifyType;
 import com.gattaca.team.annotation.RRType;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.event.NotifyEventObject;
+import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
 import com.gattaca.team.db.sensor.emulate.EmulatedBpm_15Min;
 import com.gattaca.team.db.sensor.emulate.EmulatedBpm_5Min;
@@ -29,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class RootSensorListener extends HandlerThread implements Handler.Callback {
+    final static int BpmMin = 20;
+    final static int BpmMax = 300;
     private static RootSensorListener instance;
     private final Object block = new Object();
     private Bus bus = new Bus(ThreadEnforcer.ANY);
@@ -42,7 +46,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         final int[] simpleRates = serviceConnectionImpl.getChannelsBitRate();
         algoritms = new PanTompkins[simpleRates.length];
         for (int i = 0; i < simpleRates.length; i++) {
-            algoritms[i] = new PanTompkins(simpleRates[i]);
+            algoritms[i] = new PanTompkins(100);
         }
         start();
         waitUntilReady();
@@ -70,8 +74,13 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         getInstance().handler.sendEmptyMessage(What.EmulateDataPanTomkinsStart.ordinal());
     }
 
+    public static void generateBitalinoRaw() {
+        getInstance().bus.register(getInstance());
+        getInstance().serviceConnectionImpl.fakeGeneration();
+    }
+
     public static boolean isInProgress() {
-        return getInstance().emulating;
+        return getInstance().emulating || getInstance().serviceConnectionImpl.isInProgress();
     }
 
     public static void postSensorData(final SensorData data) {
@@ -210,12 +219,11 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     }
 
     private void doAlgorithm(final int channel, double value, long time) {
-        //@RRType String RRtype;
         algoritms[channel].next(value, time);
-        //FIXME: it's not work!!!
-        /*if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
-            RRtype = checkQRS(PanTompkins.QRS.qrsCurrent);
-            long time = PanTompkins.QRS.qrsCurrent.rTimestamp - PanTompkins.QRS.qrsPrevious.rTimestamp;
+        if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
+            //FIXME: it's not work!!!
+            Log.d(getClass().getSimpleName(), "found R");
+          /*  RRtype = checkQRS(PanTompkins.QRS.qrsCurrent);
             if (time >= 40 && time <= 130) {
                 RealmController.save(new RR()
                         .setType(RRtype)
@@ -224,7 +232,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
             } else {
                 Log.e(getClass().getSimpleName(), "skip from " + time);
             }
-            *//*if (!RRtype.equals(RRType.N)) {
+            *//**//*if (!RRtype.equals(RRType.N)) {
                 if (algoritms[i].countPC.size() == 2) {
                     generateEvent(NotifyType.PC_3, algoritms[i].countPC);
                     algoritms[i].countPC.clear();
@@ -236,9 +244,23 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                     generateEvent(NotifyType.PC_2, algoritms[i].countPC);
                 }
                 algoritms[i].countPC.clear();
-            }*//*
+            }*//**//**/
+            //long timeRR = PanTompkins.QRS.qrsCurrent.rTimestamp - PanTompkins.QRS.qrsPrevious.rTimestamp;
+            final int bpm = (int) algoritms[channel].heartRateStats.mean;
+            if (bpm > BpmMin && bpm < BpmMax) {
+                RealmController.save(new RR()
+                        .setType(RRType.N)
+                        .setTime(PanTompkins.QRS.qrsCurrent.rTimestamp));
+
+                RealmController.save(AppUtils.checkBpmAndGenerateEvent(bpm, time));
+
+                RealmController.saveList(AppUtils.collapseCHeck(time,
+                        PanTompkins.QRS.qrsCurrent.rTimestamp - PanTompkins.QRS.qrsPrevious.rTimestamp,
+                        bpm,
+                        false));
+            }
             PanTompkins.QRS.qrsCurrent.segState = PanTompkins.QRS.SegmentationStatus.PROCESSED;
-        }*/
+        }
     }
 
     private enum What {

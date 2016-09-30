@@ -74,7 +74,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
                                 StubWeekCreator swc = new StubWeekCreator(week, realm);
                                 swc.fillStubWeek();
                             } catch (Exception e) {
-                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainApplication.getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                 );
@@ -125,7 +125,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
         }
         RecyclerView rv = (RecyclerView) relativeLayout.findViewById(R.id.my_recycler_view);
         recyclerView = rv;
-        rv.setLayoutManager(new SnappingLinearLayoutManager(context));
+        rv.setLayoutManager(new SnappingLinearLayoutManager(MainApplication.getContext()));
 
         rv.setAdapter(mItemAdapter.wrap(mFastAdapter));
 

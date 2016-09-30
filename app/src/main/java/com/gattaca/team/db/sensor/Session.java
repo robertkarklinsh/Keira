@@ -9,7 +9,7 @@ import io.realm.annotations.RealmClass;
 public class Session implements RealmModel {
     @PrimaryKey
     private long timeStart;
-    private long timeFinish;
+    private long timeFinish = -1;
 
     public static String getNamedFieldTimeStart() {
         return "timeStart";

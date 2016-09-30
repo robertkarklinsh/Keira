@@ -143,7 +143,7 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                             sensorData = new SensorData(BitalinoChannels, HZ / FRAMES_COUNT, currentTime, tmpTime);
                             for (BITalinoFrame frame : frames) {
                                 for (int i = 0; i < BitalinoChannels; i++) {
-                                    sensorData.setValue(convert(frame.getAnalog(1), 1), i);
+                                    sensorData.setValue(convert(frame.getAnalog(i), i), i);
                                 }
                                 sensorData.nextCursor();
                             }

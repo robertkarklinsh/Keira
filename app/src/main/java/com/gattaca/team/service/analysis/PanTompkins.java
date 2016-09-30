@@ -336,7 +336,7 @@ public class PanTompkins extends LmeFilter {
 					// r peak in filtered signal
 					QRS.qrsCurrent.rIdx = QRS.qrsCurrent.values.head - rPeak.peakIdx;
 					QRS.qrsCurrent.rAmplitude = rPeak.peakValue;
-					QRS.qrsCurrent.rTimestamp = (long) (timestamp - rPeak.peakIdx * samplingTime);
+					QRS.qrsCurrent.rTimestamp = (long) ((double)timestamp - (double)(rPeak.peakIdx) * (double)(samplingTime));
 					rPassNum = 1;
 
 					// Log.d( "pants", "rtime " + qrsCurrent.rTimestamp );

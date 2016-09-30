@@ -1,20 +1,20 @@
 package com.gattaca.team.ui.container;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.View;
 
 import com.gattaca.team.R;
+import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.ui.model.IContainerModel;
 
 public abstract class IContainer<Model extends IContainerModel> {
     private final View rootView;
-    protected Context context;
+    //  protected Context context;
     private Model model;
 
     public IContainer(Activity screen, final int rootViewId) {
         this(screen.findViewById(rootViewId));
-        this.context = screen;
+        //  this.context = screen;
     }
 
     private IContainer(View rootView) {
@@ -50,8 +50,12 @@ public abstract class IContainer<Model extends IContainerModel> {
     protected Model getModel() {
         return this.model;
     }
-
+/*
     protected Context getContext() {
         return context;
+    }*/
+
+
+    public void eventCome(NotifyEventObject a) {
     }
 }
