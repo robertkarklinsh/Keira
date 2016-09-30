@@ -98,17 +98,21 @@ public final class RealmController {
     }
 
     public static void save(RealmModel item) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(item);
-        realm.commitTransaction();
+        if (item != null) {
+            final Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(item);
+            realm.commitTransaction();
+        }
     }
 
     public static void saveList(List<? extends RealmModel> list) {
-        final Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(list);
-        realm.commitTransaction();
+        if (list != null && !list.isEmpty()) {
+            final Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(list);
+            realm.commitTransaction();
+        }
     }
 
     public static void clearEmulate() {

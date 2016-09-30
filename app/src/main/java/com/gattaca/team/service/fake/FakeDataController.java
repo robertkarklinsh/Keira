@@ -15,11 +15,8 @@ import com.gattaca.team.db.sensor.BpmGreen;
 import com.gattaca.team.db.sensor.BpmRed;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.Session;
-import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
-import com.gattaca.team.db.sensor.optimizing.BpmPoint_1_hour;
-import com.gattaca.team.db.sensor.optimizing.BpmPoint_30_min;
-import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
 import com.gattaca.team.prefs.AppPref;
+import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.root.MainApplication;
 
 import java.io.BufferedReader;
@@ -77,16 +74,14 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                 cal.set(Calendar.DAY_OF_MONTH, 1);
                 final long startTime = cal.getTimeInMillis();
                 final List<RealmModel> rawRealm = new ArrayList<>();
+                List<RealmModel> list = null;
                 final ArrayList<Long> PcTimesAgain = new ArrayList<>();
 
                 InputStream in = null;
                 BufferedReader reader = null;
                 String mLine;
                 String[] splits;
-                BpmPoint_1_hour bpmPoint_1_hour = null;
-                BpmPoint_5_min bpmPoint_5_min = null;
-                BpmPoint_15_min bpmPoint_15_min = null;
-                BpmPoint_30_min bpmPoint_30_min = null;
+                NotifyEventObject event;
 
                 int pc_count_per_session = 0,
                         pointsCount = 0,
@@ -168,58 +163,17 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         // Search BPM
                         timeRR = Math.abs(currentRrValue - prevRrValue) * timeOffset;
                         bpm = (float) (60000 / timeRR);
-
-                        if (bpm < 40) {
-                            rawRealm.add(new NotifyEventObject()
-                                    .setModuleNameResId(ModuleName.Monitor)
-                                    .setEventType(NotifyType.BPM_less_40)
-                                    .setCount(bpm)
-                                    .setTime(time));
-                        } else if (bpm < 45) {
-                            rawRealm.add(new NotifyEventObject()
-                                    .setModuleNameResId(ModuleName.Monitor)
-                                    .setEventType(NotifyType.BPM_less_50_more_40)
-                                    .setCount(bpm)
-                                    .setTime(time));
-                        } else if (bpm > 120) {
-                            rawRealm.add(new NotifyEventObject()
-                                    .setModuleNameResId(ModuleName.Monitor)
-                                    .setEventType(NotifyType.BPM_more_100)
-                                    .setCount(bpm)
-                                    .setTime(time));
+                        event = AppUtils.checkBpmAndGenerateEvent((int) bpm, time);
+                        if (event != null) {
+                            rawRealm.add(event);
                         }
 
-                        if (bpmPoint_5_min == null) {
-                            bpmPoint_5_min = new BpmPoint_5_min();
-                        }
-                        if (bpmPoint_5_min.addPoint(time, timeRR, bpm)) {
-                            rawRealm.add(bpmPoint_5_min);
-                            bpmPoint_5_min = null;
-                        }
-                        if (bpmPoint_15_min == null) {
-                            bpmPoint_15_min = new BpmPoint_15_min();
-                        }
-                        if (bpmPoint_15_min.addPoint(time, timeRR, bpm)) {
-                            rawRealm.add(bpmPoint_15_min);
-                            bpmPoint_15_min = null;
-                        }
-                        if (bpmPoint_30_min == null) {
-                            bpmPoint_30_min = new BpmPoint_30_min();
-                        }
-                        if (bpmPoint_30_min.addPoint(time, timeRR, bpm)) {
-                            rawRealm.add(bpmPoint_30_min);
-                            bpmPoint_30_min = null;
-                        }
-                        if (bpmPoint_1_hour == null) {
-                            bpmPoint_1_hour = new BpmPoint_1_hour();
-                        }
-                        if (bpmPoint_1_hour.addPoint(time, timeRR, bpm)) {
-                            rawRealm.add(bpmPoint_1_hour);
-                            bpmPoint_1_hour = null;
+                        list = AppUtils.collapseCHeck(time, timeRR, bpm, false);
+                        if (!list.isEmpty()) {
+                            rawRealm.addAll(list);
                         }
 
                         mLine = reader.readLine();
-
 
                         if (rawRealm.size() >= max) {
                             RealmController.saveList(rawRealm);
@@ -228,22 +182,9 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                         prevRrValue = currentRrValue;
                     }
 
-
-                    if (bpmPoint_5_min != null) {
-                        bpmPoint_5_min.collapsePoints();
-                        rawRealm.add(bpmPoint_5_min);
-                    }
-                    if (bpmPoint_15_min != null) {
-                        bpmPoint_15_min.collapsePoints();
-                        rawRealm.add(bpmPoint_15_min);
-                    }
-                    if (bpmPoint_30_min != null) {
-                        bpmPoint_30_min.collapsePoints();
-                        rawRealm.add(bpmPoint_30_min);
-                    }
-                    if (bpmPoint_1_hour != null) {
-                        bpmPoint_1_hour.collapsePoints();
-                        rawRealm.add(bpmPoint_1_hour);
+                    list = AppUtils.collapseCHeck(0, 0, 0, true);
+                    if (!list.isEmpty()) {
+                        rawRealm.addAll(list);
                     }
 
                     time = startTime + prevRrValue * timeOffset;

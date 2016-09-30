@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
+import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
@@ -154,5 +155,10 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
     @Subscribe
     public void updateTrackerPercents(int[] percents) {
 
+    }
+
+    @Subscribe
+    public void eventCome(NotifyEventObject a) {
+        currentContainer.eventCome(a);
     }
 }

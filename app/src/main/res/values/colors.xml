@@ -9,8 +9,10 @@
     <color name="pressure_colorRedMain">#dd3c30</color>
     <color name="pressure_colorRedLow">#d93722</color>
     <color name="pressure_colorOrangeMain">#e06f1d</color>
-    <color name="pressure_colorOrangeLow">#f77a20</color>
+    <color name="pressure_colorOrangeLow">#f7b93f</color>
     <color name="pressure_colorGreenMain">#18b6a9</color>
     <color name="pressure_colorGreenLow">#15a599</color>
     <color name="pressure_colorGray">#eeeeee</color>
+    <color name="measure_blue">#099ebe</color>
+    <color name="measure_red">#dd3c30</color>
 </resources>

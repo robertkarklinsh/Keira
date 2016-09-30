@@ -10,4 +10,5 @@
     <item name="tracker_item" type="id" />
     <item name="list_item_notify_center" type="id" />
     <item name="list_item_data_bank" type="id" />
+    <item name="list_item_tracker_measure" type="id" />
 </resources>

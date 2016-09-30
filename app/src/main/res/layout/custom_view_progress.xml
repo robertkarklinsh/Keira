@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.gattaca.team.ui.view.tracker.MeasureProgress xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/progress"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/hasProblems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Обнаружено"
+            android:textColor="@color/pressure_colorOrangeMain"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/counts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:textColor="@color/measure_red"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="отклонение"
+            android:textColor="@color/pressure_colorOrangeMain"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/noProblems"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Не обнаружено отклонений"
+        android:textColor="@color/pressure_colorGreenMain"
+        android:textSize="14sp" />
+
+    <com.gattaca.team.ui.view.tracker.MeasureBar
+        android:id="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</com.gattaca.team.ui.view.tracker.MeasureProgress>
