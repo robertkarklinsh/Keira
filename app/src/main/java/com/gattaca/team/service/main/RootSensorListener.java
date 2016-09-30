@@ -3,6 +3,7 @@ package com.gattaca.team.service.main;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.util.Log;
 
 import com.gattaca.team.annotation.GraphPeriod;
 import com.gattaca.team.annotation.NotifyType;
@@ -42,7 +43,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         final int[] simpleRates = serviceConnectionImpl.getChannelsBitRate();
         algoritms = new PanTompkins[simpleRates.length];
         for (int i = 0; i < simpleRates.length; i++) {
-            algoritms[i] = new PanTompkins(simpleRates[i]);
+            algoritms[i] = new PanTompkins(360);
         }
         start();
         waitUntilReady();
@@ -213,8 +214,8 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         //@RRType String RRtype;
         algoritms[channel].next(value, time);
         //FIXME: it's not work!!!
-        /*if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
-            RRtype = checkQRS(PanTompkins.QRS.qrsCurrent);
+        if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
+          /*  RRtype = checkQRS(PanTompkins.QRS.qrsCurrent);
             long time = PanTompkins.QRS.qrsCurrent.rTimestamp - PanTompkins.QRS.qrsPrevious.rTimestamp;
             if (time >= 40 && time <= 130) {
                 RealmController.save(new RR()
@@ -224,7 +225,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
             } else {
                 Log.e(getClass().getSimpleName(), "skip from " + time);
             }
-            *//*if (!RRtype.equals(RRType.N)) {
+            *//**//*if (!RRtype.equals(RRType.N)) {
                 if (algoritms[i].countPC.size() == 2) {
                     generateEvent(NotifyType.PC_3, algoritms[i].countPC);
                     algoritms[i].countPC.clear();
@@ -236,9 +237,10 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                     generateEvent(NotifyType.PC_2, algoritms[i].countPC);
                 }
                 algoritms[i].countPC.clear();
-            }*//*
+            }*//**//**/
+            Log.d(getClass().getSimpleName(), "HR=" + algoritms[channel].heartRateStats.formatMean());
             PanTompkins.QRS.qrsCurrent.segState = PanTompkins.QRS.SegmentationStatus.PROCESSED;
-        }*/
+        }
     }
 
     private enum What {

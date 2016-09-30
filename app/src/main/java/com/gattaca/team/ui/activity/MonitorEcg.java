@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.gattaca.team.R;
+import com.gattaca.team.service.main.RootSensorListener;
 import com.gattaca.team.ui.view.PressureBar;
 
 import java.util.Random;
@@ -22,6 +23,7 @@ public class MonitorEcg extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        RootSensorListener.generateRaw2();
 
         pressureBar = (PressureBar) findViewById(R.id.bar);
         pressureBar2 = (PressureBar) findViewById(R.id.bar2);
