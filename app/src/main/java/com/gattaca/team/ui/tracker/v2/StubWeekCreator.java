@@ -36,7 +36,7 @@ public class StubWeekCreator {
 
     private Intake createIntake(Boolean status, int hours, int minutes) {
         try {
-            Intake intake = realm.createObject(Intake.class,AppUtils.generateUniqueId());
+            Intake intake = realm.createObject(Intake.class, AppUtils.generateUniqueId());
 
             intake.setHours(hours);
             intake.setMinutes(minutes);
@@ -51,13 +51,13 @@ public class StubWeekCreator {
     }
 
     private TaskAction createTaskAction(Boolean status) {
-        TaskAction taskAction = realm.createObject(TaskAction.class,AppUtils.generateUniqueId());
+        TaskAction taskAction = realm.createObject(TaskAction.class, AppUtils.generateUniqueId());
         taskAction.setCompleted(status);
         return taskAction;
     }
 
     private Drug createDrug(String name, int dose, String units) {
-        Drug drug = realm.createObject(Drug.class,AppUtils.generateUniqueId());
+        Drug drug = realm.createObject(Drug.class, AppUtils.generateUniqueId());
         drug.setName(name);
         drug.setDose(dose);
         drug.setUnits(units);
@@ -69,7 +69,7 @@ public class StubWeekCreator {
     }
 
     private Task createTask(String name, int time, String units) {
-        Task task = realm.createObject(Task.class,AppUtils.generateUniqueId());
+        Task task = realm.createObject(Task.class, AppUtils.generateUniqueId());
         task.setName(name);
         task.setUnits(units);
         task.setTime(time);
@@ -80,7 +80,7 @@ public class StubWeekCreator {
     }
 
     private PulseMeasurement createPulseMeasurement(String name, int duration, String units) {
-        PulseMeasurement pulseMeasurement = realm.createObject(PulseMeasurement.class,AppUtils.generateUniqueId());
+        PulseMeasurement pulseMeasurement = realm.createObject(PulseMeasurement.class, AppUtils.generateUniqueId());
         pulseMeasurement.setName(name);
         pulseMeasurement.setDuration(duration);
         pulseMeasurement.setUnits(units);
@@ -88,7 +88,7 @@ public class StubWeekCreator {
     }
 
     private PressureMeasurement createPressureMeasurement(String name, int pulse, int sys, int dyas, int hours, int minutes, boolean completed) {
-        PressureMeasurement pressureMeasurement = realm.createObject(PressureMeasurement.class,AppUtils.generateUniqueId());
+        PressureMeasurement pressureMeasurement = realm.createObject(PressureMeasurement.class, AppUtils.generateUniqueId());
         pressureMeasurement.setName(name);
         pressureMeasurement.setDiastolic(dyas);
         pressureMeasurement.setSystolic(sys);
@@ -101,15 +101,15 @@ public class StubWeekCreator {
 
     private Day createDay(String name, int number, int weekNumber) {
         try {
-            Day day = realm.createObject(Day.class,AppUtils.generateUniqueDayId(number,weekNumber));
+            Day day = realm.createObject(Day.class, AppUtils.generateUniqueDayId(number, weekNumber));
             day.setName(name);
             day.setNumber(number);
             for (int i = 0; i < 3; i++) {
                 day.getDrugs().add(createDrug("Вазилип " + i, 20, "мг"));
                 day.getTasks().add(createTask("Лежать", 24, "часа"));
-                day.getPulseMeasurements().add(createPulseMeasurement("Пульс", 15, "мин"));
+//                day.getPulseMeasurements().add(createPulseMeasurement("Пульс", 15, "мин"));
             }
-            day.getPressureMeasurements().add(createPressureMeasurement("Давление",90,100,100,15,20,false));
+            day.getPressureMeasurements().add(createPressureMeasurement("Давление", 90, 100, 100, 15, 20, false));
             return day;
         } catch (Exception e) {
             e.printStackTrace();

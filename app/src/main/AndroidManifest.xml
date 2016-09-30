@@ -30,9 +30,9 @@
         </activity>
         <activity
             android:name=".ui.activity.MainActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:exported="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.activity.MonitorEcg"
@@ -54,7 +54,8 @@
 
         <receiver android:name=".service.tracker.TimeNotification" />
 
-        <activity android:name=".ui.activity.tracker.DrugInfoActivity"></activity>
+        <activity android:name=".ui.activity.tracker.DrugInfoActivity" />
+        <activity android:name=".ui.activity.tracker.PressureInfoActivity"></activity>
     </application>
 
 </manifest>

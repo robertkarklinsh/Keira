@@ -8,6 +8,7 @@ import com.gattaca.team.ui.activity.tracker.AddPressureActivity;
 import com.gattaca.team.ui.activity.MonitorBpm;
 import com.gattaca.team.ui.activity.MonitorEcg;
 import com.gattaca.team.ui.activity.tracker.DrugInfoActivity;
+import com.gattaca.team.ui.activity.tracker.PressureInfoActivity;
 
 public final class ActivityTransferData {
     private final static String key = "ActivityTransferData.key";
@@ -52,7 +53,8 @@ public final class ActivityTransferData {
         BPM(MonitorBpm.class),
         ADT(AddDrugActivity.class),
         APT(AddPressureActivity.class),
-        DRUG_INFO(DrugInfoActivity.class);
+        DRUG_INFO(DrugInfoActivity.class),
+        PM_INFO(PressureInfoActivity.class);
 
         final private Class cls;
 

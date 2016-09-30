@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_pressure_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.gattaca.team.ui.activity.tracker.AddPressureActivity">
+
+    <TextView
+        android:id="@+id/pressure_info_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="13dp"
+
+        android:text="Время" />
+
+    <EditText
+        android:id="@+id/pressure_info_time_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/pressure_info_time"
+        android:layout_marginTop="26dp"
+        android:focusable="false"
+
+        android:text="12:00" />
+
+    <TextView
+        android:id="@+id/pressure_info_systolic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/pressure_info_time"
+        android:layout_marginTop="100dp"
+        android:text="Систолическое" />
+
+    <TextView
+        android:id="@+id/pressure_info_dyastolic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/pressure_info_systolic"
+        android:layout_marginTop="17dp"
+        android:text="Диастолическое" />
+
+    <EditText
+        android:id="@+id/pressure_info_dyastolic_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/pressure_info_systolic_field"
+        android:layout_marginEnd="10dp"
+        android:ems="10"
+        android:hint="120"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/pressure_info_systolic_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/pressure_info_dyastolic"
+        android:layout_alignStart="@+id/pressure_info_dyastolic_field"
+        android:ems="10"
+        android:hint="120"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/pressure_info_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="15dp"
+        android:text="Отмена" />
+
+    <ImageView
+        android:id="@+id/pressure_info_state"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="14dp"
+        android:src="@drawable/fucking_alarm" />
+
+    <Button
+        android:id="@+id/pressure_info_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/pressure_info_cancel"
+        android:layout_alignBottom="@+id/pressure_info_cancel"
+        android:layout_alignEnd="@+id/pressure_info_state"
+        android:text="ОК" />
+
+
+    <TextView
+        android:id="@+id/pressure_info_pulse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/pressure_info_dyastolic_field"
+        android:layout_marginTop="15dp"
+        android:text="Пульс" />
+
+    <LinearLayout
+        android:id="@+id/pressure_info_reminders"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/add_drug_units_field"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:visibility="gone"></LinearLayout>
+
+    <EditText
+        android:id="@+id/pressure_info_pulse_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="90"
+        android:inputType="number"
+        android:layout_below="@+id/pressure_info_dyastolic_field"
+        android:layout_alignStart="@+id/pressure_info_dyastolic_field" />
+
+    <Button
+        android:text="Удалить измерение"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/pressure_info_ok"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/pressure_info_delete" />
+
+
+</RelativeLayout>

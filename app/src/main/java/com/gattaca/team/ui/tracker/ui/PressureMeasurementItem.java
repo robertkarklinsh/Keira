@@ -7,10 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gattaca.team.R;
 import com.gattaca.team.db.tracker.PressureMeasurement;
+import com.gattaca.team.root.MainApplication;
+import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.tracker.ViewHoldersCollection;
 import com.gattaca.team.ui.view.PressureBar;
 
@@ -26,6 +27,7 @@ public class PressureMeasurementItem extends Item {
         PressureMeasurement pressureMeasurement = (PressureMeasurement) itemContainer;
         ViewGroup viewGroup = (ViewGroup) holder.mView.getParent();
         Context context = holder.mView.getContext();
+        holder.mView.setOnClickListener(new PressureAllClickListener(pressureMeasurement));
         LinearLayout itemHeader = (LinearLayout) holder.mView.findViewById(R.id.tracker_item_text_holder);
 
         LinearLayout itemImages = (LinearLayout) holder.mView.findViewById(R.id.tracker_item_image_holder);
@@ -43,15 +45,32 @@ public class PressureMeasurementItem extends Item {
             progress = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_measurement_pressure_filled, viewGroup);
             PressureBar systolic = (PressureBar) progress.findViewById(R.id.tracker_pressure_systolic);
             PressureBar diastolic = (PressureBar) progress.findViewById(R.id.tracker_pressure_diastolic);
+            TextView pulse = (TextView) progress.findViewById(R.id.tracker_pressure_pulse) ;
+            pulse.setText("Пульс: " + pressureMeasurement.getPulse() + " BPM");
             systolic.setValue(pressureMeasurement.getSystolic());
             diastolic.setValue(pressureMeasurement.getDiastolic());
         } else {
             progress = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_measurement_pressure_non_filled, viewGroup);
-            progress.setOnClickListener((View v) -> {
-                Toast.makeText(context,"Not yet",Toast.LENGTH_SHORT).show();
-            });
+//            progress.setOnClickListener((View v) -> {
+//                Toast.makeText(context,"Not yet",Toast.LENGTH_SHORT).show();
+//            });
         }
             itemImages.addView(progress);
 
     }
+
+    private class PressureAllClickListener implements View.OnClickListener {
+
+        PressureMeasurement pressureMeasurement;
+
+        public PressureAllClickListener(PressureMeasurement pressureMeasurement) {
+            this.pressureMeasurement = pressureMeasurement;
+        }
+
+        @Override
+        public void onClick(View v) {
+            MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.PM_INFO, pressureMeasurement.getPrimaryKey()));
+        }
+    }
+
 }

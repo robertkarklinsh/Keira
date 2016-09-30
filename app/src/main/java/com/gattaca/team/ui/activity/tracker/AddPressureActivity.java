@@ -10,12 +10,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.Day;
 import com.gattaca.team.db.tracker.PressureMeasurement;
 import com.gattaca.team.root.AppUtils;
+import com.gattaca.team.service.tracker.TimeNotification;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
 
 import java.util.ArrayList;
@@ -147,6 +149,14 @@ public class AddPressureActivity extends AppCompatActivity {
         cancel.setOnClickListener((View v) -> AddPressureActivity.this.finish());
 
         ok.setOnClickListener((View v) -> {
+            if (!isReminder && isEmpty(edtToStr(pulseField))) {
+                Toast.makeText(AddPressureActivity.this, "Пожалуйста введите пульс", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!isReminder &&( isEmpty(edtToStr(dyastolicField)) || isEmpty(edtToStr(systolicField)))) {
+                Toast.makeText(AddPressureActivity.this, "Пожалуйста введите давление", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Realm realm = RealmController.getRealm();
             realm.beginTransaction();
             if (isReminder) {
@@ -157,14 +167,22 @@ public class AddPressureActivity extends AppCompatActivity {
                         pm.setHours(holder.getHours());
                         pm.setMinutes(holder.getMinutes());
                         pm.setCompleted(false);
+                        pm.setName("Давление");
                         pm.setPrimaryKey(AppUtils.generateUniqueId());
                         day.getPressureMeasurements().add(pm);
+                        GregorianCalendar gr = new GregorianCalendar();
+                        gr.set(Calendar.HOUR_OF_DAY, pm.getHours());
+                        gr.set(Calendar.MINUTE, pm.getMinutes());
+                        gr.set(Calendar.SECOND,0);
+                        gr.add(Calendar.DAY_OF_MONTH, day.getNumber() - ModelDao.currentDayOfWeek());
+                        TimeNotification.setAlarm(getApplicationContext(), gr.getTimeInMillis(), "pressure", pm.getPrimaryKey());
                     }
                 }
 
             } else {
                 for(Day day : RealmController.getCurrentWeek().getDays()) {
                     if (day.getNumber() == ModelDao.currentDayOfWeek()) {
+
                         PressureMeasurement pm = realm.createObject(PressureMeasurement.class);
                         pm.setHours(holder.getHours());
                         pm.setMinutes(holder.getMinutes());
@@ -184,6 +202,10 @@ public class AddPressureActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    static boolean isEmpty(String s) {
+        return s == null || s.trim().equals("");
     }
     static String edtToStr(EditText editText) {
         return editText.getText().toString();

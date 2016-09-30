@@ -127,8 +127,8 @@ public class DrugInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        long drugId = (long) ActivityTransferData.getBindData(getIntent());
         setContentView(R.layout.activity_drug_info);
+        long drugId = (long) ActivityTransferData.getBindData(getIntent());
         Drug drug = Realm.getDefaultInstance().where(Drug.class).equalTo("primaryKey", drugId).findFirst();
         realm = RealmController.getRealm();
         times = new ArrayList<>();
