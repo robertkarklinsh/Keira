@@ -11,7 +11,7 @@ public final class ActivityTransferData {
     private final static String key = "ActivityTransferData.key";
     private final static String type = "ActivityTransferData.type";
     final private AvailableActivity launchActivity;
-    //TODO: change to sub activity model
+
     final private Object bindData;
 
     public ActivityTransferData(AvailableActivity launchActivity) {
@@ -30,6 +30,8 @@ public final class ActivityTransferData {
             //TODO: extends cases here!
             if (typeObject.equals(Integer.class.getSimpleName())) {
                 a = i.getIntExtra(key, -1);
+            } else if (typeObject.equals(Long.class.getSimpleName())) {
+                a = i.getLongExtra(key, -1);
             }
         }
         return a;
@@ -41,6 +43,9 @@ public final class ActivityTransferData {
         if (bindData instanceof Integer) {
             i.putExtra(type, bindData.getClass().getSimpleName());
             i.putExtra(key, (int) bindData);
+        } else if (bindData instanceof Long) {
+            i.putExtra(type, bindData.getClass().getSimpleName());
+            i.putExtra(key, (long) bindData);
         }
         activity.startActivity(i);
     }

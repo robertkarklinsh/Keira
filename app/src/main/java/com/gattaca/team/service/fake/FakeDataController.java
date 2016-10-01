@@ -188,6 +188,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                     }
 
                     time = startTime + prevRrValue * timeOffset;
+                    AppPref.FakeSessionStart.set(startTime);
                     RealmController.save(new Session()
                             .setTimeStart(startTime)
                             .setTimeFinish(time));

@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -63,16 +64,16 @@ public final class Bpm extends TextView implements View.OnTouchListener {
             } else {
                 mPointsPath.rewind();
                 timeSrc = model.formatTimes(times);
-                final List<Float> data = model.getData();
-                double a = (double) 360 / model.getPointsSize();
+                final List<Pair<Float, Long>> data = model.getData();
+                double a;
                 int idx = 0;
-                for (float f : data) {
-                    if (f > AppConst.maxBPM) f = AppConst.maxBPM;
-                    setPoint(mPointsPath, mathBpm(f, idx++, a));
+                float pointValue;
+                for (Pair<Float, Long> point : data) {
+                    pointValue = point.first > AppConst.maxBPM ? AppConst.maxBPM : point.first;
+                    setPoint(mPointsPath, mathBpm(pointValue, 1, model.getAngle(point.second)));
                 }
                 mGreenPath.rewind();
                 mGreenResetPath.rewind();
-                idx = 0;
                 final List<BpmModel.BpmColorRegion> greens = model.getGreenData();
                 a = (double) 360 / greens.size();
                 for (BpmModel.BpmColorRegion region : greens) {
@@ -132,7 +133,7 @@ public final class Bpm extends TextView implements View.OnTouchListener {
 
     public boolean addRealTimePoint(float point, final long time) {
         model.addPoint(point, time);
-        setPoint(mPointsPath, mathBpm(point, model.getData().size(), (double) 360 / BpmModel.pointsInRealTimeMode));
+        setPoint(mPointsPath, mathBpm(point, 1, model.getAngle(time)));
 
         if (model.isRealTime() && selectedPosition == model.getData().size() - 2) {
             updatePin(model.getData().size() - 1);
@@ -212,8 +213,8 @@ public final class Bpm extends TextView implements View.OnTouchListener {
             mainLinePaint.setColor(Color.BLACK);
             float[] pin = math(
                     pinSize,
-                    selectedPosition,
-                    (double) 360 / model.getPointsSize(),
+                    1,
+                    model.getAngle(model.getData().get(selectedPosition).second),
                     1);
             canvas.drawLine(x0, y0, pin[0], pin[1], mainLinePaint);
             mainLinePaint.setStyle(Paint.Style.FILL);
@@ -228,15 +229,15 @@ public final class Bpm extends TextView implements View.OnTouchListener {
             //==========================================================================================
             mainLinePaint.setStrokeWidth(8);
             mainLinePaint.setColor(Color.BLACK);
-            mainLinePaint.setPathEffect(cornerPathEffect);
+            // mainLinePaint.setPathEffect(cornerPathEffect);
             canvas.drawPath(mPointsPath, mainLinePaint);
 
             mainLinePaint.setStrokeWidth(4);
             mainLinePaint.setColor(Color.CYAN);
             pin = mathBpm(
                     model.getIntValueByPosition(selectedPosition),
-                    selectedPosition,
-                    (double) 360 / model.getPointsSize());
+                    1,
+                    model.getAngle(model.getData().get(selectedPosition).second));
             canvas.drawCircle(pin[0], pin[1], (float) (0.01 * width), mainLinePaint);
         }
         super.onDraw(canvas);
@@ -296,7 +297,7 @@ public final class Bpm extends TextView implements View.OnTouchListener {
             }
 
             for (int idx = 0; idx < model.getData().size(); idx++) {
-                if (idx * a >= b) {
+                if (model.getPeriod() * b / 360 <= model.getDiff(idx)) {
                     updatePin(idx);
                     break;
                 }

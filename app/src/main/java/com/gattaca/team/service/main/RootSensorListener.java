@@ -3,6 +3,7 @@ package com.gattaca.team.service.main;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.gattaca.team.annotation.GraphPeriod;
@@ -17,6 +18,7 @@ import com.gattaca.team.db.sensor.emulate.EmulatedBpm_15Min;
 import com.gattaca.team.db.sensor.emulate.EmulatedBpm_5Min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
+import com.gattaca.team.prefs.AppPref;
 import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.service.IServiceConnection;
@@ -30,6 +32,8 @@ import com.squareup.otto.ThreadEnforcer;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.RealmModel;
 
 public final class RootSensorListener extends HandlerThread implements Handler.Callback {
     final static int BpmMin = 20;
@@ -163,7 +167,9 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                 break;
             case EmulateData5:
                 if (emulating) {
-                    final List<BpmPoint_5_min> fakes5 = RealmController.getStubSessionBpm5();
+                    final List<BpmPoint_5_min> fakes5 = RealmController.getAllBpm5From(
+                            AppPref.FakeSessionStart.getLong(),
+                            AppPref.FakeSessionStart.getLong() + 30 * DateUtils.MINUTE_IN_MILLIS);
                     RealmController.save(EmulatedBpm_5Min.createFromBpm(fakes5.get(msg.arg1)));
                     m.what = msg.what;
                     m.arg1 = msg.arg1 + 1;
@@ -175,7 +181,9 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                 break;
             case EmulateData15:
                 if (emulating) {
-                    final List<BpmPoint_15_min> fakes15 = RealmController.getStubSessionBpm15();
+                    final List<BpmPoint_15_min> fakes15 = RealmController.getAllBpm15From(
+                            AppPref.FakeSessionStart.getLong(),
+                            AppPref.FakeSessionStart.getLong() + 30 * DateUtils.MINUTE_IN_MILLIS);
                     RealmController.save(EmulatedBpm_15Min.createFromBpm(fakes15.get(msg.arg1)));
                     m.what = msg.what;
                     m.arg1 = msg.arg1 + 1;
@@ -189,8 +197,8 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                 emulating = false;
                 handler.removeMessages(What.EmulateData5.ordinal());
                 handler.removeMessages(What.EmulateData15.ordinal());
-                handler.removeMessages(What.EmulateData30.ordinal());
                 handler.removeMessages(What.EmulateDataPanTomkinsStart.ordinal());
+                RealmController.saveList(AppUtils.collapseCHeck(0, 0, 0, true));
                 break;
         }
         return true;
@@ -259,11 +267,22 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
                         .setTime(PanTompkins.QRS.qrsCurrent.rTimestamp));
 
                 RealmController.save(AppUtils.checkBpmAndGenerateEvent(bpm, time));
-
-                RealmController.saveList(AppUtils.collapseCHeck(time,
+                final List<RealmModel> a = AppUtils.collapseCHeck(time,
                         PanTompkins.QRS.qrsCurrent.rTimestamp - PanTompkins.QRS.qrsPrevious.rTimestamp,
                         bpm,
-                        false));
+                        false);
+                final List<RealmModel> additional = new ArrayList<>();
+                for (RealmModel item : a) {
+                    if (item instanceof BpmPoint_5_min) {
+                        additional.add(EmulatedBpm_5Min.createFromBpm((BpmPoint_5_min) item));
+                    } else if (item instanceof BpmPoint_15_min) {
+                        additional.add(EmulatedBpm_15Min.createFromBpm((BpmPoint_15_min) item));
+                    }
+                }
+                if (!additional.isEmpty()) {
+                    a.addAll(additional);
+                }
+                RealmController.saveList(a);
             }
             PanTompkins.QRS.qrsCurrent.segState = PanTompkins.QRS.SegmentationStatus.PROCESSED;
         }
@@ -276,7 +295,6 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         EmulateDataStart,
         EmulateDataPanTomkinsStart,
         EmulateData5,
-        EmulateData15,
-        EmulateData30
+        EmulateData15
     }
 }

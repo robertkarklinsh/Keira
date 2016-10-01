@@ -1,8 +1,8 @@
 package com.gattaca.team.ui.model.impl;
 
-import android.text.format.DateUtils;
 import android.util.Pair;
 
+import com.gattaca.team.annotation.GraphPeriod;
 import com.gattaca.team.ui.model.IContainerModel;
 import com.gattaca.team.ui.view.TimeStump;
 
@@ -16,8 +16,10 @@ public final class BpmModel implements IContainerModel {
     private final List<Pair<Float, Long>> data = new ArrayList<>();
     private final List<BpmColorRegion> red = new ArrayList<>();
     private final List<BpmColorRegion> green = new ArrayList<>();
-    private final Random rnd = new Random();
     private final boolean isRealTime;
+    private
+    @GraphPeriod
+    long period = GraphPeriod.period_5min;
 
     public BpmModel(boolean isRealTime) {
         this.isRealTime = isRealTime;
@@ -46,6 +48,18 @@ public final class BpmModel implements IContainerModel {
         return isRealTime() ? pointsInRealTimeMode : getData().size();
     }
 
+    public double getAngle(long time) {
+        return (double) (time - data.get(0).second) * 360 / period;
+    }
+
+    public long getPeriod() {
+        return this.period;
+    }
+
+    public void setPeriod(@GraphPeriod long period) {
+        this.period = period;
+    }
+
     public void addPoint(float value, long timestump) {
         data.add(new Pair<>(value, timestump));
     }
@@ -60,11 +74,9 @@ public final class BpmModel implements IContainerModel {
 
     public ArrayList<String> formatTimes(final int period) {
         final ArrayList<String> list = new ArrayList<>();
-        final long
-                start = data.get(0).second,
-                allTime = compileEndTime();
+        final long start = data.get(0).second;
         for (int i = 0; i < period; i++) {
-            list.add(TimeStump.convert(start + (i) * allTime / period, "HH:mm:ss"));
+            list.add(TimeStump.convert(start + (i) * this.period / period, "HH:mm:ss"));
         }
         return list;
     }
@@ -77,24 +89,8 @@ public final class BpmModel implements IContainerModel {
         return red;
     }
 
-    public List<Float> getData() {
-        final List<Float> floats = new ArrayList<>();
-        for (Pair<Float, Long> item : this.data) {
-            floats.add(item.first);
-        }
-        return floats;
-    }
-
     public boolean isRealTime() {
         return isRealTime;
-    }
-
-    public long compileEndTime() {
-        if (isRealTime()) {
-            return 5 * DateUtils.MINUTE_IN_MILLIS;
-        } else {
-            return data.get(data.size() - 1).second - data.get(0).second;
-        }
     }
 
     public BpmModel fillPoints() {
@@ -105,6 +101,14 @@ public final class BpmModel implements IContainerModel {
             fill(red);
         }
         return this;
+    }
+
+    public List<Pair<Float, Long>> getData() {
+        return this.data;
+    }
+
+    public long getDiff(int pos) {
+        return data.get(pos).second - data.get(0).second;
     }
 
     public static class BpmColorRegion {

@@ -8,6 +8,7 @@ import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.ui.dialog.DialogObjectBase;
+import com.gattaca.team.ui.utils.ActivityTransferData;
 
 
 public final class SessionActions extends DialogObjectBase implements MaterialDialog.ListCallback {
@@ -34,8 +35,7 @@ public final class SessionActions extends DialogObjectBase implements MaterialDi
                 MainApplication.uiBusPost(true);
                 break;
             case 1:
-                //TODO: view
-                MainApplication.showToastNotImplemented();
+                MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.BPM, timeStart));
                 break;
         }
     }

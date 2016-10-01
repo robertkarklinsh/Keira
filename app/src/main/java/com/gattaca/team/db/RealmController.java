@@ -111,6 +111,7 @@ public final class RealmController {
 
     public static void finishLastSession() {
         Log.d("RealmController", "close session");
+        RealmController.clearEmulate();
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         final Session session = RealmController.getLastSession();
@@ -128,6 +129,7 @@ public final class RealmController {
             realm.beginTransaction();
             realm.copyToRealmOrUpdate(item);
             realm.commitTransaction();
+            Log.v(item.getClass().getSimpleName(), "saved " + item.toString());
         }
     }
 
@@ -137,6 +139,12 @@ public final class RealmController {
             realm.beginTransaction();
             realm.copyToRealmOrUpdate(list);
             realm.commitTransaction();
+
+            for (RealmModel a : list) {
+                if (!(a instanceof SensorPointData)) {
+                    Log.v(a.getClass().getSimpleName(), "saved " + a.toString());
+                }
+            }
         }
     }
 
@@ -166,6 +174,24 @@ public final class RealmController {
                 .sort(NotifyEventObject.getNamedFieldTime(), Sort.DESCENDING);
     }
 
+    public static RealmResults<BpmPoint_5_min> getAllBpm5From(final long from, final long to) {
+        return Realm.getDefaultInstance()
+                .where(BpmPoint_5_min.class)
+                .greaterThan(BpmPoint_5_min.getNamedFieldTime(), from)
+                .lessThan(BpmPoint_5_min.getNamedFieldTime(), to)
+                .findAll()
+                .sort(BpmPoint_5_min.getNamedFieldTime(), Sort.ASCENDING);
+    }
+
+    public static RealmResults<BpmPoint_15_min> getAllBpm15From(final long from, final long to) {
+        return Realm.getDefaultInstance()
+                .where(BpmPoint_15_min.class)
+                .greaterThan(BpmPoint_15_min.getNamedFieldTime(), from)
+                .lessThan(BpmPoint_5_min.getNamedFieldTime(), to)
+                .findAll()
+                .sort(BpmPoint_15_min.getNamedFieldTime(), Sort.ASCENDING);
+    }
+
     public static RealmResults<NotifyEventObject> getAllEvents() {
         return Realm
                 .getDefaultInstance()
@@ -177,34 +203,22 @@ public final class RealmController {
     public static RealmResults<Session> getAllSessions() {
         return Realm.getDefaultInstance()
                 .where(Session.class)
+                .notEqualTo(Session.getNamedFieldTimeFinish(), Session.LAST_TIME_FLAG)
                 .findAll()
                 .sort(Session.getNamedFieldTimeStart(), Sort.DESCENDING);
     }
 
-    public static RealmResults<BpmPoint_5_min> getStubSessionBpm5() {
-        return Realm.getDefaultInstance()
-                .where(BpmPoint_5_min.class)
-                .findAll()
-                .sort(BpmPoint_5_min.getNamedFieldTime(), Sort.ASCENDING);
-    }
 
-    public static RealmResults<BpmPoint_15_min> getStubSessionBpm15() {
+    public static RealmResults<BpmPoint_30_min> getAllBpm30From(long from, long to) {
         return Realm.getDefaultInstance()
-                .where(BpmPoint_15_min.class)
-                .findAll()
-                .sort(BpmPoint_15_min.getNamedFieldTime(), Sort.ASCENDING);
-    }
-
-    public static RealmResults<BpmPoint_30_min> getStubSessionBpm30() {
-        final Realm r = Realm.getDefaultInstance();
-        final BpmPoint_30_min first = r.where(BpmPoint_30_min.class).findFirst();
-        return r.where(BpmPoint_30_min.class)
-                .lessThan(BpmPoint_30_min.getNamedFieldTime(), first.getTime() + 30 * DateUtils.MINUTE_IN_MILLIS)
+                .where(BpmPoint_30_min.class)
+                .greaterThan(BpmPoint_30_min.getNamedFieldTime(), from)
+                .lessThan(BpmPoint_30_min.getNamedFieldTime(), to)
                 .findAll()
                 .sort(BpmPoint_30_min.getNamedFieldTime(), Sort.ASCENDING);
     }
 
-    public static RealmResults<BpmGreen> getStubSessionBpmGreen(long from, long to) {
+    public static RealmResults<BpmGreen> getBpmGreenZone(long from, long to) {
         return Realm.getDefaultInstance()
                 .where(BpmGreen.class)
                 .greaterThan(BpmGreen.getNamedFieldTime(), from)
@@ -213,7 +227,7 @@ public final class RealmController {
                 .sort(BpmGreen.getNamedFieldTime(), Sort.ASCENDING);
     }
 
-    public static RealmResults<BpmRed> getStubSessionBpmRed(long from, long to) {
+    public static RealmResults<BpmRed> getBpmRedZone(long from, long to) {
         return Realm.getDefaultInstance()
                 .where(BpmRed.class)
                 .greaterThan(BpmGreen.getNamedFieldTime(), from)
@@ -243,6 +257,13 @@ public final class RealmController {
         return Realm.getDefaultInstance()
                 .where(Session.class)
                 .equalTo(Session.getNamedFieldTimeFinish(), Session.LAST_TIME_FLAG)
+                .findFirst();
+    }
+
+    public static Session getSessionFrom(final long time) {
+        return Realm.getDefaultInstance()
+                .where(Session.class)
+                .equalTo(Session.getNamedFieldTimeStart(), time)
                 .findFirst();
     }
 }
