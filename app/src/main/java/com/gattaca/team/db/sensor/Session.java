@@ -1,13 +1,11 @@
 package com.gattaca.team.db.sensor;
 
 
-import io.realm.RealmModel;
+import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.RealmClass;
 
-@RealmClass
-public class Session implements RealmModel {
+public class Session extends RealmObject {
     @Ignore
     public final static int LAST_TIME_FLAG = -1;
     @PrimaryKey

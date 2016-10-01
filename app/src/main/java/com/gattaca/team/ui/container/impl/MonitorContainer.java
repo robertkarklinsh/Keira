@@ -8,9 +8,9 @@ import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.sensor.emulate.EmulatedBpm_5Min;
 import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.service.main.RootSensorListener;
-import com.gattaca.team.ui.container.ActivityTransferData;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.model.impl.MonitorModel;
+import com.gattaca.team.ui.utils.ActivityTransferData;
 import com.gattaca.team.ui.view.BpmValue;
 
 import io.realm.RealmChangeListener;

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="Session_actions">
+        <item>@string/session_action_remove</item>
+        <item>@string/session_action_view</item>
+    </array>
+</resources>

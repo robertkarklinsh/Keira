@@ -97,12 +97,28 @@ public final class RealmController {
         clearEmulate();
     }
 
+    public static void removeSession(long timeStart) {
+        Log.d("RealmController", "close session");
+        final Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        final Session session = realm
+                .where(Session.class)
+                .equalTo(Session.getNamedFieldTimeStart(), timeStart)
+                .findFirst();
+        session.deleteFromRealm();
+        realm.commitTransaction();
+    }
+
     public static void finishLastSession() {
         Log.d("RealmController", "close session");
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         final Session session = RealmController.getLastSession();
         session.finishSession();
+        if (session.getTimeFinish() - session.getTimeStart() < 2 * DateUtils.SECOND_IN_MILLIS) {
+            session.deleteFromRealm();
+            Log.d("RealmController", "remove session because low time");
+        }
         realm.commitTransaction();
     }
 

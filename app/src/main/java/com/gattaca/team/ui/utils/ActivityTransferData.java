@@ -1,4 +1,4 @@
-package com.gattaca.team.ui.container;
+package com.gattaca.team.ui.utils;
 
 import android.app.Activity;
 import android.content.Intent;

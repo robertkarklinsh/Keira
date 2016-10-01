@@ -13,11 +13,11 @@ import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.Week;
 import com.gattaca.team.root.MainApplication;
-import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
-import com.gattaca.team.ui.container.MainMenu;
 import com.gattaca.team.ui.container.list.lm.SnappingLinearLayoutManager;
 import com.gattaca.team.ui.model.impl.TrackerModel;
+import com.gattaca.team.ui.utils.ContainerTransferData;
+import com.gattaca.team.ui.utils.MainMenu;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 

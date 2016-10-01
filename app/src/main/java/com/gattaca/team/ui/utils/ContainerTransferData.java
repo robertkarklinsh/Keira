@@ -1,4 +1,4 @@
-package com.gattaca.team.ui.container;
+package com.gattaca.team.ui.utils;
 
 import com.gattaca.team.ui.model.IListContainerModel;
 
