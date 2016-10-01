@@ -2,22 +2,19 @@ package com.gattaca.team.ui.container.impl;
 
 import android.app.Activity;
 import android.os.CountDownTimer;
-import android.text.format.DateUtils;
 
 import com.gattaca.team.R;
-import com.gattaca.team.db.event.NotifyEventObject;
-import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.ui.container.IListContainer;
-import com.gattaca.team.ui.container.list.item.TrackerMeasureListItem;
+import com.gattaca.team.ui.container.list.item.DataBankListItem;
 import com.gattaca.team.ui.model.impl.DataBankModel;
 
-public final class DataBankContainer extends IListContainer<DataBankModel, TrackerMeasureListItem> {
+public final class DataBankContainer extends IListContainer<DataBankModel, DataBankListItem> {
     private CountDownTimer timer = null;
 
     public DataBankContainer(final Activity screen) {
         super(screen, R.id.container_data_bank_id);
     }
-
+/*
     @Override
     public void changeCurrentVisibilityState(final boolean isHide) {
         if (isHide) {
@@ -53,5 +50,5 @@ public final class DataBankContainer extends IListContainer<DataBankModel, Track
             }
         };
         timer.start();
-    }
+    }*/
 }

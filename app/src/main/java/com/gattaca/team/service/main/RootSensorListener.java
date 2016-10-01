@@ -12,6 +12,7 @@ import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.sensor.RR;
 import com.gattaca.team.db.sensor.SensorPointData;
+import com.gattaca.team.db.sensor.Session;
 import com.gattaca.team.db.sensor.emulate.EmulatedBpm_15Min;
 import com.gattaca.team.db.sensor.emulate.EmulatedBpm_5Min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
@@ -58,6 +59,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     }
 
     public static void stopRaw() {
+        RealmController.finishLastSession();
         getInstance().handler.sendEmptyMessage(What.EmulateDataStop.ordinal());
         getInstance().serviceConnectionImpl.stopConnection();
         try {
@@ -114,6 +116,10 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         Message m = new Message();
         switch (What.values()[msg.what]) {
             case DataTick:
+                if (RealmController.getLastSession() == null) {
+                    Log.d("RealmController", "open session");
+                    RealmController.save(new Session());
+                }
                 SensorData.FormattedSensorItem item;
                 final SensorData data = SensorData.class.cast(msg.obj);
                 final List<SensorPointData> sensorPointData = new ArrayList<>();

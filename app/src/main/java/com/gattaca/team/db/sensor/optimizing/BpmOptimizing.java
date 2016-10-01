@@ -22,7 +22,7 @@ class BpmOptimizing {
     boolean addPoint(long globalTimeStump, double time, float value) {
         boolean b = false;
         this.time += time;
-        if (this.time > collapseTime) {
+        if (!data.isEmpty() && this.time > collapseTime) {
             this.time -= collapseTime;
             collapsePoints();
             b = true;

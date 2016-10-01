@@ -97,6 +97,15 @@ public final class RealmController {
         clearEmulate();
     }
 
+    public static void finishLastSession() {
+        Log.d("RealmController", "close session");
+        final Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        final Session session = RealmController.getLastSession();
+        session.finishSession();
+        realm.commitTransaction();
+    }
+
     public static void save(RealmModel item) {
         if (item != null) {
             final Realm realm = Realm.getDefaultInstance();
@@ -153,7 +162,7 @@ public final class RealmController {
         return Realm.getDefaultInstance()
                 .where(Session.class)
                 .findAll()
-                .sort(Session.getNamedFieldTimeFinish(), Sort.DESCENDING);
+                .sort(Session.getNamedFieldTimeStart(), Sort.DESCENDING);
     }
 
     public static RealmResults<BpmPoint_5_min> getStubSessionBpm5() {
@@ -212,5 +221,12 @@ public final class RealmController {
         return Realm.getDefaultInstance()
                 .where(Week.class)
                 .equalTo(Week.getNamedFieldWeekNum(), new GregorianCalendar().get(GregorianCalendar.WEEK_OF_YEAR)).findFirst();
+    }
+
+    public static Session getLastSession() {
+        return Realm.getDefaultInstance()
+                .where(Session.class)
+                .equalTo(Session.getNamedFieldTimeFinish(), Session.LAST_TIME_FLAG)
+                .findFirst();
     }
 }

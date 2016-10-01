@@ -71,7 +71,7 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                 cal.set(Calendar.MINUTE, 0);
                 cal.set(Calendar.SECOND, 0);
                 cal.set(Calendar.MILLISECOND, 0);
-                cal.set(Calendar.DAY_OF_MONTH, 1);
+                cal.add(Calendar.DAY_OF_YEAR, -1);
                 final long startTime = cal.getTimeInMillis();
                 final List<RealmModel> rawRealm = new ArrayList<>();
                 List<RealmModel> list = null;
