@@ -122,6 +122,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
             case DataTick:
                 if (RealmController.getLastSession() == null) {
                     Log.d("RealmController", "open session");
+                    RealmController.clearEmulate();
                     RealmController.save(new Session());
                 }
                 SensorData.FormattedSensorItem item;

@@ -81,6 +81,6 @@ public final class MonitorContainer extends IContainer<MonitorModel> implements 
 
     @Override
     public void onChange(RealmResults<EmulatedBpm_5Min> element) {
-        bpm.setBpm(element.get(0).getValue());
+        bpm.setBpm(element.get(element.size() - 1).getValue());
     }
 }

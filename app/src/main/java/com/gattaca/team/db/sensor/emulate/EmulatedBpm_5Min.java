@@ -53,4 +53,10 @@ public class EmulatedBpm_5Min implements RealmModel {
         this.channel = channel;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return getNamedFieldTime() + "=" + getTime() + "\t"
+                + "value=" + value;
+    }
 }

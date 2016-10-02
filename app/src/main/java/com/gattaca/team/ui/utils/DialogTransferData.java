@@ -21,7 +21,9 @@ public final class DialogTransferData {
         return bindData;
     }
 
-    public int getDialogId() {
+    public
+    @DialogId
+    int getDialogId() {
         return dialogId;
     }
 }

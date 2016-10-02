@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.gattaca.team.annotation.DialogId;
 import com.gattaca.team.ui.dialog.action.SessionActions;
+import com.gattaca.team.ui.dialog.waiting.GenerationData;
+import com.gattaca.team.ui.dialog.waiting.GetFirstTick;
 import com.gattaca.team.ui.utils.DialogTransferData;
 
 public class DialogFactory {
@@ -17,6 +19,12 @@ public class DialogFactory {
         switch (data.getDialogId()) {
             case DialogId.SessionActions:
                 dialog = new SessionActions((Long) data.getBindData());
+                break;
+            case DialogId.GenerationData:
+                dialog = new GenerationData();
+                break;
+            case DialogId.StartFirstTick:
+                dialog = new GetFirstTick();
                 break;
         }
         return dialog;

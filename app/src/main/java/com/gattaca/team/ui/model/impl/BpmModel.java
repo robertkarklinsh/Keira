@@ -17,6 +17,7 @@ public final class BpmModel implements IContainerModel {
     private final List<BpmColorRegion> red = new ArrayList<>();
     private final List<BpmColorRegion> green = new ArrayList<>();
     private final boolean isRealTime;
+    private long timeStart;
     private
     @GraphPeriod
     long period = GraphPeriod.period_5min;
@@ -37,7 +38,7 @@ public final class BpmModel implements IContainerModel {
     }
 
     public int getIntValueByPosition(int position) {
-        return data.get(position >= data.size() ? data.size() - 1 : position).first.intValue();
+        return data.isEmpty() ? 0 : data.get(position >= data.size() ? data.size() - 1 : position).first.intValue();
     }
 
     public String getStringValueByPosition(int position) {
@@ -48,8 +49,12 @@ public final class BpmModel implements IContainerModel {
         return isRealTime() ? pointsInRealTimeMode : getData().size();
     }
 
-    public double getAngle(long time) {
-        return (double) (time - data.get(0).second) * 360 / period;
+    public double getAngle(int pos) {
+        return data.isEmpty()
+                ? 0
+                : (data.size() - 1 <= pos
+                ? (double) (data.get(data.size() - 1).second - this.timeStart) * 360 / period
+                : (double) (data.get(pos).second - this.timeStart) * 360 / period);
     }
 
     public long getPeriod() {
@@ -74,9 +79,8 @@ public final class BpmModel implements IContainerModel {
 
     public ArrayList<String> formatTimes(final int period) {
         final ArrayList<String> list = new ArrayList<>();
-        final long start = data.get(0).second;
         for (int i = 0; i < period; i++) {
-            list.add(TimeStump.convert(start + (i) * this.period / period, "HH:mm:ss"));
+            list.add(TimeStump.convert(this.timeStart + (i) * this.period / period, "HH:mm:ss"));
         }
         return list;
     }
@@ -109,6 +113,10 @@ public final class BpmModel implements IContainerModel {
 
     public long getDiff(int pos) {
         return data.get(pos).second - data.get(0).second;
+    }
+
+    public void setTimeStart(long timeStart) {
+        this.timeStart = timeStart;
     }
 
     public static class BpmColorRegion {

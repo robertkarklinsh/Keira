@@ -22,6 +22,10 @@ public abstract class DialogObjectBase<Me extends DialogObjectBase, Callback> {
         build(context).show();
     }
 
+    public final void dissmis() {
+        dialog.dismiss();
+    }
+
     public final Me addCallback(final Callback callback) {
         this.callback = callback;
         return (Me) this;
