@@ -88,25 +88,25 @@ public class MonitorBpm extends AppCompatActivity {
             colorsTo = session.getTimeFinish();
             final long timeSize = colorsTo - colorsFrom;
             if (timeSize < GraphPeriod.period_5min) {
-                colorsTo = colorsFrom + GraphPeriod.period_5min;
                 final List<BpmPoint_5_min> data = RealmController.getAllBpm5From(colorsFrom, colorsTo);
                 for (BpmPoint_5_min item : data) {
                     model.addPoint(item.getValue(), item.getTime());
                 }
+                colorsTo = colorsFrom + GraphPeriod.period_5min;
                 model.setPeriod(GraphPeriod.period_5min);
             } else if (timeSize < GraphPeriod.period_15min) {
-                colorsTo = colorsFrom + GraphPeriod.period_15min;
                 final List<BpmPoint_15_min> data = RealmController.getAllBpm15From(colorsFrom, colorsTo);
                 for (BpmPoint_15_min item : data) {
                     model.addPoint(item.getValue(), item.getTime());
                 }
+                colorsTo = colorsFrom + GraphPeriod.period_15min;
                 model.setPeriod(GraphPeriod.period_15min);
             } else {
-                colorsTo = colorsFrom + GraphPeriod.period_30min;
                 final List<BpmPoint_30_min> data = RealmController.getAllBpm30From(colorsFrom, colorsTo);
                 for (BpmPoint_30_min item : data) {
                     model.addPoint(item.getValue(), item.getTime());
                 }
+                colorsTo = colorsFrom + GraphPeriod.period_30min;
                 model.setPeriod(GraphPeriod.period_30min);
             }
         } else {
