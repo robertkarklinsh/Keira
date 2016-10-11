@@ -1,4 +1,4 @@
-package com.gattaca.team.ui.container;
+package com.gattaca.team.ui.utils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,7 +14,7 @@ public final class ActivityTransferData {
     private final static String key = "ActivityTransferData.key";
     private final static String type = "ActivityTransferData.type";
     final private AvailableActivity launchActivity;
-    //TODO: change to sub activity model
+
     final private Object bindData;
 
     public ActivityTransferData(AvailableActivity launchActivity) {
@@ -31,7 +31,9 @@ public final class ActivityTransferData {
         if (i.hasExtra(type)) {
             final String typeObject = i.getStringExtra(type);
             //TODO: extends cases here!
-            if (typeObject.equals(Long.class.getSimpleName())) {
+            if (typeObject.equals(Integer.class.getSimpleName())) {
+                a = i.getIntExtra(key, -1);
+            } else if (typeObject.equals(Long.class.getSimpleName())) {
                 a = i.getLongExtra(key, -1);
             }
         }
@@ -41,7 +43,10 @@ public final class ActivityTransferData {
     public void launchRequestedActivity(final Activity activity) {
         final Intent i = new Intent(activity, launchActivity.getCls());
         //TODO: extends cases here!
-        if (bindData instanceof Long) {
+        if (bindData instanceof Integer) {
+            i.putExtra(type, bindData.getClass().getSimpleName());
+            i.putExtra(key, (int) bindData);
+        } else if (bindData instanceof Long) {
             i.putExtra(type, bindData.getClass().getSimpleName());
             i.putExtra(key, (long) bindData);
         }

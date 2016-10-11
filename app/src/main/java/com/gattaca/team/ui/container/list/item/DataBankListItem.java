@@ -6,12 +6,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.gattaca.team.R;
+import com.gattaca.team.annotation.DialogId;
+import com.gattaca.team.root.MainApplication;
+import com.gattaca.team.ui.utils.DialogTransferData;
 import com.gattaca.team.ui.view.TimeStump;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.List;
 
-public final class DataBankListItem extends AbstractItem<DataBankListItem, DataBankListItem.ViewHolder> {
+public final class DataBankListItem extends AbstractItem<DataBankListItem, DataBankListItem.ViewHolder> implements View.OnClickListener {
     private final long timeStumpStart, timeStumpFinish;
 
     public DataBankListItem(final long timeStumpStart, final long timeStumpFinish) {
@@ -36,6 +39,12 @@ public final class DataBankListItem extends AbstractItem<DataBankListItem, DataB
         viewHolder.text.setText(String.format(res.getString(R.string.bank_data_formatted_session_item),
                 TimeStump.convert(timeStumpStart, "dd/MM HH:mm"),
                 TimeStump.convert(timeStumpFinish, "dd/MM HH:mm")));
+        viewHolder.text.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        MainApplication.uiBusPost(new DialogTransferData(DialogId.SessionActions, timeStumpStart));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

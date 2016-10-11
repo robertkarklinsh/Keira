@@ -124,4 +124,12 @@
 
     <string name="pressureBar_systolic">с</string>
     <string name="pressureBar_diastolic">д</string>
+
+    <!-- DIALOGS TEXTS-->
+    <string name="session_action_header">Выбор дейтвия</string>
+    <string name="session_action_remove">Удалить</string>
+    <string name="session_action_view">Посмотреть</string>
+    <string name="global_waiting_header">Ожидание</string>
+    <string name="generationData_body">Построение базы данных…</string>
+    <string name="startFirstTick_body">Подключение…</string>
 </resources>

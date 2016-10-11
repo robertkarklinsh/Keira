@@ -34,8 +34,8 @@ public abstract class IContainer<Model extends IContainerModel> {
     public void onMenuItemSelected(final int id) {
     }
 
-    public final void reDraw(Model model) {
-        this.model = model;
+    public final void reDraw(IContainerModel model) {
+        this.model = (Model) model;
         reDraw();
     }
 

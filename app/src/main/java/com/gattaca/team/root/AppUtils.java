@@ -92,18 +92,22 @@ public final class AppUtils {
             if (bpmPoint_5_min != null) {
                 bpmPoint_5_min.collapsePoints();
                 a.add(bpmPoint_5_min);
+                bpmPoint_5_min = null;
             }
             if (bpmPoint_15_min != null) {
                 bpmPoint_15_min.collapsePoints();
                 a.add(bpmPoint_15_min);
+                bpmPoint_15_min = null;
             }
             if (bpmPoint_30_min != null) {
                 bpmPoint_30_min.collapsePoints();
                 a.add(bpmPoint_30_min);
+                bpmPoint_30_min = null;
             }
             if (bpmPoint_1_hour != null) {
                 bpmPoint_1_hour.collapsePoints();
                 a.add(bpmPoint_1_hour);
+                bpmPoint_1_hour = null;
             }
         } else {
             if (bpmPoint_5_min == null) {

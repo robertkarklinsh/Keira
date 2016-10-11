@@ -4,6 +4,7 @@ import java.util.Set;
 
 public enum AppPref {
     BitalinoMac(String.class),
+    FakeSessionStart(Long.class),
     FakeGeneration(Boolean.class),;
 
     private final Class<?> type;

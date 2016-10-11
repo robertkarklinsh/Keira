@@ -3,19 +3,26 @@ package com.gattaca.team.ui.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MenuItem;
 
 import com.gattaca.team.R;
+import com.gattaca.team.annotation.GraphPeriod;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.sensor.BpmGreen;
 import com.gattaca.team.db.sensor.BpmRed;
+import com.gattaca.team.db.sensor.Session;
 import com.gattaca.team.db.sensor.emulate.EmulatedBpm_15Min;
 import com.gattaca.team.db.sensor.emulate.EmulatedBpm_5Min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_15_min;
 import com.gattaca.team.db.sensor.optimizing.BpmPoint_30_min;
+import com.gattaca.team.db.sensor.optimizing.BpmPoint_5_min;
+import com.gattaca.team.prefs.AppPref;
 import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.service.main.RootSensorListener;
 import com.gattaca.team.ui.model.impl.BpmModel;
+import com.gattaca.team.ui.utils.ActivityTransferData;
 import com.gattaca.team.ui.view.Bpm;
 
 import java.util.List;
@@ -31,14 +38,16 @@ public class MonitorBpm extends AppCompatActivity {
             new RealmChangeListener<RealmResults<EmulatedBpm_15Min>>() {
                 @Override
                 public void onChange(RealmResults<EmulatedBpm_15Min> element) {
-                    bpmGraph.addRealTimePoint(element.get(0).getValue(), element.get(0).getTime());
+                    final EmulatedBpm_15Min a = element.get(element.size() - 1);
+                    bpmGraph.addRealTimePoint(a.getValue(), a.getTime());
                 }
             };
     private RealmChangeListener<RealmResults<EmulatedBpm_5Min>> listener5min =
             new RealmChangeListener<RealmResults<EmulatedBpm_5Min>>() {
                 @Override
                 public void onChange(RealmResults<EmulatedBpm_5Min> element) {
-                    if (bpmGraph.addRealTimePoint(element.get(0).getValue(), element.get(0).getTime())) {
+                    final EmulatedBpm_5Min a = element.get(element.size() - 1);
+                    if (bpmGraph.addRealTimePoint(a.getValue(), a.getTime())) {
                         // collapse to bigger graph
                         results5.removeChangeListener(this);
                         results5 = null;
@@ -49,25 +58,68 @@ public class MonitorBpm extends AppCompatActivity {
                 }
             };
 
-    private static void graphHistory(final BpmModel model) {
-        final List<BpmPoint_30_min> data = RealmController.getStubSessionBpm30();
-        for (BpmPoint_30_min item : data) {
-            model.addPoint(item.getValue(), item.getTime());
-        }
-        addColorRegions(model, data.get(0).getTime(), data.get(data.size() - 1).getTime());
-    }
-
     private static void addColorRegions(final BpmModel model, long from, long to) {
-        final List<BpmGreen> green = RealmController.getStubSessionBpmGreen(
+        final List<BpmGreen> green = RealmController.getBpmGreenZone(
                 AppUtils.createTimeFrom(from), AppUtils.createTimeFrom(to));
         for (BpmGreen item : green) {
             model.addGreenPoint(item.getValueTop(), item.getValueBottom(), item.getTime());
         }
-        final List<BpmRed> red = RealmController.getStubSessionBpmRed(
+        final List<BpmRed> red = RealmController.getBpmRedZone(
                 AppUtils.createTimeFrom(from), AppUtils.createTimeFrom(to));
         for (BpmRed item : red) {
             model.addRedPoint(item.getValueTop(), item.getValueBottom(), item.getTime());
         }
+    }
+
+    private void graphHistory(final BpmModel model) {
+        long requestedTimeStartSession = -1, colorsFrom, colorsTo;
+        try {
+            requestedTimeStartSession = (long) ActivityTransferData.getBindData(getIntent());
+        } catch (Exception e) {
+        }
+
+        if (requestedTimeStartSession > 0) {
+            final Session session = RealmController.getSessionFrom(requestedTimeStartSession);
+            if (session == null) {
+                Log.e(getClass().getSimpleName(), "incorrect time stump = " + requestedTimeStartSession);
+                return;
+            }
+            colorsFrom = session.getTimeStart();
+            colorsTo = session.getTimeFinish();
+            final long timeSize = colorsTo - colorsFrom;
+            if (timeSize < GraphPeriod.period_5min) {
+                final List<BpmPoint_5_min> data = RealmController.getAllBpm5From(colorsFrom, colorsTo);
+                for (BpmPoint_5_min item : data) {
+                    model.addPoint(item.getValue(), item.getTime());
+                }
+                colorsTo = colorsFrom + GraphPeriod.period_5min;
+                model.setPeriod(GraphPeriod.period_5min);
+            } else if (timeSize < GraphPeriod.period_15min) {
+                final List<BpmPoint_15_min> data = RealmController.getAllBpm15From(colorsFrom, colorsTo);
+                for (BpmPoint_15_min item : data) {
+                    model.addPoint(item.getValue(), item.getTime());
+                }
+                colorsTo = colorsFrom + GraphPeriod.period_15min;
+                model.setPeriod(GraphPeriod.period_15min);
+            } else {
+                final List<BpmPoint_30_min> data = RealmController.getAllBpm30From(colorsFrom, colorsTo);
+                for (BpmPoint_30_min item : data) {
+                    model.addPoint(item.getValue(), item.getTime());
+                }
+                colorsTo = colorsFrom + GraphPeriod.period_30min;
+                model.setPeriod(GraphPeriod.period_30min);
+            }
+        } else {
+            colorsFrom = AppPref.FakeSessionStart.getLong();
+            colorsTo = colorsFrom + GraphPeriod.period_30min;
+            final List<BpmPoint_30_min> data = RealmController.getAllBpm30From(colorsFrom, colorsTo);
+            for (BpmPoint_30_min item : data) {
+                model.addPoint(item.getValue(), item.getTime());
+            }
+            model.setPeriod(GraphPeriod.period_30min);
+        }
+        model.setTimeStart(colorsFrom);
+        addColorRegions(model, colorsFrom, colorsTo);
     }
 
     @Override
@@ -99,7 +151,7 @@ public class MonitorBpm extends AppCompatActivity {
             graphHistory(model);
         }
 
-        bpmGraph.install(model.fillPoints());
+        bpmGraph.install(model);
     }
 
     @Override
@@ -129,9 +181,10 @@ public class MonitorBpm extends AppCompatActivity {
         for (EmulatedBpm_5Min item : results5) {
             model.addPoint(item.getValue(), item.getTime());
         }
-        long from = results5.get(0).getTime();
+        long from = RealmController.getLastSession().getTimeStart();
 
-        addColorRegions(model, from, from + model.compileEndTime());
+        model.setTimeStart(from);
+        addColorRegions(model, from, from + 5 * DateUtils.MINUTE_IN_MILLIS);
     }
 
     private void graph15min(final BpmModel model) {
@@ -142,8 +195,9 @@ public class MonitorBpm extends AppCompatActivity {
         for (EmulatedBpm_15Min item : results15) {
             model.addPoint(item.getValue(), item.getTime());
         }
-        long from = results15.get(0).getTime();
-        addColorRegions(model, from, from + model.compileEndTime());
+        long from = RealmController.getLastSession().getTimeStart();
+        model.setTimeStart(from);
+        addColorRegions(model, from, from + 15 * DateUtils.MINUTE_IN_MILLIS);
     }
 
 }

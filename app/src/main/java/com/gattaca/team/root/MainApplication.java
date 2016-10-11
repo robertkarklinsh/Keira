@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
+import com.gattaca.team.db.sensor.Session;
 import com.gattaca.team.prefs.SharedPrefHelper;
 import com.gattaca.team.service.main.RootSensorListener;
 import com.squareup.otto.Bus;
@@ -81,7 +82,10 @@ public final class MainApplication extends Application {
         RealmController.with(this);
         RootSensorListener.getInstance();
 
-
+        final Session s = RealmController.getLastSession();
+        if (s != null) {
+            RealmController.removeSession(s.getTimeStart());
+        }
 
     }
 }

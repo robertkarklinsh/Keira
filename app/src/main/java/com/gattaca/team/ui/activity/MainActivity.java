@@ -10,19 +10,21 @@ import android.view.View;
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.event.NotifyEventObject;
-import com.gattaca.team.ui.container.ActivityTransferData;
-import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
-import com.gattaca.team.ui.container.MainMenu;
 import com.gattaca.team.ui.container.impl.DataBankContainer;
 import com.gattaca.team.ui.container.impl.MonitorContainer;
 import com.gattaca.team.ui.container.impl.NotificationCenterContainer;
 import com.gattaca.team.ui.container.impl.SettingsContainer;
 import com.gattaca.team.ui.container.impl.TrackerContainer;
+import com.gattaca.team.ui.dialog.DialogFactory;
 import com.gattaca.team.ui.model.IContainerModel;
 import com.gattaca.team.ui.model.impl.DataBankModel;
 import com.gattaca.team.ui.model.impl.NotificationCenterModel;
 import com.gattaca.team.ui.model.impl.TrackerModel;
+import com.gattaca.team.ui.utils.ActivityTransferData;
+import com.gattaca.team.ui.utils.ContainerTransferData;
+import com.gattaca.team.ui.utils.DialogTransferData;
+import com.gattaca.team.ui.utils.MainMenu;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -117,32 +119,24 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
         if (currentContainer != null) {
             currentContainer.changeCurrentVisibilityState(true);
         }
-        IContainerModel model = item.getModelForSubContainer();
         switch (item.getMenuItemForOpen()) {
             case Notification:
                 currentContainer = notificationCenterContainer;
-                model = new NotificationCenterModel(RealmController.getAllEvents());
                 break;
             case Tracker:
                 currentContainer = trackerContainer;
-                model = new TrackerModel(RealmController.getCurrentWeek());
                 break;
             case Monitor:
                 currentContainer = monitorContainer;
                 break;
             case DataBank:
                 currentContainer = dataBankContainer;
-                model = new DataBankModel(RealmController.getAllSessions());
                 break;
             case Settings:
                 currentContainer = settingsContainer;
                 break;
         }
-        currentContainer.changeCurrentVisibilityState(false);
-        getSupportActionBar().setTitle(item.getMenuItemForOpen().getNameId());
-        //TODO: stub
-        currentContainer.reDraw(model);
-        invalidateOptionsMenu();
+        forceRedrawCurrentContainer(true);
     }
 
     @Subscribe
@@ -164,5 +158,30 @@ public final class MainActivity extends AppCompatActivity implements Drawer.OnDr
     @Subscribe
     public void eventCome(NotifyEventObject a) {
         currentContainer.eventCome(a);
+    }
+
+    @Subscribe
+    public void showDialog(DialogTransferData a) {
+        DialogFactory.createAndShowDialog(this, a);
+    }
+
+    @Subscribe
+    public void forceRedrawCurrentContainer(Boolean a) {
+        IContainerModel model = null;
+        if (currentContainer == notificationCenterContainer) {
+            model = new NotificationCenterModel(RealmController.getAllEvents());
+        } else if (currentContainer == trackerContainer) {
+            model = new TrackerModel(RealmController.getCurrentWeek());
+        } else if (currentContainer == dataBankContainer) {
+            model = new DataBankModel(RealmController.getAllSessions());
+        }
+        /*
+        else if(currentContainer == monitorContainer){
+        }
+        else if(currentContainer == settingsContainer){
+        }*/
+        currentContainer.changeCurrentVisibilityState(false);
+        currentContainer.reDraw(model);
+        invalidateOptionsMenu();
     }
 }
