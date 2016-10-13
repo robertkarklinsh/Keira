@@ -17,7 +17,7 @@ import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
 import com.gattaca.team.db.tracker.PressureMeasurement;
 import com.gattaca.team.service.tracker.TimeNotification;
-import com.gattaca.team.ui.container.ActivityTransferData;
+import com.gattaca.team.ui.utils.ActivityTransferData;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
 
 import java.util.ArrayList;

@@ -45,7 +45,7 @@ public final class TimeLine extends LinearLayout implements ITick {
         if (visibility == VISIBLE) {
             AppUtils.registerBus(this);
         } else {
-            AppUtils.unregisterBus(this);
+//            AppUtils.unregisterBus(this);
         }
     }
 

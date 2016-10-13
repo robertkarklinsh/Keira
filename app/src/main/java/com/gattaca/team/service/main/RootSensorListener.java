@@ -60,7 +60,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     public static void startRaw() {
         getInstance().bus.register(getInstance());
         getInstance().serviceConnectionImpl.startConnection();
-    }
+}
 
     public static void stopRaw() {
         RealmController.finishLastSession();

@@ -55,7 +55,7 @@ public final class MeasureBar extends View {
         if (visibility == VISIBLE) {
             AppUtils.registerBus(this);
         } else {
-            AppUtils.unregisterBus(this);
+//            AppUtils.unregisterBus(this);
         }
     }
 

@@ -14,7 +14,7 @@ import com.gattaca.team.R;
 import com.gattaca.team.db.tracker.Drug;
 import com.gattaca.team.db.tracker.Intake;
 import com.gattaca.team.root.MainApplication;
-import com.gattaca.team.ui.container.ActivityTransferData;
+import com.gattaca.team.ui.utils.ActivityTransferData;
 import com.gattaca.team.ui.tracker.ViewHoldersCollection;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
 

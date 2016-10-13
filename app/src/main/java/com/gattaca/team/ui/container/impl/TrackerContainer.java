@@ -10,13 +10,11 @@ import android.widget.Toast;
 
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
+import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.tracker.Week;
 import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.root.MainApplication;
-import com.gattaca.team.ui.container.ActivityTransferData;
-import com.gattaca.team.ui.container.ContainerTransferData;
 import com.gattaca.team.ui.container.IContainer;
-import com.gattaca.team.ui.container.MainMenu;
 import com.gattaca.team.ui.container.list.item.TrackerMeasureListItem;
 import com.gattaca.team.ui.container.list.lm.SnappingLinearLayoutManager;
 import com.gattaca.team.ui.model.impl.TrackerModel;
@@ -24,9 +22,11 @@ import com.gattaca.team.ui.tracker.data.TopContainer;
 import com.gattaca.team.ui.tracker.ui.TopItem;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
 import com.gattaca.team.ui.tracker.v2.StubWeekCreator;
-import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.gattaca.team.ui.utils.ActivityTransferData;
 import com.gattaca.team.ui.utils.ContainerTransferData;
 import com.gattaca.team.ui.utils.MainMenu;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 
@@ -141,7 +141,8 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
         rv.setAdapter(mItemAdapter.wrap(mFastAdapter));
 
 
-//        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) relativeLayout.findViewById(R.id.multiple_actions);
+        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) relativeLayout.findViewById(R.id.multiple_actions);
+
         final FloatingActionButton actionAddDrug = (FloatingActionButton) relativeLayout.findViewById(R.id.tracker_add_drug);
         actionAddDrug.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,11 +170,19 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
                         @Override
                         public void onTick(long millisUntilFinished) {
                             AppUtils.postToBus(1);
+                            if (millisUntilFinished + 2000 > DateUtils.MINUTE_IN_MILLIS) {
+                                AppUtils.postToBus(new NotifyEventObject());
+                            }
                         }
 
                         @Override
                         public void onFinish() {
-                            timer.cancel(); timer = null;
+                            timer.cancel();
+                            if (session) {
+                                timer.start();
+                            } else {
+                                timer = null;
+                            }
                         }
                     };
                     session = true;
@@ -191,6 +200,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
                     actionAddPulse.setTitle("Добавить пульс");
                 }
                 TrackerContainer.this.reDraw();
+                menuMultipleActions.collapse();
             }
         });
 

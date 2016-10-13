@@ -196,6 +196,8 @@ public final class BitalinoConnection extends HandlerThread implements IServiceC
                     if (btAdapter.isDiscovering()) {
                         btAdapter.cancelDiscovery();
                     }
+                    //UNDO
+                    AppPref.BitalinoMac.set("20:15:10:26:64:45");
                     if (AppPref.BitalinoMac.getStr() == null) {
                         bus.register(this);
                         MainApplication.getContext().registerReceiver(BtDiscaveryReceiver.getInstance(), new IntentFilter(BluetoothDevice.ACTION_FOUND));
