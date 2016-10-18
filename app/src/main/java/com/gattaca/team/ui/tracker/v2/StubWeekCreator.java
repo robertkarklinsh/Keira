@@ -94,6 +94,8 @@ public class StubWeekCreator {
         pressureMeasurement.setSystolic(sys);
         pressureMeasurement.setPulse(pulse);
         pressureMeasurement.setCompleted(completed);
+        pressureMeasurement.setPrimaryKey(AppUtils.generateUniqueId());
+        pressureMeasurement.setCreatedFromWarning(false);
         pressureMeasurement.setHours(hours);
         pressureMeasurement.setMinutes(minutes);
         return pressureMeasurement;

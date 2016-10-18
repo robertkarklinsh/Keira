@@ -34,6 +34,7 @@ import com.gattaca.team.ui.view.tracker.TrackerBitsCount;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.adapters.HeaderAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 
 import java.util.Calendar;
@@ -44,6 +45,7 @@ import io.realm.Realm;
 public final class TrackerContainer extends IContainer<TrackerModel> {
     FastAdapter mFastAdapter;// = new FastAdapter();
     ItemAdapter mItemAdapter;// = new ItemAdapter();
+    HeaderAdapter mHeaderAdapter;
     ModelDao modelDao;
     RecyclerView recyclerView;
     Realm realm;

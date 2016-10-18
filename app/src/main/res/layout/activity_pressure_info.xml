@@ -115,6 +115,7 @@
         android:layout_below="@+id/pressure_info_state"
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
+        android:visibility="gone"
        ></LinearLayout>
 
     <EditText

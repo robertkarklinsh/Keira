@@ -169,6 +169,7 @@ public class AddPressureActivity extends AppCompatActivity {
                         pm.setCompleted(false);
                         pm.setName("Давление");
                         pm.setPrimaryKey(AppUtils.generateUniqueId());
+                        pm.setCreatedFromWarning(false);
                         day.getPressureMeasurements().add(pm);
                         GregorianCalendar gr = new GregorianCalendar();
                         gr.set(Calendar.HOUR_OF_DAY, pm.getHours());
@@ -188,6 +189,7 @@ public class AddPressureActivity extends AppCompatActivity {
                         pm.setMinutes(holder.getMinutes());
                         pm.setCompleted(true);
                         pm.setName("Давление");
+                        pm.setCreatedFromWarning(false);
                         pm.setSystolic(Integer.parseInt(edtToStr(systolicField)));
                         pm.setDiastolic(Integer.parseInt(edtToStr(dyastolicField)));
                         pm.setPulse(Integer.parseInt(edtToStr(pulseField)));

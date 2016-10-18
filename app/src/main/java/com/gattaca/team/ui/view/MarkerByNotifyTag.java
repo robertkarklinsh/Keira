@@ -27,6 +27,9 @@ public final class MarkerByNotifyTag extends View {
             case NotifyEventTag.Yellow:
                 setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
                 break;
+            case NotifyEventTag.Green:
+                setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+                break;
             default:
                 setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 break;
