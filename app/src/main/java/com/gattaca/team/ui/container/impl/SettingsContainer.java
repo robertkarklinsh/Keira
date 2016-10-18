@@ -33,8 +33,8 @@ public final class SettingsContainer extends IContainer<MonitorModel> implements
         boolean state = !changeState.isSelected();
         changeText(state);
         if (state) {
-//            RootSensorListener.generateBitalinoRaw();
-            RootSensorListener.startRaw();
+            RootSensorListener.generateBitalinoRaw();
+//            RootSensorListener.startRaw();
         } else {
             RootSensorListener.stopRaw();
         }

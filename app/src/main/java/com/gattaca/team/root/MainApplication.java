@@ -57,6 +57,10 @@ public final class MainApplication extends Application {
         uiBus.post(obj);
     }
 
+    public static void register(Object obj) {
+        uiBus.register(obj);
+    }
+
     public static Context getContext() {
         return context;
     }

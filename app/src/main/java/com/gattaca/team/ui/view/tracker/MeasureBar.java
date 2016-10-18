@@ -10,6 +10,7 @@ import android.view.View;
 import com.gattaca.team.R;
 import com.gattaca.team.annotation.GraphPeriod;
 import com.gattaca.team.root.AppUtils;
+import com.gattaca.team.root.MainApplication;
 
 import java.util.ArrayList;
 
@@ -20,7 +21,7 @@ public final class MeasureBar extends View {
     int radiusBackground, colorGray, colorRed;
     double stepBy1sec;
     Color color = Color.Green;
-    private long value = 0;
+    public static long value = 0;
     private
     @GraphPeriod
     long period = GraphPeriod.period_5min;
@@ -49,11 +50,17 @@ public final class MeasureBar extends View {
         mPaint.setStrokeWidth(2 * radiusBackground);
     }
 
+    Boolean started = false;
+
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         if (visibility == VISIBLE) {
-            AppUtils.registerBus(this);
+            if (!started) {
+                AppUtils.registerBus(this);
+                MainApplication.register(this);
+                started = true;
+            }
         } else {
 //            AppUtils.unregisterBus(this);
         }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.gattaca.team.R;
 import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.root.AppUtils;
+import com.gattaca.team.root.MainApplication;
 import com.squareup.otto.Subscribe;
 
 
@@ -17,7 +18,7 @@ public final class MeasureProgress extends LinearLayout implements ITick {
     MeasureBar bar;
     TextView valueEvents;
     View problems, noProblems;
-    int events = 0;
+    public static int events = 0;
 
 
     public MeasureProgress(Context context) {
@@ -42,11 +43,17 @@ public final class MeasureProgress extends LinearLayout implements ITick {
         problems.setVisibility(GONE);
     }
 
+    Boolean started = false;
+
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         if (visibility == VISIBLE) {
-            AppUtils.registerBus(this);
+            if (!started) {
+                AppUtils.registerBus(this);
+                MainApplication.register(this);
+                started = true;
+            }
         } else {
 //            AppUtils.unregisterBus(this);
         }

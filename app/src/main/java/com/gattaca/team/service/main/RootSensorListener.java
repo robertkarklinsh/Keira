@@ -26,6 +26,7 @@ import com.gattaca.team.service.analysis.PanTompkins;
 import com.gattaca.team.service.bitalino.BitalinoConnection;
 import com.gattaca.team.service.events.NotifyEvent;
 import com.gattaca.team.service.fake.FakeDataController;
+import com.gattaca.team.ui.view.tracker.StubTrackerBit;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
@@ -34,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.RealmModel;
+
+import static com.gattaca.team.annotation.RRType.a;
 
 public final class RootSensorListener extends HandlerThread implements Handler.Callback {
     final static int BpmMin = 20;
@@ -221,7 +224,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
             case APC:
                 return RRType.A;
             case APC_ABERRANT:
-                return RRType.a;
+                return a;
             case PVC:
                 return RRType.V;
             case PVC_ABERRANT:
@@ -236,6 +239,8 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     private void doAlgorithm(final int channel, double value, long time) {
         algoritms[channel].next(value, time);
         if (PanTompkins.QRS.qrsCurrent.segState == PanTompkins.QRS.SegmentationStatus.FINISHED) {
+            //TODO WRONG
+            MainApplication.uiBusPost(new StubTrackerBit());
             //FIXME: it's not work!!!
             Log.d(getClass().getSimpleName(), "found R");
           /*  RRtype = checkQRS(PanTompkins.QRS.qrsCurrent);

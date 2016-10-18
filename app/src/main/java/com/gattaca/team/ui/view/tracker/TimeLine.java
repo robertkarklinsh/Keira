@@ -9,14 +9,19 @@ import android.widget.TextView;
 import com.gattaca.team.R;
 import com.gattaca.team.annotation.GraphPeriod;
 import com.gattaca.team.root.AppUtils;
+import com.gattaca.team.root.MainApplication;
 import com.squareup.otto.Subscribe;
 
 public final class TimeLine extends LinearLayout implements ITick {
     private TextView first, second;
-    private long value = 0;
+    public static long value = 0;
     private
     @GraphPeriod
     long period;
+
+    //TODO
+    Boolean started = false;
+
 
     public TimeLine(Context context) {
         super(context);
@@ -43,7 +48,11 @@ public final class TimeLine extends LinearLayout implements ITick {
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         if (visibility == VISIBLE) {
-            AppUtils.registerBus(this);
+            if (!started) {
+                AppUtils.registerBus(this);
+                MainApplication.register(this);
+                started = true;
+            }
         } else {
 //            AppUtils.unregisterBus(this);
         }

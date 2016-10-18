@@ -14,6 +14,7 @@ import com.gattaca.team.db.event.NotifyEventObject;
 import com.gattaca.team.db.tracker.Week;
 import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.root.MainApplication;
+import com.gattaca.team.service.main.RootSensorListener;
 import com.gattaca.team.ui.container.IContainer;
 import com.gattaca.team.ui.container.list.item.TrackerMeasureListItem;
 import com.gattaca.team.ui.container.list.lm.SnappingLinearLayoutManager;
@@ -25,6 +26,11 @@ import com.gattaca.team.ui.tracker.v2.StubWeekCreator;
 import com.gattaca.team.ui.utils.ActivityTransferData;
 import com.gattaca.team.ui.utils.ContainerTransferData;
 import com.gattaca.team.ui.utils.MainMenu;
+import com.gattaca.team.ui.view.tracker.MeasureBar;
+import com.gattaca.team.ui.view.tracker.MeasureProgress;
+import com.gattaca.team.ui.view.tracker.StubTrackerBit;
+import com.gattaca.team.ui.view.tracker.TimeLine;
+import com.gattaca.team.ui.view.tracker.TrackerBitsCount;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.mikepenz.fastadapter.FastAdapter;
@@ -46,6 +52,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
     private CountDownTimer timer = null;
 
     Boolean session = false;
+    Boolean sessionBitalino = false;
 
 
 
@@ -164,12 +171,18 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
             public void onClick(View view) {
                 //ADD item to model then redraw
                 //tracker measurmet pulse layout
+                if (sessionBitalino) {
+                    return;
+                }
                 if (!session) {
-
+                    TrackerBitsCount.value = 0;
+                    MeasureBar.value = 0;
+                    TimeLine.value = 0;
                     timer = new CountDownTimer(DateUtils.MINUTE_IN_MILLIS, DateUtils.SECOND_IN_MILLIS) {
                         @Override
                         public void onTick(long millisUntilFinished) {
                             AppUtils.postToBus(1);
+                            AppUtils.postToBus(new StubTrackerBit());
                             if (millisUntilFinished + 2000 > DateUtils.MINUTE_IN_MILLIS) {
                                 AppUtils.postToBus(new NotifyEventObject());
                             }
@@ -198,6 +211,55 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
                     timer = null;
                     modelDao.setTmli(null);
                     actionAddPulse.setTitle("Добавить пульс");
+                }
+                TrackerContainer.this.reDraw();
+                menuMultipleActions.collapse();
+            }
+        });
+
+        final FloatingActionButton actionAddPulseBitalino = (FloatingActionButton) relativeLayout.findViewById(R.id.tracker_add_pulse_bitalino);
+        actionAddPulseBitalino.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //ADD item to model then redraw
+                //tracker measurmet pulse layout
+                if (session)
+                {
+                    return;
+                }
+                if (!sessionBitalino) {
+                    TrackerBitsCount.value = 0;
+                    MeasureBar.value = 0;
+                    TimeLine.value = 0;
+                    MeasureProgress.events = 0;
+                    sessionBitalino = true;
+                    RootSensorListener.startRaw();
+                    timer = new CountDownTimer(DateUtils.MINUTE_IN_MILLIS, DateUtils.SECOND_IN_MILLIS) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            AppUtils.postToBus(1);
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            timer.cancel();
+                            if (session) {
+                                timer.start();
+                            } else {
+                                timer = null;
+                            }
+                        }
+                    };
+                    timer.start();
+                    modelDao.setTmli(new TrackerMeasureListItem());
+                    actionAddPulseBitalino.setTitle("Удалить пульс из Bitalino");
+
+                } else {
+                    sessionBitalino = false;
+                    modelDao.setTmli(null);
+                    RootSensorListener.stopRaw();
+                    actionAddPulseBitalino.setTitle("Добавить пульс из Bitalino");
                 }
                 TrackerContainer.this.reDraw();
                 menuMultipleActions.collapse();

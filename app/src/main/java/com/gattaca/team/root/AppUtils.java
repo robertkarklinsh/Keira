@@ -82,6 +82,7 @@ public final class AppUtils {
         if (a != null) {
             Log.e("UTILS", "generate event " + a.getEventType());
             MainApplication.uiBusPost(a);
+//            AppUtils.postToBus(a);
         }
         return a;
     }
@@ -144,6 +145,7 @@ public final class AppUtils {
 
     public static void registerBus(Object o) {
         customBus.register(o);
+
     }
 
     public static void unregisterBus(Object o) {

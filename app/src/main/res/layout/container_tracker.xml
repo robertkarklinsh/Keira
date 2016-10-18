@@ -33,6 +33,15 @@
         android:layout_marginEnd="16dp">
 
 
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/tracker_add_pulse_bitalino"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_title="Добавить пульс из Bitalino"
+
+            fab:fab_colorPressed="@color/white_pressed"/>
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/tracker_add_pulse"
             android:layout_width="wrap_content"

@@ -1,7 +1,6 @@
 package com.gattaca.team.ui.container.list.item;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.view.View;
 
 import com.gattaca.team.R;
@@ -30,8 +29,8 @@ public final class TrackerMeasureListItem
         super.bindView(viewHolder, payloads);
 //        viewHolder.timeLine.setValue(DateUtils.SECOND_IN_MILLIS * 290);
 //        viewHolder.progress.setValue(DateUtils.SECOND_IN_MILLIS * 290);
-        viewHolder.timeLine.setValue(DateUtils.SECOND_IN_MILLIS *0);
-        viewHolder.progress.setValue(DateUtils.SECOND_IN_MILLIS *0);
+//        viewHolder.timeLine.setValue(DateUtils.SECOND_IN_MILLIS *0);
+//        viewHolder.progress.setValue(DateUtils.SECOND_IN_MILLIS *0);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
