@@ -23,6 +23,8 @@ public class PressureMeasurement implements RealmModel, TrackerItemContainer{
     private int systolic;
     private int diastolic;
 
+    private Boolean createdFromWarning = false;
+
     @PrimaryKey
     private long primaryKey;
     public long getPrimaryKey() {
@@ -110,5 +112,13 @@ public class PressureMeasurement implements RealmModel, TrackerItemContainer{
     @Override
     public String getGrayText() {
         return "";
+    }
+
+    public Boolean getCreatedFromWarning() {
+        return createdFromWarning;
+    }
+
+    public void setCreatedFromWarning(Boolean createdFromWarning) {
+        this.createdFromWarning = createdFromWarning;
     }
 }

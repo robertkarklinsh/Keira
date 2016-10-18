@@ -112,10 +112,10 @@
         android:id="@+id/pressure_info_reminders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/add_drug_units_field"
+        android:layout_below="@+id/pressure_info_state"
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
-        android:visibility="gone"></LinearLayout>
+       ></LinearLayout>
 
     <EditText
         android:id="@+id/pressure_info_pulse_field"

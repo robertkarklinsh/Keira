@@ -92,6 +92,9 @@ public final class NotificationCenterModel
                     object.addText("PC_more_limit_per_hour");
                     object.addTag(NotifyEventTag.Yellow);
                     break;
+                case NotifyType.Tracker_reminder:{
+                    object.addText("Напоминание");
+                }
             }
             addListItem(object);
         }

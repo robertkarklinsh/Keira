@@ -15,7 +15,10 @@ import android.widget.Toast;
 
 import com.gattaca.team.R;
 import com.gattaca.team.db.RealmController;
+import com.gattaca.team.db.tracker.Drug;
+import com.gattaca.team.db.tracker.Intake;
 import com.gattaca.team.db.tracker.PressureMeasurement;
+import com.gattaca.team.root.AppUtils;
 import com.gattaca.team.service.tracker.TimeNotification;
 import com.gattaca.team.ui.utils.ActivityTransferData;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
@@ -29,6 +32,8 @@ import java.util.Locale;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+import static android.R.attr.name;
+import static com.gattaca.team.db.RealmController.getRealm;
 import static com.gattaca.team.ui.activity.tracker.AddPressureActivity.edtToStr;
 import static com.gattaca.team.ui.activity.tracker.AddPressureActivity.isEmpty;
 
@@ -81,7 +86,7 @@ public class PressureInfoActivity extends AppCompatActivity {
         hours = pm.getHours();
         Button cancel = (Button) findViewById(R.id.pressure_info_cancel);
         Button ok = (Button) findViewById(R.id.pressure_info_ok);
-        TextView time = (TextView ) findViewById(R.id.pressure_info_time);
+        TextView time = (TextView) findViewById(R.id.pressure_info_time);
         EditText timeField = (EditText) findViewById(R.id.pressure_info_time_field);
         timeField.setText(String.format(Locale.ROOT, "%02d:%02d", hours, minutes));
         timeField.setOnClickListener((View v) -> {
@@ -112,8 +117,8 @@ public class PressureInfoActivity extends AppCompatActivity {
         pulseField.setText(String.valueOf(pm.getPulse()));
         Button delete = (Button) findViewById(R.id.pressure_info_delete);
         delete.setOnClickListener(v -> {
-            TimeNotification.removeAlarm(PressureInfoActivity.this, "pressure",pm.getPrimaryKey());
-            Realm.getDefaultInstance().executeTransaction(r-> {
+            TimeNotification.removeAlarm(PressureInfoActivity.this, "pressure", pm.getPrimaryKey());
+            Realm.getDefaultInstance().executeTransaction(r -> {
 
                 r.where(PressureMeasurement.class).equalTo("primaryKey", pm.getPrimaryKey()).findAll().deleteAllFromRealm();
             });
@@ -161,7 +166,7 @@ public class PressureInfoActivity extends AppCompatActivity {
                 Toast.makeText(PressureInfoActivity.this, "Пожалуйста введите давление", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Realm realm = RealmController.getRealm();
+            Realm realm = getRealm();
             realm.beginTransaction();
             pm.setHours(hours);
             pm.setMinutes(minutes);
@@ -170,6 +175,7 @@ public class PressureInfoActivity extends AppCompatActivity {
             pm.setPulse(Integer.parseInt(edtToStr(pulseField)));
             pm.setCompleted(true);
             realm.commitTransaction();
+            checkPressure(Integer.parseInt(edtToStr(systolicField)), Integer.parseInt(edtToStr(dyastolicField)));
             PressureInfoActivity.this.finish();
         });
 
@@ -208,4 +214,51 @@ public class PressureInfoActivity extends AppCompatActivity {
             v.setVisibility(View.VISIBLE);
         }
     }
+
+    private static void checkPressure(int systolic, int dyastolic) {
+        if (systolic >= 140 && dyastolic > 90) {
+            if (systolic <= 160) {
+                //AddDrug
+            } else if (systolic <= 180) {
+                //Add 2drug
+            } else {
+
+            }
+
+        }
+
+        Realm realm = RealmController.getRealm();
+        realm.beginTransaction();
+        PressureMeasurement pm = realm.createObject(PressureMeasurement.class);
+        pm.setHours(ModelDao.getHours());
+        pm.setMinutes(ModelDao.getMinutes() + 15);
+        pm.setCompleted(false);
+        pm.setName("Давление");
+        pm.setCreatedFromWarning(true);
+        pm.setPrimaryKey(AppUtils.generateUniqueId());
+        realm.commitTransaction();
+
+        Drug drug = realm.createObject(Drug.class, AppUtils.generateUniqueId());
+        drug.setName("bla");
+        drug.setUnits("mg");
+        drug.setDose(5);
+        drug.setCreationDate(ModelDao.getTimeInMillis());
+//        for (AddDrugActivity.TimeHolder holder : times) {
+            Intake intake = realm.createObject(Intake.class);
+            intake.setTaken(false);
+            intake.setHours(ModelDao.getHours());
+            intake.setMinutes(ModelDao.getMinutes() + 15);
+            intake.setCreationDate(ModelDao.getTimeInMillis());
+            intake.setPrimaryKey(AppUtils.generateUniqueId());
+            drug.getIntakes().add(intake);
+            GregorianCalendar gr = new GregorianCalendar();
+            gr.set(Calendar.HOUR_OF_DAY, intake.getHours());
+            gr.set(Calendar.MINUTE, intake.getMinutes());
+            gr.set(Calendar.SECOND,0);
+//            gr.add(Calendar.DAY_OF_MONTH, day.getNumber() - ModelDao.currentDayOfWeek());
+            TimeNotification.setAlarm(getApplicationContext(), gr.getTimeInMillis(), "intake", intake.getPrimaryKey());
+        }
+//        day.getDrugs().add(drug);
+    }
+
 }

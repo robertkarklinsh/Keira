@@ -155,6 +155,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
             @Override
             public void onClick(View view) {
                 MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.ADT));
+                menuMultipleActions.collapse();
             }
         });
         final FloatingActionButton actionAddPressure = (FloatingActionButton) relativeLayout.findViewById(R.id.tracker_add_pressure);
@@ -162,6 +163,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
             @Override
             public void onClick(View view) {
                 MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.APT));
+                menuMultipleActions.collapse();
             }
         });
 
