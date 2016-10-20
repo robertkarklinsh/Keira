@@ -36,6 +36,8 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.HeaderAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
+import com.mikepenz.fastadapter.app.adapters.StickyHeaderAdapter;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -43,6 +45,7 @@ import java.util.GregorianCalendar;
 import io.realm.Realm;
 
 public final class TrackerContainer extends IContainer<TrackerModel> {
+    StickyHeaderAdapter mStickyHeaderAdapter;
     FastAdapter mFastAdapter;// = new FastAdapter();
     ItemAdapter mItemAdapter;// = new ItemAdapter();
     HeaderAdapter mHeaderAdapter;
@@ -143,11 +146,19 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
         if (mItemAdapter == null) {
             mItemAdapter = new ItemAdapter();
         }
+        if (mHeaderAdapter == null) {
+            mHeaderAdapter = new HeaderAdapter();
+        }
+        if (mStickyHeaderAdapter == null) {
+            mStickyHeaderAdapter = new StickyHeaderAdapter();
+        }
         RecyclerView rv = (RecyclerView) relativeLayout.findViewById(R.id.my_recycler_view);
         recyclerView = rv;
         rv.setLayoutManager(new SnappingLinearLayoutManager(MainApplication.getContext()));
 
-        rv.setAdapter(mItemAdapter.wrap(mFastAdapter));
+        rv.setAdapter(mStickyHeaderAdapter.wrap(mItemAdapter.wrap(mHeaderAdapter.wrap(mFastAdapter))));
+        final StickyRecyclerHeadersDecoration decoration = new StickyRecyclerHeadersDecoration(mStickyHeaderAdapter);
+        rv.addItemDecoration(decoration);
 
 
         final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) relativeLayout.findViewById(R.id.multiple_actions);

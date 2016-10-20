@@ -19,6 +19,13 @@ public abstract class Item extends AbstractItem<Item, ViewHoldersCollection.Drug
     protected RecyclerView.Adapter adapter;
     protected TrackerItemContainer itemContainer;
     static GregorianCalendar calendar = new GregorianCalendar();
+    public String header;
+
+
+    public Item withHeader(String header) {
+        this.header = header;
+        return this;
+    }
 
     public Item withItemContainer(TrackerItemContainer itemContainer) {
         this.itemContainer = itemContainer;

@@ -123,21 +123,21 @@ public class ModelDao {
         int currentDay = currentDayOfWeek();
         for (int i = currentDay; i >= 0; i--) {
             Day day = week.getDays().get(i);
-            res.add(new HeaderItem().withName(dayModifier(day, currentDay)));
+//            res.add(new HeaderItem().withName(dayModifier(day, currentDay)));
             if (tmli != null && i == currentDay) {
                 res.add(tmli);
             }
             for (Drug drug : day.getDrugs()) {
-                res.add(new DrugItem().withItemContainer(drug));
+                res.add(new DrugItem().withItemContainer(drug).withHeader(day.getName()));
             }
 //            for (PulseMeasurement pulseMeasurement : day.getPulseMeasurements()) {
 //                res.add(new PulseMeasurementItem().withItemContainer(pulseMeasurement));
 //            }
             for (Task task : day.getTasks()) {
-                res.add(new TaskItem().withItemContainer(task));
+                res.add(new TaskItem().withItemContainer(task).withHeader(day.getName()));
             }
             for(PressureMeasurement pressureMeasurement: day.getPressureMeasurements()) {
-                res.add(new PressureMeasurementItem().withItemContainer(pressureMeasurement));
+                res.add(new PressureMeasurementItem().withItemContainer(pressureMeasurement).withHeader(day.getName()));
             }
         }
         return res;

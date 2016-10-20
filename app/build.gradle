@@ -82,6 +82,7 @@ dependencies {
     compile('com.mikepenz:fastadapter:1.8.2@aar') {
         transitive = true
     }
+    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.3@aar'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.4@aar') {
         transitive = true;
     }
