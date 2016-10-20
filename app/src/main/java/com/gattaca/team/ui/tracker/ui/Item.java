@@ -2,9 +2,9 @@ package com.gattaca.team.ui.tracker.ui;
 
 import android.support.v7.widget.RecyclerView;
 
+import com.gattaca.team.R;
 import com.gattaca.team.ui.tracker.ViewHoldersCollection;
 import com.gattaca.team.ui.tracker.data.TrackerItemContainer;
-import com.gattaca.team.R;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
@@ -21,6 +21,16 @@ public abstract class Item extends AbstractItem<Item, ViewHoldersCollection.Drug
     static GregorianCalendar calendar = new GregorianCalendar();
     public String header;
 
+    String[] days = new String[] {"пн","вт","ср","чт","пт","сб","вс"};
+
+    public int getHeaderPosition() {
+        for (int i = 0 ; i < 7; i ++) {
+            if (header != null && days[i].equals(header.toLowerCase())) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     public Item withHeader(String header) {
         this.header = header;

@@ -49,6 +49,8 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     private PanTompkins[] algoritms;
     private boolean emulating = false;
 
+    static boolean process = false;
+
     private RootSensorListener() {
         super("RootSensorListener");
         final int[] simpleRates = serviceConnectionImpl.getChannelsBitRate();
@@ -61,11 +63,21 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     }
 
     public static void startRaw() {
+        if (process) {
+            stopRaw();
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+
+            }
+        }
+        process = true;
         getInstance().bus.register(getInstance());
         getInstance().serviceConnectionImpl.startConnection();
 }
 
     public static void stopRaw() {
+        process = false;
         RealmController.finishLastSession();
         getInstance().handler.sendEmptyMessage(What.EmulateDataStop.ordinal());
         getInstance().serviceConnectionImpl.stopConnection();
@@ -84,6 +96,15 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
     }
 
     public static void generateBitalinoRaw() {
+        if (process) {
+            stopRaw();
+            try {
+            Thread.sleep(1000);
+            } catch (Exception e) {
+
+            }
+        }
+        process = true;
         getInstance().bus.register(getInstance());
         getInstance().serviceConnectionImpl.fakeGeneration();
     }

@@ -26,12 +26,15 @@ public class TaskItem extends Item {
         Task task = (Task) itemContainer;
         ViewGroup viewGroup = (ViewGroup) holder.mView.getParent();
         Context context = holder.mView.getContext();
+        holder.mView.setOnClickListener(null);
         LinearLayout itemHeader = (LinearLayout) holder.mView.findViewById(R.id.tracker_item_text_holder);
         LinearLayout itemImages = (LinearLayout) holder.mView.findViewById(R.id.tracker_item_image_holder);
         itemImages.removeAllViews();
         ((TextView) itemHeader.findViewById(R.id.tracker_item_text_black)).setText(task.getBlackText());
         ((TextView) itemHeader.findViewById(R.id.tracker_item_text_gray)).setText(task.getGrayText());
         ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(task.getIcon());
+        itemHeader.findViewById(R.id.tracker_item_pressure_clock).setVisibility(View.GONE);
+        itemHeader.findViewById(R.id.tracker_item_pressure_time).setVisibility(View.GONE);
         for (int i = 0 ; i < task.getActions().size(); i ++) {
             Boolean taskCompleted = task.getActions().get(i).isCompleted();
             LinearLayout taskCircle = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.tracker_drug_circle, viewGroup);

@@ -187,6 +187,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
                 //ADD item to model then redraw
                 //tracker measurmet pulse layout
                 if (sessionBitalino) {
+                    Toast.makeText(MainApplication.getContext(), "Сначала нужно удалить Bitalino пульс",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!session) {
@@ -240,6 +241,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
                 //tracker measurmet pulse layout
                 if (session)
                 {
+                    Toast.makeText(MainApplication.getContext(), "Сначала нужно удалить обычный пульс",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!sessionBitalino) {

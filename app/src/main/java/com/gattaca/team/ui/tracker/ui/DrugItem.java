@@ -45,7 +45,8 @@ public class DrugItem extends Item {
         ((TextView) itemHeader.findViewById(R.id.tracker_item_text_black)).setText(drug.getBlackText());
         ((TextView) itemHeader.findViewById(R.id.tracker_item_text_gray)).setText(drug.getGrayText());
         ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(drug.getIcon());
-
+        itemHeader.findViewById(R.id.tracker_item_pressure_clock).setVisibility(View.GONE);
+        itemHeader.findViewById(R.id.tracker_item_pressure_time).setVisibility(View.GONE);
         List<Intake> receptions = drug.getIntakes();
         Realm.getDefaultInstance().executeTransaction((Realm r) ->
                 Collections.sort(receptions, (Intake lhs, Intake rhs) ->

@@ -30,7 +30,7 @@ public class StickyHeaderAdapter extends AbstractAdapter implements StickyRecycl
 
         if (item instanceof Item && ((Item) item).header != null && !((Item) item).header.isEmpty())
         {
-            return ((Item) item).header.charAt(0);
+            return ((Item) item).getHeaderPosition();
         }
         //in our sample we want a separate header per first letter of our items
         //this if is not necessary for your code, we only use it as this sticky header is reused for different item implementations

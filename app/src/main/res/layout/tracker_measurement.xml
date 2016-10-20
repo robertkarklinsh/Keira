@@ -56,5 +56,6 @@
         android:drawablePadding="10dp"
         android:gravity="bottom"
         android:text="ПЕРЕЙТИ В МОНИТОР"
-        android:textColor="@color/pressure_colorOrangeMain" />
+        android:textColor="@color/pressure_colorOrangeMain"
+        android:id="@+id/tracker_pulse_to_graph"/>
 </LinearLayout>
