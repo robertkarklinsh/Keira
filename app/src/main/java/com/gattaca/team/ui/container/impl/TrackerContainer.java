@@ -56,8 +56,8 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
     Week week;
     private CountDownTimer timer = null;
 
-    Boolean session = false;
-    Boolean sessionBitalino = false;
+    static Boolean session = false;
+    static Boolean sessionBitalino = false;
 
 
 
@@ -193,6 +193,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
                 if (!session) {
                     TrackerBitsCount.value = 0;
                     MeasureBar.value = 0;
+                    MeasureBar.poinst.clear();
                     TimeLine.value = 0;
                     timer = new CountDownTimer(DateUtils.MINUTE_IN_MILLIS, DateUtils.SECOND_IN_MILLIS) {
                         @Override
@@ -247,8 +248,10 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
                 if (!sessionBitalino) {
                     TrackerBitsCount.value = 0;
                     MeasureBar.value = 0;
+                    MeasureBar.poinst.clear();
                     TimeLine.value = 0;
                     MeasureProgress.events = 0;
+                    MeasureProgress.resetView();
                     sessionBitalino = true;
                     RootSensorListener.startRaw();
                     timer = new CountDownTimer(DateUtils.MINUTE_IN_MILLIS, DateUtils.SECOND_IN_MILLIS) {
@@ -261,7 +264,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
                         @Override
                         public void onFinish() {
                             timer.cancel();
-                            if (session) {
+                            if (sessionBitalino) {
                                 timer.start();
                             } else {
                                 timer = null;

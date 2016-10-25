@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public final class MeasureBar extends View {
     final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    final ArrayList<Long> poinst = new ArrayList<>();
+    final public static ArrayList<Long> poinst = new ArrayList<>();
     int radiusBackground, colorGray, colorRed;
     double stepBy1sec;
     Color color = Color.Green;

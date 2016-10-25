@@ -17,9 +17,15 @@ import com.squareup.otto.Subscribe;
 public final class MeasureProgress extends LinearLayout implements ITick {
     MeasureBar bar;
     TextView valueEvents;
-    View problems, noProblems;
+    static View problems, noProblems;
     public static int events = 0;
 
+    public static void resetView()
+    {
+        problems.setVisibility(GONE);
+        ((TextView)problems.findViewById(R.id.counts)).setText("" + 0);
+        noProblems.setVisibility(VISIBLE);
+    }
 
     public MeasureProgress(Context context) {
         super(context);

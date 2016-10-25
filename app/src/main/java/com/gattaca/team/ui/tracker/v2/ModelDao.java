@@ -9,7 +9,6 @@ import com.gattaca.team.db.tracker.Task;
 import com.gattaca.team.db.tracker.Week;
 import com.gattaca.team.ui.container.list.item.TrackerMeasureListItem;
 import com.gattaca.team.ui.tracker.ui.DrugItem;
-import com.gattaca.team.ui.tracker.ui.HeaderItem;
 import com.gattaca.team.ui.tracker.ui.PressureMeasurementItem;
 import com.gattaca.team.ui.tracker.ui.TaskItem;
 import com.mikepenz.fastadapter.items.AbstractItem;
@@ -27,14 +26,14 @@ public class ModelDao {
     private static final String YESTERDAY = "ВЧЕРА";
 
     //TODO very dirty
-    TrackerMeasureListItem tmli = null;
+    static TrackerMeasureListItem tmli = null;
 
     public TrackerMeasureListItem getTmli() {
         return tmli;
     }
 
     public void setTmli(TrackerMeasureListItem tmli) {
-        this.tmli = tmli;
+        ModelDao.tmli = tmli;
     }
 
     public ModelDao() {
