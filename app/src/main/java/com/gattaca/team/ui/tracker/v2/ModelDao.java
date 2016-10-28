@@ -22,8 +22,8 @@ import java.util.List;
  * Created by Artem on 18.09.2016.
  */
 public class ModelDao {
-    private static final String TODAY = "СЕГОДНЯ";
-    private static final String YESTERDAY = "ВЧЕРА";
+    private  final String TODAY = "12";
+    private  final String YESTERDAY = "23";
 
     //TODO very dirty
     static TrackerMeasureListItem tmli = null;
@@ -91,12 +91,12 @@ public class ModelDao {
     }
 
     private String dayModifier(Day day, int currentDay) {
-        if (day.getNumber() == currentDay) {
-            return TODAY;
-        }
-        if (day.getNumber() == currentDay - 1) {
-            return YESTERDAY;
-        }
+//        if (day.getNumber() == currentDay) {
+//            return String.valueOf(day.getPercent());
+//        } else
+//        if (day.getNumber() == currentDay - 1) {
+//            return String.valueOf( day.getName());
+//        } else
         return day.getName();
     }
 
@@ -127,16 +127,16 @@ public class ModelDao {
                 res.add(tmli);
             }
             for (Drug drug : day.getDrugs()) {
-                res.add(new DrugItem().withItemContainer(drug).withHeader(day.getName()));
+                res.add(new DrugItem().withItemContainer(drug).withHeader(dayModifier(day,currentDay)));
             }
 //            for (PulseMeasurement pulseMeasurement : day.getPulseMeasurements()) {
 //                res.add(new PulseMeasurementItem().withItemContainer(pulseMeasurement));
 //            }
             for (Task task : day.getTasks()) {
-                res.add(new TaskItem().withItemContainer(task).withHeader(day.getName()));
+                res.add(new TaskItem().withItemContainer(task).withHeader(dayModifier(day,currentDay)));
             }
             for(PressureMeasurement pressureMeasurement: day.getPressureMeasurements()) {
-                res.add(new PressureMeasurementItem().withItemContainer(pressureMeasurement).withHeader(day.getName()));
+                res.add(new PressureMeasurementItem().withItemContainer(pressureMeasurement).withHeader(dayModifier(day,currentDay)));
             }
         }
         return res;

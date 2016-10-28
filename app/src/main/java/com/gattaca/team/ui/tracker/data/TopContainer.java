@@ -138,7 +138,7 @@ public class TopContainer {
             com.gattaca.team.db.tracker.Day day = week.getDays().get(i);
             list.add(new Day(ModelDao.currentDayOfWeek() < i ,day.getPercent(),day.getName().toLowerCase(),day));
         }
-        return new TopContainer(list, 0);
+        return new TopContainer(list, ModelDao.currentDayOfWeek());
     }
 
 }

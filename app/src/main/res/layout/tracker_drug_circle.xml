@@ -14,8 +14,8 @@
             />
         <ImageView
             android:id="@+id/custom_drug_button_img"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:gravity="center_vertical"
             android:src="@drawable/circle"
             android:layout_gravity="center_horizontal" />
