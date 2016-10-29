@@ -282,9 +282,15 @@ public class DrugInfoActivity extends AppCompatActivity {
             }
 //            realm = Realm.getDefaultInstance();
             realm.executeTransaction(r -> {
+
+                List<Long> list = new ArrayList<>();
                 for (Intake intake : drug.getIntakes()) {
-                    realm.where(Intake.class).equalTo("primaryKey", intake.getPrimaryKey()).findAll().deleteAllFromRealm();
+                    list.add(intake.getPrimaryKey());
                 }
+                for (Long id : list) {
+                    realm.where(Intake.class).equalTo("primaryKey", id).findAll().deleteAllFromRealm();
+                }
+
                 realm.where(Drug.class).equalTo("primaryKey", drug.getPrimaryKey()).findAll().deleteAllFromRealm();
             });
             DrugInfoActivity.this.finish();

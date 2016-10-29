@@ -219,7 +219,7 @@ public class PressureInfoActivity extends AppCompatActivity {
     }
 
     private void checkPressure(int systolic, int dyastolic, boolean fromWarning) {
-        if (systolic >= 140 && dyastolic > 90) {
+        if (systolic >= 140 || dyastolic >= 90) {
             //NOT OK
             if (fromWarning) {
                 NotifyEventObject neo = new NotifyEventObject().setModuleNameResId(ModuleName.Tracker).setTime(ModelDao.getTimeInMillis());

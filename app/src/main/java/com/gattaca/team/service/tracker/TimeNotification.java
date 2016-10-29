@@ -47,6 +47,7 @@ public class TimeNotification extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
         nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.fucking_perncil);

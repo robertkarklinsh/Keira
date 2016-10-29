@@ -22,9 +22,13 @@ public final class MeasureProgress extends LinearLayout implements ITick {
 
     public static void resetView()
     {
-        problems.setVisibility(GONE);
-        ((TextView)problems.findViewById(R.id.counts)).setText("" + 0);
-        noProblems.setVisibility(VISIBLE);
+        if (problems != null) {
+            problems.setVisibility(GONE);
+            ((TextView) problems.findViewById(R.id.counts)).setText("" + 0);
+        }
+        if (noProblems != null) {
+            noProblems.setVisibility(VISIBLE);
+        }
     }
 
     public MeasureProgress(Context context) {

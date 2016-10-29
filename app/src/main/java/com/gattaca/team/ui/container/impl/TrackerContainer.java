@@ -277,6 +277,7 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
                 } else {
                     sessionBitalino = false;
+                    timer.cancel();
                     modelDao.setTmli(null);
                     RootSensorListener.stopRaw();
                     actionAddPulseBitalino.setTitle("Добавить пульс из Bitalino");
