@@ -51,7 +51,11 @@ public class TimeNotification extends BroadcastReceiver {
         nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.fucking_perncil);
-        mBuilder.setContentTitle("нотификация");
+        String notification = "нотификация";
+        if (intent.hasExtra(NOTIFICATION_TEXT)) {
+            notification = intent.getStringExtra(NOTIFICATION_TEXT);
+        }
+        mBuilder.setContentTitle(notification);
         Intent intentTL = new Intent(context, MainActivity.class);
 
         mBuilder.setContentIntent(PendingIntent.getActivity(context,
@@ -76,10 +80,17 @@ public class TimeNotification extends BroadcastReceiver {
         });
     }
 
+
+    private final static String NOTIFICATION_TEXT = "nText";
     public static void setAlarm(Context context, long time, String action, long id) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent i = new Intent(context, TimeNotification.class);
+        if (action.equals("intake")) {
+            i.putExtra(NOTIFICATION_TEXT, "Примите лекарство");
+        } else {
+            i.putExtra(NOTIFICATION_TEXT, "Померяйте давление");
+        }
         i.setAction("com.gattaca.team." + action + id);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
         am.set(AlarmManager.RTC_WAKEUP, time, pi);
