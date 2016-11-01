@@ -65,19 +65,22 @@ public final class AppUtils {
                     .setModuleNameResId(ModuleName.Monitor)
                     .setEventType(NotifyType.BPM_less_40)
                     .setCount(bpm)
-                    .setTime(time));
+                    .setTime(time))
+                    .setPrimaryKey(AppUtils.generateUniqueId());
         } else if (bpm < 45) {
             a = (new NotifyEventObject()
                     .setModuleNameResId(ModuleName.Monitor)
                     .setEventType(NotifyType.BPM_less_50_more_40)
                     .setCount(bpm)
-                    .setTime(time));
+                    .setTime(time))
+                    .setPrimaryKey(AppUtils.generateUniqueId());
         } else if (bpm > 125) {
             a = new NotifyEventObject()
                     .setModuleNameResId(ModuleName.Monitor)
                     .setEventType(NotifyType.BPM_more_100)
                     .setCount(bpm)
-                    .setTime(time);
+                    .setTime(time)
+                    .setPrimaryKey(AppUtils.generateUniqueId());
         }
         if (a != null) {
             Log.e("UTILS", "generate event " + a.getEventType());

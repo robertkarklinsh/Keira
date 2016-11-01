@@ -12,6 +12,7 @@ import io.realm.annotations.RealmClass;
 public class NotifyEventObject implements RealmModel {
     private
     @PrimaryKey
+    long primaryKey;
     long time;
     private float count;
     private boolean fake = true;
@@ -41,6 +42,15 @@ public class NotifyEventObject implements RealmModel {
 
     public NotifyEventObject realData() {
         this.fake = false;
+        return this;
+    }
+
+    public long getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public NotifyEventObject setPrimaryKey(long primaryKey) {
+        this.primaryKey = primaryKey;
         return this;
     }
 

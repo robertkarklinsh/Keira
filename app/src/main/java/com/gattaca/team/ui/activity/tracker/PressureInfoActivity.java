@@ -1,8 +1,12 @@
 package com.gattaca.team.ui.activity.tracker;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +27,9 @@ import com.gattaca.team.db.tracker.Drug;
 import com.gattaca.team.db.tracker.Intake;
 import com.gattaca.team.db.tracker.PressureMeasurement;
 import com.gattaca.team.root.AppUtils;
+import com.gattaca.team.root.MainApplication;
 import com.gattaca.team.service.tracker.TimeNotification;
+import com.gattaca.team.ui.activity.MainActivity;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
 import com.gattaca.team.ui.utils.ActivityTransferData;
 
@@ -37,6 +43,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 import static com.gattaca.team.db.RealmController.getRealm;
+import static com.gattaca.team.service.tracker.TimeNotification.notificationId;
 import static com.gattaca.team.ui.activity.tracker.AddPressureActivity.edtToStr;
 import static com.gattaca.team.ui.activity.tracker.AddPressureActivity.isEmpty;
 
@@ -218,15 +225,43 @@ public class PressureInfoActivity extends AppCompatActivity {
         }
     }
 
-    private void checkPressure(int systolic, int dyastolic, boolean fromWarning) {
+    public static void checkPressure(int systolic, int dyastolic, boolean fromWarning) {
         if (systolic >= 140 || dyastolic >= 90) {
             //NOT OK
             if (fromWarning) {
-                NotifyEventObject neo = new NotifyEventObject().setModuleNameResId(ModuleName.Tracker).setTime(ModelDao.getTimeInMillis());
-                neo.setEventType(NotifyType.Critical_Warning).realData();
+                NotifyEventObject neo = new NotifyEventObject()
+                        .setModuleNameResId(ModuleName.Tracker)
+                        .setTime(ModelDao.getTimeInMillis())
+                        .setEventType(NotifyType.Critical_Warning)
+                        .setPrimaryKey(AppUtils.generateUniqueId())
+                        .realData();
                 RealmController.getRealm().executeTransaction((Realm r) -> {
                     r.copyToRealmOrUpdate(neo);
                 });
+                //TODO REDO this is just
+                {
+
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MainApplication.getContext());
+                    mBuilder.setSmallIcon(R.drawable.fucking_perncil);
+                    String notification = "Обратитесь к врачу!";
+                    mBuilder.setContentTitle(notification);
+                    Intent intentTL = new Intent(MainApplication.getContext(), MainActivity.class);
+
+                    mBuilder.setContentIntent(PendingIntent.getActivity(MainApplication.getContext(),
+                            0,
+                            intentTL,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT))
+                            .setAutoCancel(true);
+
+
+                    int mNotificationId = notificationId;
+                    notificationId++;
+// Gets an instance of the NotificationManager service
+                    NotificationManager mNotifyMgr =
+                            (NotificationManager) MainApplication.getContext().getSystemService(NOTIFICATION_SERVICE);
+// Builds the notification and issues it.
+                    mNotifyMgr.notify(mNotificationId, mBuilder.build());
+                }
                 //OK
             }
             if (systolic <= 160) {
@@ -239,8 +274,12 @@ public class PressureInfoActivity extends AppCompatActivity {
             }
 
         } else if (fromWarning) {
-            NotifyEventObject neo = new NotifyEventObject().setModuleNameResId(ModuleName.Tracker).setTime(ModelDao.getTimeInMillis());
-            neo.setEventType(NotifyType.Pressure_OK).realData();
+            NotifyEventObject neo = new NotifyEventObject()
+                    .setModuleNameResId(ModuleName.Tracker)
+                    .setTime(ModelDao.getTimeInMillis())
+                    .setEventType(NotifyType.Pressure_OK)
+                    .setPrimaryKey(AppUtils.generateUniqueId())
+                    .realData();
             RealmController.getRealm().executeTransaction((Realm r) -> {
                 r.copyToRealmOrUpdate(neo);
             });
@@ -251,14 +290,23 @@ public class PressureInfoActivity extends AppCompatActivity {
 //        day.getDrugs().add(drug);
     }
 
-    private void createPressureMsrmnt() {
+    private static void createPressureMsrmnt() {
         Realm realm = RealmController.getRealm();
         for (Day day : RealmController.getCurrentWeek().getDays()) {
             if (day.getNumber() == ModelDao.currentDayOfWeek()) {
                 realm.beginTransaction();
                 PressureMeasurement pm = realm.createObject(PressureMeasurement.class);
-                pm.setHours(ModelDao.getHours());
-                pm.setMinutes(ModelDao.getMinutes() + 15);
+                int hours = ModelDao.getHours();
+                int minutes = ModelDao.getMinutes() + 15;
+                if (minutes >= 60) {
+                    minutes -= 60;
+                    hours ++;
+                    if (hours >= 24) {
+                        hours --;
+                    }
+                }
+                pm.setHours(hours);
+                pm.setMinutes(minutes);
                 pm.setCompleted(false);
                 pm.setName("Давление");
                 pm.setCreatedFromWarning(true);
@@ -266,15 +314,16 @@ public class PressureInfoActivity extends AppCompatActivity {
                 day.getPressureMeasurements().add(pm);
                 GregorianCalendar gr = new GregorianCalendar();
                 gr.set(Calendar.HOUR_OF_DAY, ModelDao.getHours());
-                gr.set(Calendar.MINUTE, ModelDao.getMinutes() + 15);
+                gr.set(Calendar.MINUTE, ModelDao.getMinutes());
+                gr.add(Calendar.MINUTE, 15);
                 gr.set(Calendar.SECOND, 0);
-                TimeNotification.setAlarm(getApplicationContext(), gr.getTimeInMillis(), "pressure", pm.getPrimaryKey());
+                TimeNotification.setAlarm(MainApplication.getContext(), gr.getTimeInMillis(), "pressure", pm.getPrimaryKey());
                 realm.commitTransaction();
             }
         }
     }
 
-    private void createDrug(String name, String units, int dose) {
+    private static void createDrug(String name, String units, int dose) {
         for (Day day : RealmController.getCurrentWeek().getDays()) {
             if (day.getNumber() == ModelDao.currentDayOfWeek()) {
                 Realm realm = RealmController.getRealm();
@@ -287,17 +336,27 @@ public class PressureInfoActivity extends AppCompatActivity {
 
                 Intake intake = realm.createObject(Intake.class);
                 intake.setTaken(false);
-                intake.setHours(ModelDao.getHours());
-                intake.setMinutes(ModelDao.getMinutes() + 1);
+                int hours = ModelDao.getHours();
+                int minutes = ModelDao.getMinutes() + 1;
+                if (minutes >= 60) {
+                    minutes -= 60;
+                    hours ++;
+                    if (hours >= 24) {
+                        hours --;
+                    }
+                }
+                intake.setHours(hours);
+                intake.setMinutes(minutes);
                 intake.setCreationDate(ModelDao.getTimeInMillis());
                 intake.setPrimaryKey(AppUtils.generateUniqueId());
                 drug.getIntakes().add(intake);
                 GregorianCalendar gr = new GregorianCalendar();
                 gr.set(Calendar.HOUR_OF_DAY, intake.getHours());
-                gr.set(Calendar.MINUTE, intake.getMinutes() + 1);
+                gr.set(Calendar.MINUTE, intake.getMinutes());
+                gr.add(Calendar.MINUTE, 1);
                 gr.set(Calendar.SECOND, 0);
 
-                TimeNotification.setAlarm(getApplicationContext(), gr.getTimeInMillis(), "intake", intake.getPrimaryKey());
+                TimeNotification.setAlarm(MainApplication.getContext(), gr.getTimeInMillis(), "intake", intake.getPrimaryKey());
                 day.getDrugs().add(drug);
                 realm.commitTransaction();
             }

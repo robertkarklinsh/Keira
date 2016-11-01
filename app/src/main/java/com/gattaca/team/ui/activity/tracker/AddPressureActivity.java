@@ -200,6 +200,9 @@ public class AddPressureActivity extends AppCompatActivity {
                 }
             }
             realm.commitTransaction();
+            if (!isReminder) {
+                PressureInfoActivity.checkPressure(Integer.parseInt(edtToStr(systolicField)), Integer.parseInt(edtToStr(dyastolicField)), false);
+            }
             AddPressureActivity.this.finish();
         });
 

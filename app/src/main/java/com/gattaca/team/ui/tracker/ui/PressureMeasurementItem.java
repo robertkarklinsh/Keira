@@ -35,8 +35,13 @@ public class PressureMeasurementItem extends Item {
         ((TextView) itemHeader.findViewById(R.id.tracker_item_text_black)).setText(pressureMeasurement.getBlackText());
         ((TextView) itemHeader.findViewById(R.id.tracker_item_text_gray)).setText(pressureMeasurement.getGrayText());
         ((ImageView) itemHeader.findViewById(R.id.tracker_item_text_icon)).setImageResource(pressureMeasurement.getIcon());
-        itemHeader.findViewById(R.id.tracker_item_pressure_clock).setVisibility(View.VISIBLE);
-        itemHeader.findViewById(R.id.tracker_item_pressure_time).setVisibility(View.VISIBLE);
+        if (!pressureMeasurement.isCompleted()) {
+            itemHeader.findViewById(R.id.tracker_item_pressure_clock).setVisibility(View.VISIBLE);
+            itemHeader.findViewById(R.id.tracker_item_pressure_time).setVisibility(View.VISIBLE);
+        } else {
+            itemHeader.findViewById(R.id.tracker_item_pressure_clock).setVisibility(View.GONE);
+            itemHeader.findViewById(R.id.tracker_item_pressure_time).setVisibility(View.GONE);
+        }
         ((TextView) itemHeader.findViewById(R.id.tracker_item_pressure_time)).setText(
                 String.format(Locale.ROOT,"%02d:%02d", pressureMeasurement.getHours(), pressureMeasurement.getMinutes()));
 
@@ -72,5 +77,10 @@ public class PressureMeasurementItem extends Item {
             MainApplication.uiBusPost(new ActivityTransferData(ActivityTransferData.AvailableActivity.PM_INFO, pressureMeasurement.getPrimaryKey()));
         }
     }
+
+//    @Override
+//    public int getLayoutRes() {
+//        return R.layout.tracker_measurement_pressure_filled;
+//    }
 
 }

@@ -29,7 +29,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
  */
 public class TimeNotification extends BroadcastReceiver {
     NotificationManager nm;
-    static int notificationId = 1;
+    public static int notificationId = 1;
 
 
     public static long getTimeStamp(String type, long id) {
@@ -73,8 +73,12 @@ public class TimeNotification extends BroadcastReceiver {
 // Builds the notification and issues it.
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
-        NotifyEventObject neo = new NotifyEventObject().setModuleNameResId(ModuleName.Tracker).setTime(ModelDao.getTimeInMillis());
-        neo.setEventType(NotifyType.Tracker_reminder).realData();
+        NotifyEventObject neo = new NotifyEventObject()
+                .setModuleNameResId(ModuleName.Tracker)
+                .setTime(ModelDao.getTimeInMillis())
+                .setEventType(NotifyType.Tracker_reminder)
+                .setPrimaryKey(AppUtils.generateUniqueId())
+                .realData();
         RealmController.getRealm().executeTransaction((Realm r) -> {
             r.copyToRealmOrUpdate(neo);
         });
@@ -88,7 +92,7 @@ public class TimeNotification extends BroadcastReceiver {
         Intent i = new Intent(context, TimeNotification.class);
         if (action.equals("intake")) {
             i.putExtra(NOTIFICATION_TEXT, "Примите лекарство");
-        } else {
+        } else if (action.equals("pressure")){
             i.putExtra(NOTIFICATION_TEXT, "Померяйте давление");
         }
         i.setAction("com.gattaca.team." + action + id);

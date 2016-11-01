@@ -139,7 +139,8 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                                 rawRealm.add(new NotifyEventObject()
                                         .setModuleNameResId(ModuleName.Monitor)
                                         .setEventType(NotifyType.PC_3)
-                                        .setTime(PcTimesAgain.get(1)));
+                                        .setTime(PcTimesAgain.get(1))
+                                        .setPrimaryKey(AppUtils.generateUniqueId()));
                                 PcTimesAgain.clear();
                             }
                         } else {
@@ -147,7 +148,8 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                                 rawRealm.add(new NotifyEventObject()
                                         .setModuleNameResId(ModuleName.Monitor)
                                         .setEventType(NotifyType.PC_2)
-                                        .setTime(PcTimesAgain.get(1)));
+                                        .setTime(PcTimesAgain.get(1))
+                                        .setPrimaryKey(AppUtils.generateUniqueId()));
                             }
                             PcTimesAgain.clear();
                         }
@@ -158,7 +160,8 @@ public final class FakeDataController extends HandlerThread implements Handler.C
                             rawRealm.add(new NotifyEventObject()
                                     .setModuleNameResId(ModuleName.Monitor)
                                     .setEventType(NotifyType.PC_more_limit_per_hour)
-                                    .setTime(time));
+                                    .setTime(time)
+                                    .setPrimaryKey(AppUtils.generateUniqueId()));
                         }
                         // Search BPM
                         timeRR = Math.abs(currentRrValue - prevRrValue) * timeOffset;

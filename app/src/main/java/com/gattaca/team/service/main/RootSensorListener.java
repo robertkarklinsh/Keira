@@ -74,7 +74,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         process = true;
         getInstance().bus.register(getInstance());
         getInstance().serviceConnectionImpl.startConnection();
-}
+    }
 
     public static void stopRaw() {
         process = false;
@@ -99,7 +99,7 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
         if (process) {
             stopRaw();
             try {
-            Thread.sleep(1000);
+                Thread.sleep(1000);
             } catch (Exception e) {
 
             }
@@ -126,7 +126,9 @@ public final class RootSensorListener extends HandlerThread implements Handler.C
 
     private static void generateEvent(@NotifyType int eventType, final List<PanTompkins.QRS> list) {
         final NotifyEvent event = new NotifyEvent(eventType);
-        final NotifyEventObject notifyEventObject = new NotifyEventObject().setEventType(eventType);
+        final NotifyEventObject notifyEventObject = new NotifyEventObject()
+                .setEventType(eventType)
+                .setPrimaryKey(AppUtils.generateUniqueId());
         for (PanTompkins.QRS qrs : list) {
             event.addTime(qrs.rTimestamp);
             notifyEventObject.setTime(qrs.rTimestamp);
