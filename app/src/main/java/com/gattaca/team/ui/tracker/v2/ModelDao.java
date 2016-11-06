@@ -124,7 +124,7 @@ public class ModelDao {
             Day day = week.getDays().get(i);
 //            res.add(new HeaderItem().withName(dayModifier(day, currentDay)));
             if (tmli != null && i == currentDay) {
-                res.add(tmli);
+                res.add(tmli.withHeader(dayModifier(day,currentDay)));
             }
             for (Drug drug : day.getDrugs()) {
                 res.add(new DrugItem().withItemContainer(drug).withHeader(dayModifier(day,currentDay)));

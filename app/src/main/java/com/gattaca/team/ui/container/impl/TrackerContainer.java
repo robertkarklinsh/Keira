@@ -24,8 +24,6 @@ import com.gattaca.team.ui.tracker.ui.TopItem;
 import com.gattaca.team.ui.tracker.v2.ModelDao;
 import com.gattaca.team.ui.tracker.v2.StubWeekCreator;
 import com.gattaca.team.ui.utils.ActivityTransferData;
-import com.gattaca.team.ui.utils.ContainerTransferData;
-import com.gattaca.team.ui.utils.MainMenu;
 import com.gattaca.team.ui.view.tracker.MeasureBar;
 import com.gattaca.team.ui.view.tracker.MeasureProgress;
 import com.gattaca.team.ui.view.tracker.StubTrackerBit;
@@ -65,10 +63,10 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
         super(screen, R.id.container_tracker_id);
     }
 
-//    @Override
-//    public int getMenuItemActions() {
-//        return R.menu.tracker_toolbar_actions;
-//    }
+    @Override
+    public int getMenuItemActions() {
+        return R.menu.tracker_toolbar_actions;
+    }
 
     @Override
     public void onMenuItemSelected(final int id) {
@@ -76,9 +74,9 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
             case R.id.toolbar_action_change_week:
                 MainApplication.showToastNotImplemented();
                 break;
-            case R.id.toolbar_action_open_monitor:
-                MainApplication.uiBusPost(new ContainerTransferData(MainMenu.Monitor));
-                break;
+//            case R.id.toolbar_action_open_monitor:
+//                MainApplication.uiBusPost(new ContainerTransferData(MainMenu.Monitor));
+//                break;
         }
     }
 
@@ -277,7 +275,10 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
 
                 } else {
                     sessionBitalino = false;
-                    timer.cancel();
+                    if (timer != null) {
+                        timer.cancel();
+                    }
+                    timer = null;
                     modelDao.setTmli(null);
                     RootSensorListener.stopRaw();
                     actionAddPulseBitalino.setTitle("Добавить пульс из Bitalino");

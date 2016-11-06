@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/toolbar_action_change_week"
-        android:icon="@android:drawable/ic_input_add"
+        android:icon="@drawable/tracker_calendar"
         android:title="TTT"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/toolbar_action_open_monitor"
-        android:icon="@android:drawable/ic_dialog_alert"
-        android:title="222"
-        app:showAsAction="always" />
+    <!--<item-->
+        <!--android:id="@+id/toolbar_action_open_monitor"-->
+        <!--android:icon="@android:drawable/ic_dialog_alert"-->
+        <!--android:title="222"-->
+        <!--app:showAsAction="always" />-->
 </menu>

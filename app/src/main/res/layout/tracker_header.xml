@@ -32,6 +32,13 @@
         android:layout_marginTop="10dp"
         android:visibility="gone"
         />
-
+    <ImageView
+        android:id="@+id/tracket_header_arrow"
+        android:layout_height="20dp"
+        android:layout_width="15dp"
+        android:layout_marginRight="21dp"
+        android:layout_gravity="left|center_vertical"
+        android:background="@drawable/tracker_arrow"
+        />
 
 </LinearLayout>

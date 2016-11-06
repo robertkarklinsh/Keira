@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gattaca.team.R;
+import com.gattaca.team.ui.container.list.item.TrackerMeasureListItem;
 import com.gattaca.team.ui.tracker.ui.Item;
 import com.mikepenz.fastadapter.AbstractAdapter;
 import com.mikepenz.fastadapter.IItem;
@@ -31,6 +32,10 @@ public class StickyHeaderAdapter extends AbstractAdapter implements StickyRecycl
         if (item instanceof Item && ((Item) item).header != null && !((Item) item).header.isEmpty())
         {
             return ((Item) item).getHeaderPosition();
+        }
+        if (item instanceof TrackerMeasureListItem && ((TrackerMeasureListItem) item).header != null && !((TrackerMeasureListItem) item).header.isEmpty())
+        {
+            return ((TrackerMeasureListItem) item).getHeaderPosition();
         }
         //in our sample we want a separate header per first letter of our items
         //this if is not necessary for your code, we only use it as this sticky header is reused for different item implementations
@@ -56,6 +61,11 @@ public class StickyHeaderAdapter extends AbstractAdapter implements StickyRecycl
         if (item instanceof Item && ((Item) item).header != null && !((Item) item).header.isEmpty())
         {
             ((TextView)linearLayout.findViewById(R.id.tracker_header_text)).setText(String.valueOf (((Item) item).header));
+            ((TextView)linearLayout.findViewById(R.id.tracker_header_text)).setTextColor(Color.parseColor("white"));
+        }
+        if (item instanceof TrackerMeasureListItem && ((TrackerMeasureListItem) item).header != null && !((TrackerMeasureListItem) item).header.isEmpty())
+        {
+            ((TextView)linearLayout.findViewById(R.id.tracker_header_text)).setText(String.valueOf (((TrackerMeasureListItem) item).header));
             ((TextView)linearLayout.findViewById(R.id.tracker_header_text)).setTextColor(Color.parseColor("white"));
         }
     }

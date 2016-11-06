@@ -17,6 +17,8 @@ public final class TrackerMeasureListItem
         extends AbstractItem<
         TrackerMeasureListItem,
         TrackerMeasureListItem.ViewHolder> {
+
+    public String header;
     @Override
     public int getType() {
         return R.id.list_item_tracker_measure;
@@ -48,4 +50,18 @@ public final class TrackerMeasureListItem
             toMonitor = (TextView) view.findViewById(R.id.tracker_pulse_to_graph);
         }
     }
+
+    public TrackerMeasureListItem withHeader(String header) {
+        this.header = header;
+        return this;
+    }
+    public int getHeaderPosition() {
+        for (int i = 0 ; i < 7; i ++) {
+            if (header != null && days[i].equals(header.toLowerCase())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    String[] days = new String[] {"пн","вт","ср","чт","пт","сб","вс"};
 }
