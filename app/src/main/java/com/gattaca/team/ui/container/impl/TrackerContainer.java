@@ -65,10 +65,10 @@ public final class TrackerContainer extends IContainer<TrackerModel> {
         super(screen, R.id.container_tracker_id);
     }
 
-    @Override
-    public int getMenuItemActions() {
-        return R.menu.tracker_toolbar_actions;
-    }
+//    @Override
+//    public int getMenuItemActions() {
+//        return R.menu.tracker_toolbar_actions;
+//    }
 
     @Override
     public void onMenuItemSelected(final int id) {

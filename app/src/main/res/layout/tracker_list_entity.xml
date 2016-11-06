@@ -66,6 +66,13 @@
         android:weightSum="1">
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/item_underliner"
+        android:layout_width="379dp"
+        android:layout_height="6px"
+        android:layout_gravity="bottom|center_horizontal"
+        android:src="@drawable/drug_line_grey"
+        />
 
 
 </LinearLayout>

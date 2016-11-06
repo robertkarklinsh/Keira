@@ -51,11 +51,12 @@ public class StickyHeaderAdapter extends AbstractAdapter implements StickyRecycl
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
         LinearLayout linearLayout = (LinearLayout) holder.itemView;
-
+        linearLayout.setBackgroundColor(Color.parseColor("#18b6a9"));
         IItem item = getItem(position);
         if (item instanceof Item && ((Item) item).header != null && !((Item) item).header.isEmpty())
         {
             ((TextView)linearLayout.findViewById(R.id.tracker_header_text)).setText(String.valueOf (((Item) item).header));
+            ((TextView)linearLayout.findViewById(R.id.tracker_header_text)).setTextColor(Color.parseColor("white"));
         }
     }
 
