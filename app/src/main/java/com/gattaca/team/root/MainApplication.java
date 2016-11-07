@@ -60,6 +60,9 @@ public final class MainApplication extends Application {
     public static void register(Object obj) {
         uiBus.register(obj);
     }
+    public static void unregister(Object obj) {
+        uiBus.unregister(obj);
+    }
 
     public static Context getContext() {
         return context;
